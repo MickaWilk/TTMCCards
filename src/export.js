@@ -1,4 +1,4 @@
-// ===== export.js — Export PNG via html2canvas =====
+// ===== export.js — Export PNG via html2canvas (recto/verso) =====
 
 (function() {
   'use strict';
@@ -41,8 +41,15 @@
     t.classList.add('hidden');
   };
 
-  // ===== Export carte en PNG =====
-  window.exportCard = function() {
+  // ===== Propriétés CSS à copier lors de l'export =====
+  var CSS_PROPS = [
+    '--header-bg','--header-text','--border','--num-color','--card-bg',
+    '--icon-bg-alpha','--subject-size','--question-size','--answer-size',
+    '--num-size','--answer-num-size'
+  ];
+
+  // ===== Export d'un côté (recto ou verso) en PNG =====
+  function exportSide(side, callback) {
     var exportW = 936;
     var exportH = 735;
     var wInput = document.getElementById('export-w');
@@ -50,8 +57,19 @@
     if (wInput) exportW = parseInt(wInput.value) || 936;
     if (hInput) exportH = parseInt(hInput.value) || 735;
 
+    var originalSide = window.getCurrentSide();
+    var needSwitch = (side !== originalSide);
+
+    // Si on doit exporter un côté différent de l'affiché, switcher temporairement
+    if (needSwitch) {
+      window.switchSide(side);
+    }
+
     var preview = document.getElementById('card-preview');
-    if (!preview) return;
+    if (!preview) {
+      if (callback) callback();
+      return;
+    }
 
     // 1. Clone la carte à taille native, hors écran
     var clone = preview.cloneNode(true);
@@ -60,10 +78,9 @@
 
     // Copier les custom properties du preview vers le clone
     var computedStyle = getComputedStyle(preview);
-    var props = ['--header-bg','--header-text','--border','--num-color','--card-bg','--icon-bg-alpha','--subject-size','--question-size','--answer-size','--num-size','--answer-num-size'];
-    for (var p = 0; p < props.length; p++) {
-      var val = computedStyle.getPropertyValue(props[p]);
-      if (val) clone.style.setProperty(props[p], val);
+    for (var p = 0; p < CSS_PROPS.length; p++) {
+      var val = computedStyle.getPropertyValue(CSS_PROPS[p]);
+      if (val) clone.style.setProperty(CSS_PROPS[p], val);
     }
     // Copier la font-family
     clone.style.fontFamily = preview.style.fontFamily || computedStyle.fontFamily;
@@ -98,24 +115,64 @@
 
         // 5. Télécharger
         var themeId = window.getCurrentThemeId();
-        var subjectEl = preview.querySelector('.cl-subj [contenteditable]');
-        var subject = subjectEl ? subjectEl.innerText.trim() : '';
+        // Trouver un sujet pour le nom du fichier
+        var data = window.getCardData();
+        var subject = '';
+        if (side === 'recto' && data.recto.subjectA) {
+          subject = data.recto.subjectA.trim();
+        } else if (side === 'verso' && data.verso.subject) {
+          subject = data.verso.subject.trim();
+        }
         var suffix = subject ? window.slugify(subject) : 'vide';
 
         var link = document.createElement('a');
-        link.download = 'ttmc-' + themeId + '-' + suffix + '-' + exportW + 'x' + exportH + '.png';
+        link.download = 'ttmc-' + themeId + '-' + side + '-' + suffix + '-' + exportW + 'x' + exportH + '.png';
         link.href = out.toDataURL('image/png');
         link.click();
 
         // 6. Nettoyage
         document.body.removeChild(clone);
-        window.showToast('Export\u00e9 en ' + exportW + ' \u00d7 ' + exportH + ' px');
+
+        // Revenir au côté original si on avait switché
+        if (needSwitch) {
+          window.switchSide(originalSide);
+        }
+
+        if (callback) {
+          callback();
+        } else {
+          window.showToast('Export\u00e9 ' + side + ' en ' + exportW + ' \u00d7 ' + exportH + ' px');
+        }
       }).catch(function(err) {
         document.body.removeChild(clone);
+        if (needSwitch) {
+          window.switchSide(originalSide);
+        }
         window.showToast('Erreur lors de l\'export');
         console.error(err);
+        if (callback) callback();
       });
     }, 100);
+  }
+
+  // ===== Export du côté actuellement affiché =====
+  window.exportCard = function() {
+    var side = window.getCurrentSide();
+    exportSide(side);
+  };
+
+  // ===== Export des 2 faces successivement =====
+  window.exportBothSides = function() {
+    window.showToast('Export du recto en cours...');
+    exportSide('recto', function() {
+      // Petit délai entre les deux téléchargements
+      setTimeout(function() {
+        window.showToast('Export du verso en cours...');
+        exportSide('verso', function() {
+          window.showToast('Les 2 faces ont \u00e9t\u00e9 export\u00e9es !');
+        });
+      }, 500);
+    });
   };
 
 })();

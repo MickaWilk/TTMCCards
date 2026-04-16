@@ -16,6 +16,12 @@
       <h1 class="sidebar-title">TTMC<br><span>Cards</span></h1>
       <p class="sidebar-sub">Générateur de cartes personnalisées</p>
 
+      <!-- Toggle Recto / Verso -->
+      <div class="side-toggle" id="side-toggle">
+        <button class="side-btn active" data-side="recto">Recto</button>
+        <button class="side-btn" data-side="verso">Verso</button>
+      </div>
+
       <div class="sidebar-sections">
         <!-- Section: Couleur -->
         <div class="sidebar-section open">
@@ -87,6 +93,7 @@
       <!-- Boutons d'action -->
       <div class="btn-group">
         <button id="btn-export" class="btn btn-primary">Exporter PNG</button>
+        <button id="btn-export-both" class="btn btn-primary" style="background:linear-gradient(135deg,#764ba2,#667eea)">Exporter les 2 faces</button>
         <button id="btn-sample" class="btn btn-secondary">Charger un exemple</button>
         <button id="btn-reset" class="btn btn-secondary">Réinitialiser</button>
       </div>

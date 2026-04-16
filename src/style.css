@@ -20,6 +20,25 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .sidebar-title span { font-weight:400; font-size:15px; color:rgba(255,255,255,.5); }
 .sidebar-sub { font-size:11px; color:rgba(255,255,255,.35); margin:2px 0 16px; }
 
+/* ===== Toggle Recto / Verso ===== */
+.side-toggle {
+  display:flex; gap:4px; margin-bottom:14px; padding:4px;
+  background:rgba(255,255,255,.06); border-radius:10px;
+}
+.side-btn {
+  flex:1; padding:8px 0; border:none; border-radius:8px;
+  font-family:'Poppins',sans-serif; font-size:13px; font-weight:700;
+  cursor:pointer; transition:background .2s, color .2s;
+  background:transparent; color:rgba(255,255,255,.45);
+  letter-spacing:.5px;
+}
+.side-btn:hover { color:rgba(255,255,255,.7); }
+.side-btn.active {
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;
+  box-shadow:0 2px 8px rgba(102,126,234,.35);
+}
+
 /* ===== Sidebar Sections (Accordéon) ===== */
 .sidebar-sections { display:flex; flex-direction:column; gap:4px; flex:1; }
 
@@ -172,99 +191,118 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 #card-wrapper { transform:scale(var(--card-scale,.7)); transform-origin:center center; }
 
 /* =============================================
-   CARD — 936 x 735 two-panel TTMC
-   Generic theming via CSS custom properties
+   CARD — 936 x 735, panneaux recto/verso TTMC
+   Thème via CSS custom properties
    ============================================= */
 .ttmc-card {
   width:936px; height:735px; border-radius:20px; overflow:hidden;
   display:flex; flex-direction:row; gap:10px; padding:14px;
-  font-family:'Poppins',sans-serif; position:relative;
+  font-family:inherit; position:relative;
   background:var(--card-bg, #c5d5df);
 }
-/* shadow only for on-screen preview */
+/* Ombre uniquement pour l'aperçu écran */
 #card-preview { box-shadow:0 20px 60px rgba(0,0,0,.5); }
 
-/* -- Left Panel -- */
-.cl { flex:1; border-radius:14px; border:3.5px solid var(--border, #2e6483); display:flex; flex-direction:column; overflow:hidden; background:#fff; position:relative; }
+/* ===== Panneaux ===== */
+.card-panel { flex:1; display:flex; flex-direction:column; }
 
-/* Header */
-.cl-head {
-  height:50px; display:flex; align-items:center; padding:0 14px; position:relative;
-  background:var(--header-bg, #3d7a9e); color:var(--header-text, #f5d442);
+.panel-inner {
+  flex:1; border-radius:14px; background:#fff;
+  display:flex; flex-direction:column; overflow:hidden; position:relative;
 }
-.cl-head-txt { font-size:12.5px; font-weight:600; font-style:italic; opacity:.85; }
-.cl-head-icon {
-  width:44px; height:44px; border-radius:50%; overflow:hidden;
+.panel-bordered { border:3.5px solid var(--border, #2e6483); }
+
+/* ===== En-tête panneau ===== */
+.panel-header {
+  height:46px; display:flex; align-items:center; padding:0 14px; position:relative;
+  background:var(--header-bg); color:var(--header-text);
+  border-radius:11px 11px 0 0;
+}
+.panel-header-text { font-size:12px; font-weight:600; font-style:italic; opacity:.85; }
+.panel-header-icon {
+  width:40px; height:40px; border-radius:50%; overflow:hidden;
   position:absolute; right:8px; top:3px;
   display:flex; align-items:center; justify-content:center;
   background:rgba(255,255,255, var(--icon-bg-alpha, 0.12));
-  color:var(--header-text, #f5d442);
+  color:var(--header-text);
 }
-.cl-head-icon img { width:100%; height:100%; object-fit:cover; display:block; }
-.cl-head-icon svg { width:30px; height:30px; }
+.panel-header-icon svg { width:28px; height:28px; }
+.panel-header-icon img { width:100%; height:100%; object-fit:cover; }
 
-/* Subject — gros et gras comme la carte officielle */
-.cl-subj {
-  padding:6px 14px 6px; border-bottom:2px solid rgba(0,0,0,.1); min-height:40px;
-  display:flex; align-items:center;
+/* ===== Sujet — GROS et GRAS comme l'officiel ===== */
+.panel-subject {
+  padding:6px 14px; border-bottom:2px solid rgba(0,0,0,.1);
+  display:flex; align-items:center; min-height:38px;
 }
-.cl-subj [contenteditable] {
-  display:block; outline:none; min-height:20px; width:100%;
-  font-size:var(--subject-size, 20px); font-weight:900; color:#1a1a2e;
-  text-transform:uppercase; letter-spacing:0.5px; line-height:1.15;
+.panel-subject [contenteditable] {
+  display:block; width:100%; outline:none;
+  font-size:var(--subject-size, 20px); font-weight:900;
+  color:#1a1a2e; text-transform:uppercase; letter-spacing:.5px; line-height:1.15;
 }
-.cl-subj [contenteditable]:empty::before {
-  content:attr(data-placeholder);
-  color:rgba(0,0,0,.15); font-style:italic; text-transform:none; font-weight:600;
-  font-size:14px;
-}
-
-/* Number rows */
-.cl-rows { flex:1; display:flex; flex-direction:column; padding:4px 10px 8px; }
-.cl-row { flex:1; display:flex; align-items:center; border-bottom:1.5px solid rgba(0,0,0,.07); }
-.cl-row:last-child { border-bottom:none; }
-.cl-num { font-size:var(--num-size, 28px); font-weight:900; width:44px; text-align:center; line-height:1; color:var(--num-color, #2e6483); }
-.cl-txt {
-  flex:1; margin-left:6px; font-size:var(--question-size, 9.5px); color:#333; outline:none; min-height:16px;
-  border:none; background:none; font-family:inherit; line-height:1.3;
-}
-.cl-txt:empty::before {
-  content:attr(data-placeholder);
-  color:rgba(0,0,0,.12); font-style:italic;
+.panel-subject [contenteditable]:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.15);
+  font-style:italic; text-transform:none; font-weight:600; font-size:14px;
 }
 
-/* Deco watermark */
-.cl-deco {
-  position:absolute; bottom:18px; right:18px; width:75px; height:75px; opacity:.1;
-  pointer-events:none; color:var(--num-color, #2e6483);
+/* ===== Questions (recto) ===== */
+.panel-questions { flex:1; display:flex; flex-direction:column; padding:4px 10px 8px; }
+.pq-row { flex:1; display:flex; align-items:center; border-bottom:1.5px solid rgba(0,0,0,.07); }
+.pq-row:last-child { border-bottom:none; }
+.pq-num {
+  font-size:var(--num-size, 28px); font-weight:900; width:44px;
+  text-align:center; line-height:1; color:var(--num-color);
 }
-.cl-deco img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
-.cl-deco svg { width:100%; height:100%; }
-
-/* -- Right Panel -- */
-.cr { flex:1; border-radius:14px; background:#fff; display:flex; flex-direction:column; padding:14px 18px 12px; }
-.cr-title { font-size:26px; font-weight:800; color:#1a1a2e; text-align:center; margin-bottom:6px; }
-.cr-rows { flex:1; display:flex; flex-direction:column; }
-.cr-row { flex:1; display:flex; align-items:center; border-bottom:1.5px solid rgba(0,0,0,.08); }
-.cr-row:last-child { border-bottom:none; }
-.cr-num { font-size:var(--answer-num-size, 13px); font-weight:700; color:#1a1a2e; width:28px; text-align:right; }
-.cr-txt {
-  flex:1; margin-left:8px; font-size:var(--answer-size, 9.5px); color:#333; outline:none; min-height:16px;
-  border:none; background:none; font-family:inherit; line-height:1.3;
+.pq-txt {
+  flex:1; margin-left:6px; font-size:var(--question-size, 9.5px);
+  color:#333; outline:none; min-height:14px; border:none; background:none;
+  font-family:inherit; line-height:1.3;
 }
-.cr-txt:empty::before {
-  content:attr(data-placeholder);
-  color:rgba(0,0,0,.12); font-style:italic;
+.pq-txt:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.12); font-style:italic;
 }
 
-/* Sparkle — pure CSS 4-pointed star */
-.cr-star {
-  width:22px; height:22px; align-self:flex-end; margin-top:6px; position:relative;
-  opacity:.35; color:var(--num-color, #2e6483);
+/* ===== Scores (verso gauche) — numéros + lignes ===== */
+.panel-scores { flex:1; display:flex; flex-direction:column; padding:4px 10px 8px; }
+.ps-row { flex:1; display:flex; align-items:center; border-bottom:1.5px solid rgba(0,0,0,.07); }
+.ps-row:last-child { border-bottom:none; }
+.ps-num { font-size:var(--num-size, 28px); font-weight:900; width:44px; text-align:center; line-height:1; color:var(--num-color); }
+.ps-line { flex:1; height:1.5px; background:rgba(0,0,0,.08); margin-left:8px; }
+
+/* ===== Watermark icône ===== */
+.panel-watermark {
+  position:absolute; bottom:18px; right:18px; width:75px; height:75px;
+  opacity:.1; pointer-events:none; color:var(--num-color);
 }
-.cr-star::before {
-  content:''; position:absolute; inset:0;
-  background:currentColor;
+.panel-watermark svg { width:100%; height:100%; }
+.panel-watermark img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+/* ===== Titre Réponses (verso droit) ===== */
+.panel-resp-title {
+  font-size:26px; font-weight:800; color:#1a1a2e;
+  text-align:center; margin-bottom:6px; padding-top:6px;
+}
+
+/* ===== Réponses (verso droit) ===== */
+.panel-answers { flex:1; display:flex; flex-direction:column; padding:0 12px; }
+.pa-row { flex:1; display:flex; align-items:center; border-bottom:1.5px solid rgba(0,0,0,.08); }
+.pa-row:last-child { border-bottom:none; }
+.pa-num { font-size:13px; font-weight:700; color:#1a1a2e; width:28px; text-align:right; }
+.pa-txt {
+  flex:1; margin-left:8px; font-size:var(--answer-size, 9.5px);
+  color:#333; outline:none; min-height:14px; border:none; background:none;
+  font-family:inherit; line-height:1.3;
+}
+.pa-txt:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.12); font-style:italic;
+}
+
+/* ===== Sparkle — étoile 4 branches en CSS pur ===== */
+.panel-sparkle {
+  width:22px; height:22px; align-self:flex-end; margin:6px 4px;
+  position:relative; opacity:.35; color:var(--num-color);
+}
+.panel-sparkle::before {
+  content:''; position:absolute; inset:0; background:currentColor;
   clip-path:polygon(50% 0%,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0% 50%,38% 38%);
 }
 

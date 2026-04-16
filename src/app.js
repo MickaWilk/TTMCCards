@@ -91,8 +91,8 @@
     var controls = [
       { key: 'subject',  label: 'Sujet',     min: 10, max: 36, step: 1, default: 20 },
       { key: 'question', label: 'Questions',  min: 6,  max: 18, step: 0.5, default: 9.5 },
-      { key: 'answer',   label: 'Réponses',   min: 6,  max: 18, step: 0.5, default: 9.5 },
-      { key: 'number',   label: 'Numéros',    min: 14, max: 42, step: 1, default: 28 }
+      { key: 'answer',   label: 'R\u00e9ponses',   min: 6,  max: 18, step: 0.5, default: 9.5 },
+      { key: 'number',   label: 'Num\u00e9ros',    min: 14, max: 42, step: 1, default: 28 }
     ];
 
     var sizes = window.getFontSizes();
@@ -233,6 +233,40 @@
     if (first) first.classList.add('open');
   }
 
+  // ===== 5b. Toggle Recto / Verso =====
+  function setupSideToggle() {
+    var toggle = document.getElementById('side-toggle');
+    if (!toggle) return;
+
+    var btns = toggle.querySelectorAll('.side-btn');
+    for (var i = 0; i < btns.length; i++) {
+      (function(btn) {
+        btn.addEventListener('click', function() {
+          var side = btn.getAttribute('data-side');
+          if (!side) return;
+
+          // Mettre à jour les classes actives
+          for (var j = 0; j < btns.length; j++) btns[j].classList.remove('active');
+          btn.classList.add('active');
+
+          // Basculer le côté
+          window.switchSide(side);
+        });
+      })(btns[i]);
+    }
+  }
+
+  // Met à jour le toggle visuel pour refléter le côté courant
+  function updateSideToggleActive() {
+    var toggle = document.getElementById('side-toggle');
+    if (!toggle) return;
+    var btns = toggle.querySelectorAll('.side-btn');
+    var current = window.getCurrentSide();
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle('active', btns[i].getAttribute('data-side') === current);
+    }
+  }
+
   // ===== 6. Sample Cards Modal =====
   function setupSampleCards() {
     var btn = document.getElementById('btn-sample');
@@ -284,6 +318,7 @@
           if (result) {
             updateColorPickerActive();
             updateIconPickerActive();
+            updateSideToggleActive();
             // Mettre à jour le select police
             var sel = document.getElementById('font-select');
             if (sel) sel.value = result.fontId;
@@ -311,16 +346,38 @@
   // ===== 7. Restauration brouillon =====
   function checkDraftRestore() {
     var draft = window.loadFromLocalStorage();
-    if (!draft || !draft.content) return;
+    if (!draft) return;
 
-    // Vérifier que le draft a du contenu
+    // Support nouveau format (recto/verso)
     var hasContent = false;
-    if (draft.content.subject && draft.content.subject.trim()) hasContent = true;
-    if (!hasContent && draft.content.q) {
-      for (var k in draft.content.q) {
-        if (draft.content.q[k] && draft.content.q[k].trim()) { hasContent = true; break; }
+    if (draft.recto) {
+      if (draft.recto.subjectA && draft.recto.subjectA.trim()) hasContent = true;
+      if (!hasContent && draft.recto.questionsA) {
+        for (var k in draft.recto.questionsA) {
+          if (draft.recto.questionsA[k] && draft.recto.questionsA[k].trim()) { hasContent = true; break; }
+        }
+      }
+      if (!hasContent && draft.recto.subjectB && draft.recto.subjectB.trim()) hasContent = true;
+    }
+    if (!hasContent && draft.verso) {
+      if (draft.verso.subject && draft.verso.subject.trim()) hasContent = true;
+      if (!hasContent && draft.verso.answers) {
+        for (var k2 in draft.verso.answers) {
+          if (draft.verso.answers[k2] && draft.verso.answers[k2].trim()) { hasContent = true; break; }
+        }
       }
     }
+
+    // Support ancien format (migration)
+    if (!hasContent && draft.content) {
+      if (draft.content.subject && draft.content.subject.trim()) hasContent = true;
+      if (!hasContent && draft.content.q) {
+        for (var k3 in draft.content.q) {
+          if (draft.content.q[k3] && draft.content.q[k3].trim()) { hasContent = true; break; }
+        }
+      }
+    }
+
     if (!hasContent) return;
 
     // Afficher toast avec boutons
@@ -344,13 +401,30 @@
       if (draft.fontId) window.setCurrentFontId(draft.fontId);
       if (draft.fontSizes) window.setAllFontSizes(draft.fontSizes);
 
+      // Restaurer le côté affiché
+      var side = draft.currentSide || 'recto';
+      window.setCurrentSide(side);
+
       var fontId = draft.fontId || 'poppins';
       window.loadFont(fontId).then(function() {
         window.renderCard(draft.themeId, draft.iconId, fontId);
-        window.restoreCardContent(draft.content);
+
+        // Restaurer le contenu des deux faces
+        var contentData = {};
+        if (draft.recto) contentData.recto = draft.recto;
+        if (draft.verso) contentData.verso = draft.verso;
+
+        // Support ancien format
+        if (draft.content && !draft.recto) {
+          contentData = draft.content;
+        }
+
+        window.restoreCardContent(contentData);
+
         updateColorPickerActive();
         updateIconPickerActive();
         updateFontSizeControls();
+        updateSideToggleActive();
         var sel = document.getElementById('font-select');
         if (sel) sel.value = fontId;
       });
@@ -396,11 +470,15 @@
     // 2. Setup interactions
     setupLogoUpload();
     setupSections();
+    setupSideToggle();
     setupSampleCards();
 
     // 3. Wiring boutons
     var btnExport = document.getElementById('btn-export');
     if (btnExport) btnExport.addEventListener('click', window.exportCard);
+
+    var btnExportBoth = document.getElementById('btn-export-both');
+    if (btnExportBoth) btnExportBoth.addEventListener('click', window.exportBothSides);
 
     var btnReset = document.getElementById('btn-reset');
     if (btnReset) {
@@ -409,6 +487,7 @@
         updateColorPickerActive();
         updateIconPickerActive();
         updateFontSizeControls();
+        updateSideToggleActive();
         clearLogoPreview();
         var sel = document.getElementById('font-select');
         if (sel) sel.value = 'poppins';
@@ -420,7 +499,7 @@
     updateCardScale();
     window.addEventListener('resize', updateCardScale);
 
-    // 5. Render initial
+    // 5. Render initial (recto par défaut)
     window.renderCard('blue', 'poisson', 'poppins');
 
     // 6. Vérifier brouillon après un court délai
