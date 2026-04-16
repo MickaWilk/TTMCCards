@@ -64,6 +64,11 @@
     watermark: true
   };
 
+  // Calques (image overlays)
+  var overlays = [];
+  var nextOverlayId = 1;
+  var dragState = null;
+
   // Images personnalisees
   var customImages = {
     cardBg: null,   // data URL fond de carte
@@ -84,7 +89,7 @@
   }
 
   function ttmcLogo() {
-    return '<span class="ttmc-logo">TTMc<sup>2</sup></span>';
+    return '';
   }
 
   function applyFontSizeProperties(el) {
@@ -126,6 +131,7 @@
     restoreFromMemory();
     applyToggles(p);
     applyCustomImages(p);
+    renderOverlays(p);
     setupAutoSave(p);
   };
 
@@ -175,6 +181,147 @@
       }
     }
   }
+
+  // ===== Calques (overlays) =====
+  function renderOverlays(p) {
+    if (!p) p = document.getElementById('card-preview');
+    if (!p) return;
+
+    // Remove existing overlay elements
+    var old = p.querySelectorAll('.card-overlay');
+    for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]);
+
+    // Render sorted by z
+    var sorted = overlays.slice().sort(function(a, b) { return a.z - b.z; });
+    for (var j = 0; j < sorted.length; j++) {
+      var o = sorted[j];
+      if (!o.visible) continue;
+      var img = document.createElement('img');
+      img.className = 'card-overlay' + (o.locked ? ' overlay-locked' : '');
+      img.src = o.src;
+      img.draggable = false;
+      img.setAttribute('data-overlay-id', o.id);
+      img.style.cssText = 'position:absolute;left:' + o.x + 'px;top:' + o.y + 'px;' +
+        'width:' + o.w + 'px;height:' + o.h + 'px;z-index:' + (50 + o.z) + ';' +
+        'opacity:' + (o.opacity != null ? o.opacity : 1) + ';' +
+        'pointer-events:' + (o.locked ? 'none' : 'auto') + ';';
+      p.appendChild(img);
+    }
+  }
+
+  function setupOverlayDrag() {
+    var p = document.getElementById('card-preview');
+    if (!p) return;
+
+    p.addEventListener('mousedown', function(e) {
+      var target = e.target;
+      if (!target.classList.contains('card-overlay')) return;
+      var id = parseInt(target.getAttribute('data-overlay-id'));
+      var ov = null;
+      for (var i = 0; i < overlays.length; i++) {
+        if (overlays[i].id === id) { ov = overlays[i]; break; }
+      }
+      if (!ov || ov.locked) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+      var rect = p.getBoundingClientRect();
+      var scale = rect.width / 936;
+
+      dragState = { id: id, startX: e.clientX, startY: e.clientY, origX: ov.x, origY: ov.y, scale: scale };
+      target.classList.add('overlay-dragging');
+    });
+
+    document.addEventListener('mousemove', function(e) {
+      if (!dragState) return;
+      var dx = (e.clientX - dragState.startX) / dragState.scale;
+      var dy = (e.clientY - dragState.startY) / dragState.scale;
+      var ov = null;
+      for (var i = 0; i < overlays.length; i++) {
+        if (overlays[i].id === dragState.id) { ov = overlays[i]; break; }
+      }
+      if (!ov) return;
+      ov.x = Math.round(dragState.origX + dx);
+      ov.y = Math.round(dragState.origY + dy);
+      var el = document.querySelector('.card-overlay[data-overlay-id="' + dragState.id + '"]');
+      if (el) { el.style.left = ov.x + 'px'; el.style.top = ov.y + 'px'; }
+    });
+
+    document.addEventListener('mouseup', function() {
+      if (!dragState) return;
+      var el = document.querySelector('.card-overlay[data-overlay-id="' + dragState.id + '"]');
+      if (el) el.classList.remove('overlay-dragging');
+      dragState = null;
+      if (window.onOverlaysChanged) window.onOverlaysChanged();
+    });
+  }
+
+  // --- Overlay public API ---
+  window.addOverlay = function(dataURL, opts) {
+    opts = opts || {};
+    var ov = {
+      id: nextOverlayId++,
+      src: dataURL,
+      x: opts.x != null ? opts.x : 0,
+      y: opts.y != null ? opts.y : 0,
+      w: opts.w != null ? opts.w : 936,
+      h: opts.h != null ? opts.h : 735,
+      z: opts.z != null ? opts.z : overlays.length,
+      opacity: opts.opacity != null ? opts.opacity : 1,
+      visible: true,
+      locked: false,
+      label: opts.label || 'Calque ' + nextOverlayId
+    };
+    overlays.push(ov);
+    renderOverlays();
+    if (window.onOverlaysChanged) window.onOverlaysChanged();
+    return ov;
+  };
+
+  window.removeOverlay = function(id) {
+    overlays = overlays.filter(function(o) { return o.id !== id; });
+    renderOverlays();
+    if (window.onOverlaysChanged) window.onOverlaysChanged();
+  };
+
+  window.getOverlays = function() { return overlays.slice(); };
+
+  window.setOverlayProp = function(id, key, val) {
+    for (var i = 0; i < overlays.length; i++) {
+      if (overlays[i].id === id) { overlays[i][key] = val; break; }
+    }
+    renderOverlays();
+    if (window.onOverlaysChanged) window.onOverlaysChanged();
+  };
+
+  window.moveOverlayZ = function(id, dir) {
+    // dir: +1 = up, -1 = down
+    for (var i = 0; i < overlays.length; i++) {
+      if (overlays[i].id === id) {
+        var swapIdx = i + dir;
+        if (swapIdx >= 0 && swapIdx < overlays.length) {
+          var tmpZ = overlays[i].z;
+          overlays[i].z = overlays[swapIdx].z;
+          overlays[swapIdx].z = tmpZ;
+          var tmp = overlays[i];
+          overlays[i] = overlays[swapIdx];
+          overlays[swapIdx] = tmp;
+        }
+        break;
+      }
+    }
+    renderOverlays();
+    if (window.onOverlaysChanged) window.onOverlaysChanged();
+  };
+
+  window.clearOverlays = function() {
+    overlays = [];
+    nextOverlayId = 1;
+    renderOverlays();
+    if (window.onOverlaysChanged) window.onOverlaysChanged();
+  };
+
+  window.setupOverlayDrag = setupOverlayDrag;
 
   // =========================================================================
   // STANDARD Q&A — "Tu te mets combien en..."
@@ -539,6 +686,8 @@
     currentFontId = 'poppins';
     fontSizes = { subject: 22, question: 10, answer: 10, number: 28 };
     cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '' };
+    overlays = [];
+    nextOverlayId = 1;
     window.renderCard('green', 'feuille', 'poppins');
   };
 

@@ -567,21 +567,21 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .hide-questions .pq-txt { visibility:hidden; }
 .hide-answers .pa-txt { visibility:hidden; }
 
-.hide-subject .panel-subject { display:none; }
+.hide-subject .panel-subject { visibility:hidden; }
 .hide-subject .debuter-title,
 .hide-subject .gagner-subtitle,
-.hide-subject .intrepide-title { display:none; }
+.hide-subject .intrepide-title { visibility:hidden; }
 
 .hide-header .panel-header,
 .hide-header .debuter-header,
 .hide-header .gagner-header,
-.hide-header .intrepide-header { display:none; }
+.hide-header .intrepide-header { visibility:hidden; }
 
-.hide-icons .panel-header-icon { display:none; }
+.hide-icons .panel-header-icon { visibility:hidden; }
 .hide-watermark .panel-watermark,
 .hide-watermark .debuter-logo,
 .hide-watermark .gagner-logo,
-.hide-watermark .intrepide-logo { display:none; }
+.hide-watermark .intrepide-logo { visibility:hidden; }
 
 /* =============================================
    CUSTOM NUMBER IMAGES
@@ -595,6 +595,49 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   border-radius:50%;
   color:#fff;
   text-shadow:0 1px 3px rgba(0,0,0,.3);
+}
+
+/* =============================================
+   CALQUES (overlay layers)
+   ============================================= */
+.card-overlay {
+  position:absolute; cursor:move;
+  user-select:none; -webkit-user-select:none;
+}
+.card-overlay.overlay-locked { cursor:default; pointer-events:none; }
+.card-overlay.overlay-dragging { opacity:.75; outline:2px dashed #667eea; }
+
+/* Sidebar overlay list */
+.overlay-list { display:flex; flex-direction:column; gap:4px; }
+.overlay-item {
+  display:flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,.06); border-radius:6px; padding:4px 6px;
+}
+.overlay-item-thumb {
+  width:40px; height:30px; object-fit:cover; border-radius:3px;
+  border:1px solid rgba(255,255,255,.15); flex-shrink:0;
+}
+.overlay-item-label {
+  flex:1; font-size:.72rem; color:#ccc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.overlay-item-actions { display:flex; gap:2px; flex-shrink:0; }
+.overlay-item-btn {
+  background:none; border:none; color:#999; font-size:.7rem;
+  cursor:pointer; padding:2px 4px; border-radius:3px;
+}
+.overlay-item-btn:hover { color:#fff; background:rgba(255,255,255,.1); }
+.overlay-item-btn.active { color:#667eea; }
+.overlay-size-row {
+  display:flex; gap:4px; align-items:center; margin-top:4px;
+}
+.overlay-size-input {
+  width:50px; padding:2px 4px; background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15); border-radius:4px;
+  color:#ddd; font-size:.7rem; text-align:center;
+}
+.overlay-opacity-range { width:100%; height:4px; margin-top:2px; }
+.overlay-empty {
+  color:#666; font-size:.72rem; text-align:center; padding:8px 0;
 }
 
 /* =============================================

@@ -564,7 +564,189 @@
     }
   }
 
-  // ===== 10. Sections accordeon =====
+  // ===== 10. Overlay / Calques =====
+  function setupOverlays() {
+    var addInput = document.getElementById('overlay-add');
+    if (addInput) {
+      addInput.addEventListener('change', function(e) {
+        var f = e.target.files[0];
+        if (!f) return;
+        var label = f.name.replace(/\.[^.]+$/, '');
+        var r = new FileReader();
+        r.onload = function(ev) {
+          // Detect image dimensions to set default size
+          var img = new Image();
+          img.onload = function() {
+            var w = img.width;
+            var h = img.height;
+            // Scale to fit card if larger
+            if (w > 936 || h > 735) {
+              var ratio = Math.min(936 / w, 735 / h);
+              w = Math.round(w * ratio);
+              h = Math.round(h * ratio);
+            }
+            window.addOverlay(ev.target.result, { w: w, h: h, label: label });
+          };
+          img.src = ev.target.result;
+        };
+        r.readAsDataURL(f);
+        addInput.value = '';
+      });
+    }
+
+    // Setup drag system
+    window.setupOverlayDrag();
+
+    // Callback when overlays change — rebuild sidebar list
+    window.onOverlaysChanged = buildOverlayList;
+  }
+
+  function buildOverlayList() {
+    var container = document.getElementById('overlay-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    var list = window.getOverlays();
+    if (list.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'overlay-empty';
+      empty.textContent = 'Aucun calque';
+      container.appendChild(empty);
+      return;
+    }
+
+    for (var i = 0; i < list.length; i++) {
+      (function(ov, idx) {
+        var item = document.createElement('div');
+        item.className = 'overlay-item';
+
+        // Thumbnail
+        var thumb = document.createElement('img');
+        thumb.className = 'overlay-item-thumb';
+        thumb.src = ov.src;
+        item.appendChild(thumb);
+
+        // Label
+        var lbl = document.createElement('span');
+        lbl.className = 'overlay-item-label';
+        lbl.textContent = ov.label;
+        item.appendChild(lbl);
+
+        // Actions
+        var actions = document.createElement('div');
+        actions.className = 'overlay-item-actions';
+
+        // Visibility toggle
+        var btnVis = document.createElement('button');
+        btnVis.className = 'overlay-item-btn' + (ov.visible ? ' active' : '');
+        btnVis.textContent = ov.visible ? '\u25C9' : '\u25CE';
+        btnVis.title = 'Afficher / Masquer';
+        btnVis.addEventListener('click', function() {
+          window.setOverlayProp(ov.id, 'visible', !ov.visible);
+        });
+        actions.appendChild(btnVis);
+
+        // Lock toggle
+        var btnLock = document.createElement('button');
+        btnLock.className = 'overlay-item-btn' + (ov.locked ? ' active' : '');
+        btnLock.textContent = ov.locked ? '\uD83D\uDD12' : '\uD83D\uDD13';
+        btnLock.title = ov.locked ? 'D\u00e9verrouiller' : 'Verrouiller';
+        btnLock.addEventListener('click', function() {
+          window.setOverlayProp(ov.id, 'locked', !ov.locked);
+        });
+        actions.appendChild(btnLock);
+
+        // Z-order up
+        var btnUp = document.createElement('button');
+        btnUp.className = 'overlay-item-btn';
+        btnUp.textContent = '\u25B2';
+        btnUp.title = 'Monter';
+        btnUp.addEventListener('click', function() {
+          window.moveOverlayZ(ov.id, 1);
+        });
+        actions.appendChild(btnUp);
+
+        // Z-order down
+        var btnDown = document.createElement('button');
+        btnDown.className = 'overlay-item-btn';
+        btnDown.textContent = '\u25BC';
+        btnDown.title = 'Descendre';
+        btnDown.addEventListener('click', function() {
+          window.moveOverlayZ(ov.id, -1);
+        });
+        actions.appendChild(btnDown);
+
+        // Delete
+        var btnDel = document.createElement('button');
+        btnDel.className = 'overlay-item-btn';
+        btnDel.textContent = '\u2715';
+        btnDel.title = 'Supprimer';
+        btnDel.style.color = '#e74c3c';
+        btnDel.addEventListener('click', function() {
+          window.removeOverlay(ov.id);
+        });
+        actions.appendChild(btnDel);
+
+        item.appendChild(actions);
+
+        // Size row
+        var sizeRow = document.createElement('div');
+        sizeRow.className = 'overlay-size-row';
+
+        var wInput = document.createElement('input');
+        wInput.className = 'overlay-size-input';
+        wInput.type = 'number';
+        wInput.value = ov.w;
+        wInput.title = 'Largeur';
+        wInput.addEventListener('change', function() {
+          window.setOverlayProp(ov.id, 'w', parseInt(wInput.value) || ov.w);
+        });
+
+        var sep = document.createElement('span');
+        sep.textContent = '\u00d7';
+        sep.style.color = '#666';
+        sep.style.fontSize = '.7rem';
+
+        var hInput = document.createElement('input');
+        hInput.className = 'overlay-size-input';
+        hInput.type = 'number';
+        hInput.value = ov.h;
+        hInput.title = 'Hauteur';
+        hInput.addEventListener('change', function() {
+          window.setOverlayProp(ov.id, 'h', parseInt(hInput.value) || ov.h);
+        });
+
+        var opLabel = document.createElement('span');
+        opLabel.textContent = 'Op.';
+        opLabel.style.cssText = 'color:#666;font-size:.65rem;margin-left:4px;';
+
+        var opRange = document.createElement('input');
+        opRange.type = 'range';
+        opRange.className = 'overlay-opacity-range';
+        opRange.min = 0;
+        opRange.max = 1;
+        opRange.step = 0.05;
+        opRange.value = ov.opacity != null ? ov.opacity : 1;
+        opRange.addEventListener('input', function() {
+          window.setOverlayProp(ov.id, 'opacity', parseFloat(opRange.value));
+        });
+
+        sizeRow.appendChild(wInput);
+        sizeRow.appendChild(sep);
+        sizeRow.appendChild(hInput);
+        sizeRow.appendChild(opLabel);
+        sizeRow.appendChild(opRange);
+
+        // Wrap item + size row
+        var wrap = document.createElement('div');
+        wrap.appendChild(item);
+        wrap.appendChild(sizeRow);
+        container.appendChild(wrap);
+      })(list[i], i);
+    }
+  }
+
+  // ===== 11. Sections accordeon =====
   function setupSections() {
     var headers = document.querySelectorAll('.section-header');
     for (var i = 0; i < headers.length; i++) {
@@ -785,6 +967,7 @@
     setupBulkPaste();
     setupLogoUpload();
     setupImageUploads();
+    setupOverlays();
     setupSections();
     setupSampleCards();
 
@@ -802,6 +985,7 @@
         window.setCardBg(null);
         window.setNumBg(null);
         window.clearNumImages();
+        window.clearOverlays();
         updateCardTypePickerActive();
         updateColorPickerActive();
         updateIconPickerActive();
