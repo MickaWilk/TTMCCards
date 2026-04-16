@@ -1,44 +1,31 @@
-// ===== cards.js — Rendu recto/verso + édition + sauvegarde =====
+// ===== cards.js — Rendu recto+verso côte à côte + édition + sauvegarde =====
 
 (function() {
   'use strict';
 
-  // État courant
-  var currentThemeId = 'blue';
-  var currentIconId = 'poisson';
+  var currentThemeId = 'green';
+  var currentIconId = 'feuille';
   var currentFontId = 'poppins';
-  var currentSide = 'recto';      // 'recto' ou 'verso'
   var customLogoDataURL = null;
   var saveTimer = null;
 
-  // Tailles de police (en px)
   var fontSizes = {
-    subject: 20,
-    question: 9.5,
-    answer: 9.5,
+    subject: 22,
+    question: 10,
+    answer: 10,
     number: 28
   };
 
-  // Mémoire du contenu des deux faces (préservé lors du switch)
   var cardData = {
-    recto: {
-      subjectA: '',
-      questionsA: {},
-      subjectB: '',
-      questionsB: {}
-    },
-    verso: {
-      subject: '',
-      answers: {}
-    }
+    subject: '',
+    questions: {},
+    answers: {}
   };
 
   var LS_KEY = 'ttmc-card-draft';
 
-  // Expose la variable logo sur window
   window.customLogoDataURL = null;
 
-  // ===== Génération du HTML d'icône =====
   function iconHTML() {
     if (window.customLogoDataURL) {
       return '<img src="' + window.customLogoDataURL + '">';
@@ -47,7 +34,7 @@
     return icon ? icon.svg : '';
   }
 
-  // ===== Render principal — dispatch selon le côté =====
+  // ===== Render — recto (gauche) + verso (droite) =====
   window.renderCard = function(themeId, iconId, fontId) {
     if (themeId) currentThemeId = themeId;
     if (iconId) currentIconId = iconId;
@@ -57,81 +44,21 @@
     var p = document.getElementById('card-preview');
     if (!p) return;
 
-    // Sauvegarder le contenu actuel avant le re-render
-    saveCurrentSideToMemory();
+    saveToMemory();
 
-    // Appliquer le thème via custom properties
     window.applyTheme(p, theme);
 
-    // Appliquer la police
     var font = window.getFontById(currentFontId);
-    if (font) {
-      window.applyFont(p, font.family);
-    }
+    if (font) window.applyFont(p, font.family);
 
-    // Appliquer les tailles de police
     applyFontSizeProperties(p);
 
-    // Générer le HTML selon le côté
-    if (currentSide === 'verso') {
-      renderVerso(p);
-    } else {
-      renderRecto(p);
-    }
-
-    // Restaurer le contenu depuis la mémoire
-    restoreCurrentSideFromMemory();
-
-    // Auto-save sur chaque modification
-    setupAutoSave(p);
-  };
-
-  // ===== Appliquer les custom properties de taille =====
-  function applyFontSizeProperties(el) {
-    el.style.setProperty('--subject-size', fontSizes.subject + 'px');
-    el.style.setProperty('--question-size', fontSizes.question + 'px');
-    el.style.setProperty('--answer-size', fontSizes.answer + 'px');
-    el.style.setProperty('--num-size', fontSizes.number + 'px');
-    el.style.setProperty('--answer-num-size', Math.round(fontSizes.number * 0.46) + 'px');
-  }
-
-  // ===== RECTO — 2 panneaux de questions côte à côte =====
-  function renderRecto(p) {
-    var panelA = buildQuestionPanel('a', 'SUJET A ?');
-    var panelB = buildQuestionPanel('b', 'SUJET B ?');
-    p.innerHTML = panelA + panelB;
-  }
-
-  // Construit un panneau de questions (recto)
-  function buildQuestionPanel(panelId, placeholder) {
-    var rows = '';
+    // Recto (gauche) : header + sujet + 10 questions
+    var qRows = '';
     for (var i = 1; i <= 10; i++) {
-      rows += '<div class="pq-row">' +
+      qRows += '<div class="pq-row">' +
         '<div class="pq-num">' + i + '</div>' +
-        '<div class="pq-txt" contenteditable="true" data-placeholder="Question ' + i + '..." data-i="' + i + '" data-panel="' + panelId + '"></div>' +
-        '</div>';
-    }
-
-    return '<div class="card-panel">' +
-      '<div class="panel-inner panel-bordered">' +
-        '<div class="panel-header">' +
-          '<span class="panel-header-text">Tu te mets combien en...</span>' +
-          '<div class="panel-header-icon">' + iconHTML() + '</div>' +
-        '</div>' +
-        '<div class="panel-subject"><span contenteditable="true" data-placeholder="' + placeholder + '" data-panel="' + panelId + '"></span></div>' +
-        '<div class="panel-questions">' + rows + '</div>' +
-      '</div>' +
-    '</div>';
-  }
-
-  // ===== VERSO — panneau score (gauche) + panneau réponses (droit) =====
-  function renderVerso(p) {
-    // Panneau gauche : scoring (numéros + lignes)
-    var scoreRows = '';
-    for (var i = 1; i <= 10; i++) {
-      scoreRows += '<div class="ps-row">' +
-        '<div class="ps-num">' + i + '</div>' +
-        '<div class="ps-line"></div>' +
+        '<div class="pq-txt" contenteditable="true" data-placeholder="Question ' + i + '..." data-i="' + i + '"></div>' +
         '</div>';
     }
 
@@ -141,30 +68,44 @@
           '<span class="panel-header-text">Tu te mets combien en...</span>' +
           '<div class="panel-header-icon">' + iconHTML() + '</div>' +
         '</div>' +
-        '<div class="panel-subject"><span contenteditable="true" data-placeholder="Sujet..." data-panel="verso"></span></div>' +
-        '<div class="panel-scores">' + scoreRows + '</div>' +
+        '<div class="panel-subject"><span contenteditable="true" data-placeholder="SUJET ?"></span></div>' +
+        '<div class="panel-questions">' + qRows + '</div>' +
         '<div class="panel-watermark">' + iconHTML() + '</div>' +
       '</div>' +
     '</div>';
 
-    // Panneau droit : réponses
-    var answerRows = '';
+    // Verso (droite) : header Réponses + 10 réponses
+    var aRows = '';
     for (var j = 1; j <= 10; j++) {
-      answerRows += '<div class="pa-row">' +
+      aRows += '<div class="pa-row">' +
         '<div class="pa-num">' + j + '.</div>' +
         '<div class="pa-txt" contenteditable="true" data-placeholder="R\u00e9ponse ' + j + '..." data-i="' + j + '"></div>' +
         '</div>';
     }
 
     var rightPanel = '<div class="card-panel">' +
-      '<div class="panel-inner">' +
-        '<div class="panel-resp-title">R\u00e9ponses</div>' +
-        '<div class="panel-answers">' + answerRows + '</div>' +
-        '<div class="panel-sparkle"></div>' +
+      '<div class="panel-inner panel-bordered">' +
+        '<div class="panel-header">' +
+          '<span class="panel-header-text">R\u00e9ponses</span>' +
+          '<div class="panel-header-icon">' + iconHTML() + '</div>' +
+        '</div>' +
+        '<div class="panel-answers">' + aRows + '</div>' +
+        '<div class="panel-watermark">' + iconHTML() + '</div>' +
       '</div>' +
     '</div>';
 
     p.innerHTML = leftPanel + rightPanel;
+
+    restoreFromMemory();
+    setupAutoSave(p);
+  };
+
+  function applyFontSizeProperties(el) {
+    el.style.setProperty('--subject-size', fontSizes.subject + 'px');
+    el.style.setProperty('--question-size', fontSizes.question + 'px');
+    el.style.setProperty('--answer-size', fontSizes.answer + 'px');
+    el.style.setProperty('--num-size', fontSizes.number + 'px');
+    el.style.setProperty('--answer-num-size', Math.round(fontSizes.number * 0.46) + 'px');
   }
 
   // ===== Auto-save debounced =====
@@ -172,186 +113,116 @@
     cardEl.addEventListener('input', function() {
       if (saveTimer) clearTimeout(saveTimer);
       saveTimer = setTimeout(function() {
-        saveCurrentSideToMemory();
+        saveToMemory();
         window.saveToLocalStorage();
       }, 500);
     });
   }
 
-  // ===== Sauvegarder le contenu du côté affiché dans cardData =====
-  function saveCurrentSideToMemory() {
+  // ===== Save DOM → cardData =====
+  function saveToMemory() {
     var p = document.getElementById('card-preview');
     if (!p) return;
 
-    if (currentSide === 'recto') {
-      // Sujets A et B
-      var subjects = p.querySelectorAll('.panel-subject [contenteditable]');
-      if (subjects.length >= 2) {
-        cardData.recto.subjectA = subjects[0].innerText || '';
-        cardData.recto.subjectB = subjects[1].innerText || '';
-      } else if (subjects.length === 1) {
-        cardData.recto.subjectA = subjects[0].innerText || '';
-      }
+    var subj = p.querySelector('.panel-subject [contenteditable]');
+    if (subj) cardData.subject = subj.innerText || '';
 
-      // Questions panneau A
-      var qA = p.querySelectorAll('.pq-txt[data-panel="a"]');
-      for (var i = 0; i < qA.length; i++) {
-        cardData.recto.questionsA[qA[i].dataset.i] = qA[i].innerText || '';
-      }
+    var qs = p.querySelectorAll('.pq-txt');
+    for (var i = 0; i < qs.length; i++) {
+      cardData.questions[qs[i].dataset.i] = qs[i].innerText || '';
+    }
 
-      // Questions panneau B
-      var qB = p.querySelectorAll('.pq-txt[data-panel="b"]');
-      for (var j = 0; j < qB.length; j++) {
-        cardData.recto.questionsB[qB[j].dataset.i] = qB[j].innerText || '';
-      }
-    } else {
-      // Verso : sujet
-      var versoSubj = p.querySelector('.panel-subject [contenteditable][data-panel="verso"]');
-      if (versoSubj) {
-        cardData.verso.subject = versoSubj.innerText || '';
-      }
-
-      // Verso : réponses
-      var answers = p.querySelectorAll('.pa-txt');
-      for (var k = 0; k < answers.length; k++) {
-        cardData.verso.answers[answers[k].dataset.i] = answers[k].innerText || '';
-      }
+    var ans = p.querySelectorAll('.pa-txt');
+    for (var k = 0; k < ans.length; k++) {
+      cardData.answers[ans[k].dataset.i] = ans[k].innerText || '';
     }
   }
 
-  // ===== Restaurer le contenu depuis cardData vers le DOM =====
-  function restoreCurrentSideFromMemory() {
+  // ===== Restore cardData → DOM =====
+  function restoreFromMemory() {
     var p = document.getElementById('card-preview');
     if (!p) return;
 
-    if (currentSide === 'recto') {
-      var subjects = p.querySelectorAll('.panel-subject [contenteditable]');
-      if (subjects.length >= 1 && cardData.recto.subjectA) {
-        subjects[0].innerText = cardData.recto.subjectA;
-      }
-      if (subjects.length >= 2 && cardData.recto.subjectB) {
-        subjects[1].innerText = cardData.recto.subjectB;
-      }
+    var subj = p.querySelector('.panel-subject [contenteditable]');
+    if (subj && cardData.subject) subj.innerText = cardData.subject;
 
-      var qA = p.querySelectorAll('.pq-txt[data-panel="a"]');
-      for (var i = 0; i < qA.length; i++) {
-        var idx = qA[i].dataset.i;
-        if (cardData.recto.questionsA[idx]) qA[i].innerText = cardData.recto.questionsA[idx];
-      }
+    var qs = p.querySelectorAll('.pq-txt');
+    for (var i = 0; i < qs.length; i++) {
+      var idx = qs[i].dataset.i;
+      if (cardData.questions[idx]) qs[i].innerText = cardData.questions[idx];
+    }
 
-      var qB = p.querySelectorAll('.pq-txt[data-panel="b"]');
-      for (var j = 0; j < qB.length; j++) {
-        var idx2 = qB[j].dataset.i;
-        if (cardData.recto.questionsB[idx2]) qB[j].innerText = cardData.recto.questionsB[idx2];
-      }
-    } else {
-      var versoSubj = p.querySelector('.panel-subject [contenteditable][data-panel="verso"]');
-      if (versoSubj && cardData.verso.subject) {
-        versoSubj.innerText = cardData.verso.subject;
-      }
-
-      var answers = p.querySelectorAll('.pa-txt');
-      for (var k = 0; k < answers.length; k++) {
-        var idx3 = answers[k].dataset.i;
-        if (cardData.verso.answers[idx3]) answers[k].innerText = cardData.verso.answers[idx3];
-      }
+    var ans = p.querySelectorAll('.pa-txt');
+    for (var k = 0; k < ans.length; k++) {
+      var idx2 = ans[k].dataset.i;
+      if (cardData.answers[idx2]) ans[k].innerText = cardData.answers[idx2];
     }
   }
 
-  // ===== Sauvegarder le contenu éditable (compat ancien format) =====
-  window.saveCardContent = function() {
-    saveCurrentSideToMemory();
-    return {
-      recto: {
-        subjectA: cardData.recto.subjectA,
-        questionsA: Object.assign({}, cardData.recto.questionsA),
-        subjectB: cardData.recto.subjectB,
-        questionsB: Object.assign({}, cardData.recto.questionsB)
-      },
-      verso: {
-        subject: cardData.verso.subject,
-        answers: Object.assign({}, cardData.verso.answers)
-      }
-    };
-  };
-
-  // ===== Restaurer le contenu =====
-  window.restoreCardContent = function(d) {
-    if (!d) return;
-
-    // Support nouveau format (recto/verso)
-    if (d.recto) {
-      cardData.recto.subjectA = d.recto.subjectA || '';
-      cardData.recto.questionsA = d.recto.questionsA || {};
-      cardData.recto.subjectB = d.recto.subjectB || '';
-      cardData.recto.questionsB = d.recto.questionsB || {};
+  // ===== Bulk paste =====
+  window.applyBulkQuestions = function(text) {
+    var lines = text.split(/\r?\n/).filter(function(l) { return l.trim() !== ''; });
+    cardData.questions = {};
+    for (var i = 0; i < Math.min(lines.length, 10); i++) {
+      cardData.questions[String(i + 1)] = lines[i].trim();
     }
-    if (d.verso) {
-      cardData.verso.subject = d.verso.subject || '';
-      cardData.verso.answers = d.verso.answers || {};
-    }
-
-    // Support ancien format (migration depuis v1)
-    if (d.subject && !d.recto) {
-      cardData.recto.subjectA = d.subject;
-      if (d.q) cardData.recto.questionsA = d.q;
-      if (d.a) cardData.verso.answers = d.a;
-    }
-
-    // Appliquer au DOM
-    restoreCurrentSideFromMemory();
-  };
-
-  // ===== Basculer entre recto et verso =====
-  window.switchSide = function(side) {
-    if (side === currentSide) return;
-
-    // Sauvegarder le contenu du côté actuel
-    saveCurrentSideToMemory();
-
-    // Basculer
-    currentSide = side;
-
-    // Re-render la carte
-    window.renderCard(currentThemeId, currentIconId, currentFontId);
-
-    // Sauvegarder dans localStorage
+    restoreFromMemory();
     window.saveToLocalStorage();
   };
 
-  // ===== Getter du côté courant =====
-  window.getCurrentSide = function() { return currentSide; };
-  window.setCurrentSide = function(s) { currentSide = s; };
+  window.applyBulkAnswers = function(text) {
+    var lines = text.split(/\r?\n/).filter(function(l) { return l.trim() !== ''; });
+    cardData.answers = {};
+    for (var i = 0; i < Math.min(lines.length, 10); i++) {
+      cardData.answers[String(i + 1)] = lines[i].trim();
+    }
+    restoreFromMemory();
+    window.saveToLocalStorage();
+  };
 
-  // ===== Sauvegarde localStorage =====
+  // ===== Restore content from draft =====
+  window.restoreCardContent = function(d) {
+    if (!d) return;
+
+    // Nouveau format plat
+    if (d.subject != null) cardData.subject = d.subject;
+    if (d.questions) cardData.questions = d.questions;
+    if (d.answers) cardData.answers = d.answers;
+
+    // Ancien format recto/verso
+    if (d.recto) {
+      cardData.subject = d.recto.subject || d.recto.subjectA || '';
+      cardData.questions = d.recto.questions || d.recto.questionsA || {};
+    }
+    if (d.verso) {
+      cardData.answers = d.verso.answers || {};
+    }
+
+    // Très ancien format
+    if (d.q && !d.questions) cardData.questions = d.q;
+    if (d.a && !d.answers) cardData.answers = d.a;
+
+    restoreFromMemory();
+  };
+
+  // ===== localStorage =====
   window.saveToLocalStorage = function() {
     try {
-      saveCurrentSideToMemory();
+      saveToMemory();
       var data = {
         themeId: currentThemeId,
         iconId: currentIconId,
         fontId: currentFontId,
         fontSizes: { subject: fontSizes.subject, question: fontSizes.question, answer: fontSizes.answer, number: fontSizes.number },
-        currentSide: currentSide,
-        recto: {
-          subjectA: cardData.recto.subjectA,
-          questionsA: Object.assign({}, cardData.recto.questionsA),
-          subjectB: cardData.recto.subjectB,
-          questionsB: Object.assign({}, cardData.recto.questionsB)
-        },
-        verso: {
-          subject: cardData.verso.subject,
-          answers: Object.assign({}, cardData.verso.answers)
-        },
+        subject: cardData.subject,
+        questions: Object.assign({}, cardData.questions),
+        answers: Object.assign({}, cardData.answers),
         timestamp: Date.now()
       };
       localStorage.setItem(LS_KEY, JSON.stringify(data));
-    } catch(e) {
-      // Échec silencieux
-    }
+    } catch(e) {}
   };
 
-  // ===== Chargement localStorage =====
   window.loadFromLocalStorage = function() {
     try {
       var raw = localStorage.getItem(LS_KEY);
@@ -362,58 +233,42 @@
     }
   };
 
-  // ===== Effacer la carte =====
+  // ===== Clear =====
   window.clearCard = function() {
-    try {
-      localStorage.removeItem(LS_KEY);
-    } catch(e) {}
+    try { localStorage.removeItem(LS_KEY); } catch(e) {}
     window.customLogoDataURL = null;
-    currentThemeId = 'blue';
-    currentIconId = 'poisson';
+    currentThemeId = 'green';
+    currentIconId = 'feuille';
     currentFontId = 'poppins';
-    currentSide = 'recto';
-    fontSizes = { subject: 20, question: 9.5, answer: 9.5, number: 28 };
-    cardData = {
-      recto: { subjectA: '', questionsA: {}, subjectB: '', questionsB: {} },
-      verso: { subject: '', answers: {} }
-    };
-    window.renderCard('blue', 'poisson', 'poppins');
+    fontSizes = { subject: 22, question: 10, answer: 10, number: 28 };
+    cardData = { subject: '', questions: {}, answers: {} };
+    window.renderCard('green', 'feuille', 'poppins');
   };
 
-  // ===== Charger une carte d'exemple =====
+  // ===== Load sample =====
   window.loadSampleCard = function(card) {
     if (!card) return;
-    currentThemeId = card.themeId || 'blue';
+    currentThemeId = card.themeId || 'green';
     var theme = window.getThemeById(currentThemeId);
-    currentIconId = theme.defaultIcon || 'poisson';
+    currentIconId = theme.defaultIcon || 'feuille';
     currentFontId = 'poppins';
     window.customLogoDataURL = null;
-    currentSide = 'recto';
 
-    // Réinitialiser les données
-    cardData = {
-      recto: { subjectA: '', questionsA: {}, subjectB: '', questionsB: {} },
-      verso: { subject: '', answers: {} }
-    };
+    cardData = { subject: '', questions: {}, answers: {} };
 
-    // Remplir le panneau A du recto avec les données de l'exemple
-    if (card.sujet) cardData.recto.subjectA = card.sujet;
+    if (card.sujet) cardData.subject = card.sujet;
     if (card.questions) {
       for (var k in card.questions) {
-        cardData.recto.questionsA[k] = card.questions[k];
+        cardData.questions[k] = card.questions[k];
       }
     }
 
-    // Render
     window.renderCard(currentThemeId, currentIconId, currentFontId);
-
-    // Sauvegarder
     window.saveToLocalStorage();
-
     return { themeId: currentThemeId, iconId: currentIconId, fontId: currentFontId };
   };
 
-  // ===== Getters d'état =====
+  // ===== Getters/setters =====
   window.getCurrentThemeId = function() { return currentThemeId; };
   window.getCurrentIconId = function() { return currentIconId; };
   window.getCurrentFontId = function() { return currentFontId; };
@@ -421,7 +276,6 @@
   window.setCurrentIconId = function(id) { currentIconId = id; };
   window.setCurrentFontId = function(id) { currentFontId = id; };
 
-  // ===== Tailles de police =====
   window.getFontSizes = function() {
     return { subject: fontSizes.subject, question: fontSizes.question, answer: fontSizes.answer, number: fontSizes.number };
   };
@@ -439,21 +293,17 @@
     if (sizes.number != null) fontSizes.number = sizes.number;
   };
 
-  // ===== Accès aux données (pour l'export) =====
   window.getCardData = function() {
-    saveCurrentSideToMemory();
+    saveToMemory();
     return {
-      recto: {
-        subjectA: cardData.recto.subjectA,
-        questionsA: Object.assign({}, cardData.recto.questionsA),
-        subjectB: cardData.recto.subjectB,
-        questionsB: Object.assign({}, cardData.recto.questionsB)
-      },
-      verso: {
-        subject: cardData.verso.subject,
-        answers: Object.assign({}, cardData.verso.answers)
-      }
+      subject: cardData.subject,
+      questions: Object.assign({}, cardData.questions),
+      answers: Object.assign({}, cardData.answers)
     };
   };
+
+  // Kept for export.js compatibility
+  window.getCurrentSide = function() { return 'recto'; };
+  window.switchSide = function() {};
 
 })();

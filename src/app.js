@@ -3,7 +3,7 @@
 (function() {
   'use strict';
 
-  // ===== 1. Color Picker — grille 5 colonnes de pastilles =====
+  // ===== 1. Color Picker =====
   function buildColorPicker() {
     var container = document.getElementById('color-picker');
     if (!container) return;
@@ -18,12 +18,10 @@
         swatch.title = theme.label;
         swatch.setAttribute('data-theme-id', theme.id);
         swatch.addEventListener('click', function() {
-          // Mettre à jour l'état actif
           var all = container.querySelectorAll('.color-swatch');
           for (var j = 0; j < all.length; j++) all[j].classList.remove('active');
           swatch.classList.add('active');
 
-          // Changer le thème
           var newIcon = theme.defaultIcon;
           window.setCurrentThemeId(theme.id);
           window.setCurrentIconId(newIcon);
@@ -36,7 +34,7 @@
     }
   }
 
-  // ===== 2. Icon Picker — grille 5 colonnes =====
+  // ===== 2. Icon Picker =====
   function buildIconPicker() {
     var container = document.getElementById('icon-picker');
     if (!container) return;
@@ -69,8 +67,7 @@
     var btns = document.querySelectorAll('.icon-picker-btn');
     var current = window.getCurrentIconId();
     for (var i = 0; i < btns.length; i++) {
-      var isActive = btns[i].getAttribute('data-icon-id') === current && !window.customLogoDataURL;
-      btns[i].classList.toggle('active', isActive);
+      btns[i].classList.toggle('active', btns[i].getAttribute('data-icon-id') === current && !window.customLogoDataURL);
     }
   }
 
@@ -89,9 +86,9 @@
     container.innerHTML = '';
 
     var controls = [
-      { key: 'subject',  label: 'Sujet',     min: 10, max: 36, step: 1, default: 20 },
-      { key: 'question', label: 'Questions',  min: 6,  max: 18, step: 0.5, default: 9.5 },
-      { key: 'answer',   label: 'R\u00e9ponses',   min: 6,  max: 18, step: 0.5, default: 9.5 },
+      { key: 'subject',  label: 'Sujet',     min: 10, max: 36, step: 1, default: 22 },
+      { key: 'question', label: 'Questions',  min: 6,  max: 20, step: 0.5, default: 10 },
+      { key: 'answer',   label: 'R\u00e9ponses',   min: 6,  max: 20, step: 0.5, default: 10 },
       { key: 'number',   label: 'Num\u00e9ros',    min: 14, max: 42, step: 1, default: 28 }
     ];
 
@@ -175,7 +172,25 @@
     wrap.appendChild(sel);
   }
 
-  // ===== 4. Logo Upload =====
+  // ===== 4. Bulk Paste =====
+  function setupBulkPaste() {
+    var qArea = document.getElementById('bulk-questions');
+    var aArea = document.getElementById('bulk-answers');
+
+    if (qArea) {
+      qArea.addEventListener('input', function() {
+        window.applyBulkQuestions(qArea.value);
+      });
+    }
+
+    if (aArea) {
+      aArea.addEventListener('input', function() {
+        window.applyBulkAnswers(aArea.value);
+      });
+    }
+  }
+
+  // ===== 5. Logo Upload =====
   function setupLogoUpload() {
     var input = document.getElementById('logo-input');
     var wrap = document.getElementById('logo-preview-wrap');
@@ -217,71 +232,30 @@
     if (input) input.value = '';
   }
 
-  // ===== 5. Sections accordéon =====
+  // ===== 6. Sections accordéon =====
   function setupSections() {
     var headers = document.querySelectorAll('.section-header');
     for (var i = 0; i < headers.length; i++) {
       (function(header) {
         header.addEventListener('click', function() {
-          var section = header.parentElement;
-          section.classList.toggle('open');
+          header.parentElement.classList.toggle('open');
         });
       })(headers[i]);
     }
-    // Ouvrir la section couleur par défaut
     var first = document.querySelector('.sidebar-section');
     if (first) first.classList.add('open');
   }
 
-  // ===== 5b. Toggle Recto / Verso =====
-  function setupSideToggle() {
-    var toggle = document.getElementById('side-toggle');
-    if (!toggle) return;
-
-    var btns = toggle.querySelectorAll('.side-btn');
-    for (var i = 0; i < btns.length; i++) {
-      (function(btn) {
-        btn.addEventListener('click', function() {
-          var side = btn.getAttribute('data-side');
-          if (!side) return;
-
-          // Mettre à jour les classes actives
-          for (var j = 0; j < btns.length; j++) btns[j].classList.remove('active');
-          btn.classList.add('active');
-
-          // Basculer le côté
-          window.switchSide(side);
-        });
-      })(btns[i]);
-    }
-  }
-
-  // Met à jour le toggle visuel pour refléter le côté courant
-  function updateSideToggleActive() {
-    var toggle = document.getElementById('side-toggle');
-    if (!toggle) return;
-    var btns = toggle.querySelectorAll('.side-btn');
-    var current = window.getCurrentSide();
-    for (var i = 0; i < btns.length; i++) {
-      btns[i].classList.toggle('active', btns[i].getAttribute('data-side') === current);
-    }
-  }
-
-  // ===== 6. Sample Cards Modal =====
+  // ===== 7. Sample Cards Modal =====
   function setupSampleCards() {
     var btn = document.getElementById('btn-sample');
     var modal = document.getElementById('sample-modal');
     if (!btn || !modal) return;
 
-    btn.addEventListener('click', function() {
-      showSampleModal();
-    });
+    btn.addEventListener('click', showSampleModal);
 
-    // Fermer en cliquant sur l'overlay
     modal.addEventListener('click', function(e) {
-      if (e.target === modal) {
-        modal.classList.remove('visible');
-      }
+      if (e.target === modal) modal.classList.remove('visible');
     });
   }
 
@@ -306,7 +280,7 @@
     list.className = 'sample-card-list';
 
     for (var i = 0; i < SAMPLE_CARDS.length; i++) {
-      (function(card, index) {
+      (function(card) {
         var item = document.createElement('button');
         item.className = 'sample-card-item';
         var theme = window.getThemeById(card.themeId);
@@ -318,8 +292,6 @@
           if (result) {
             updateColorPickerActive();
             updateIconPickerActive();
-            updateSideToggleActive();
-            // Mettre à jour le select police
             var sel = document.getElementById('font-select');
             if (sel) sel.value = result.fontId;
           }
@@ -327,7 +299,7 @@
           window.showToast('Carte charg\u00e9e : ' + card.sujet);
         });
         list.appendChild(item);
-      })(SAMPLE_CARDS[i], i);
+      })(SAMPLE_CARDS[i]);
     }
 
     inner.appendChild(list);
@@ -343,44 +315,34 @@
     modal.classList.add('visible');
   }
 
-  // ===== 7. Restauration brouillon =====
+  // ===== 8. Restauration brouillon =====
   function checkDraftRestore() {
     var draft = window.loadFromLocalStorage();
     if (!draft) return;
 
-    // Support nouveau format (recto/verso)
     var hasContent = false;
-    if (draft.recto) {
-      if (draft.recto.subjectA && draft.recto.subjectA.trim()) hasContent = true;
-      if (!hasContent && draft.recto.questionsA) {
-        for (var k in draft.recto.questionsA) {
-          if (draft.recto.questionsA[k] && draft.recto.questionsA[k].trim()) { hasContent = true; break; }
-        }
+
+    // Nouveau format plat
+    if (draft.subject && draft.subject.trim()) hasContent = true;
+    if (!hasContent && draft.questions) {
+      for (var k in draft.questions) {
+        if (draft.questions[k] && draft.questions[k].trim()) { hasContent = true; break; }
       }
-      if (!hasContent && draft.recto.subjectB && draft.recto.subjectB.trim()) hasContent = true;
     }
-    if (!hasContent && draft.verso) {
-      if (draft.verso.subject && draft.verso.subject.trim()) hasContent = true;
-      if (!hasContent && draft.verso.answers) {
-        for (var k2 in draft.verso.answers) {
-          if (draft.verso.answers[k2] && draft.verso.answers[k2].trim()) { hasContent = true; break; }
-        }
+    if (!hasContent && draft.answers) {
+      for (var k2 in draft.answers) {
+        if (draft.answers[k2] && draft.answers[k2].trim()) { hasContent = true; break; }
       }
     }
 
-    // Support ancien format (migration)
-    if (!hasContent && draft.content) {
-      if (draft.content.subject && draft.content.subject.trim()) hasContent = true;
-      if (!hasContent && draft.content.q) {
-        for (var k3 in draft.content.q) {
-          if (draft.content.q[k3] && draft.content.q[k3].trim()) { hasContent = true; break; }
-        }
-      }
+    // Ancien format recto/verso
+    if (!hasContent && draft.recto) {
+      var subj = draft.recto.subject || draft.recto.subjectA || '';
+      if (subj.trim()) hasContent = true;
     }
 
     if (!hasContent) return;
 
-    // Afficher toast avec boutons
     var frag = document.createElement('div');
     frag.className = 'toast-inner';
 
@@ -395,36 +357,19 @@
     btnYes.className = 'toast-btn toast-btn-yes';
     btnYes.textContent = 'Restaurer';
     btnYes.addEventListener('click', function() {
-      // Restaurer thème, icône, police
       if (draft.themeId) window.setCurrentThemeId(draft.themeId);
       if (draft.iconId) window.setCurrentIconId(draft.iconId);
       if (draft.fontId) window.setCurrentFontId(draft.fontId);
       if (draft.fontSizes) window.setAllFontSizes(draft.fontSizes);
 
-      // Restaurer le côté affiché
-      var side = draft.currentSide || 'recto';
-      window.setCurrentSide(side);
-
       var fontId = draft.fontId || 'poppins';
       window.loadFont(fontId).then(function() {
         window.renderCard(draft.themeId, draft.iconId, fontId);
-
-        // Restaurer le contenu des deux faces
-        var contentData = {};
-        if (draft.recto) contentData.recto = draft.recto;
-        if (draft.verso) contentData.verso = draft.verso;
-
-        // Support ancien format
-        if (draft.content && !draft.recto) {
-          contentData = draft.content;
-        }
-
-        window.restoreCardContent(contentData);
+        window.restoreCardContent(draft);
 
         updateColorPickerActive();
         updateIconPickerActive();
         updateFontSizeControls();
-        updateSideToggleActive();
         var sel = document.getElementById('font-select');
         if (sel) sel.value = fontId;
       });
@@ -447,7 +392,7 @@
     window.showToast(frag, 0);
   }
 
-  // ===== 8. Auto Scale =====
+  // ===== 9. Auto Scale =====
   function updateCardScale() {
     var m = document.querySelector('.main');
     if (!m) return;
@@ -461,19 +406,16 @@
 
   // ===== Init =====
   document.addEventListener('DOMContentLoaded', function() {
-    // 1. Construire les pickers
     buildColorPicker();
     buildIconPicker();
     buildFontSelector();
     buildFontSizeControls();
 
-    // 2. Setup interactions
+    setupBulkPaste();
     setupLogoUpload();
     setupSections();
-    setupSideToggle();
     setupSampleCards();
 
-    // 3. Wiring boutons
     var btnExport = document.getElementById('btn-export');
     if (btnExport) btnExport.addEventListener('click', window.exportCard);
 
@@ -487,22 +429,22 @@
         updateColorPickerActive();
         updateIconPickerActive();
         updateFontSizeControls();
-        updateSideToggleActive();
         clearLogoPreview();
+        var qArea = document.getElementById('bulk-questions');
+        var aArea = document.getElementById('bulk-answers');
+        if (qArea) qArea.value = '';
+        if (aArea) aArea.value = '';
         var sel = document.getElementById('font-select');
         if (sel) sel.value = 'poppins';
         window.showToast('Carte r\u00e9initialis\u00e9e');
       });
     }
 
-    // 4. Scale initial + resize
     updateCardScale();
     window.addEventListener('resize', updateCardScale);
 
-    // 5. Render initial (recto par défaut)
-    window.renderCard('blue', 'poisson', 'poppins');
+    window.renderCard('green', 'feuille', 'poppins');
 
-    // 6. Vérifier brouillon après un court délai
     setTimeout(checkDraftRestore, 300);
   });
 

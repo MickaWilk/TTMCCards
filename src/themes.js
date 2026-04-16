@@ -1,21 +1,24 @@
-// ===== themes.js — 15 thèmes couleur =====
+// ===== themes.js — Thèmes couleur (7 officiels TTMC + 8 extras) =====
 
 window.THEMES = [
-  { id:'blue', label:'Bleue \u2014 Divers / Improbable', headerBg:'#3d7a9e', headerText:'#f5d442', border:'#2e6483', numColor:'#2e6483', cardBg:'#c5d5df', iconBgAlpha:'0.12', defaultIcon:'poisson' },
-  { id:'yellow', label:'Jaune \u2014 Personnages / C\u00e9l\u00e9brit\u00e9s', headerBg:'#f5d442', headerText:'#1a5276', border:'#c9ad2e', numColor:'#1a5276', cardBg:'#f0e6c0', iconBgAlpha:'0.25', defaultIcon:'silhouette' },
-  { id:'red', label:'Rouge \u2014 Pop Culture', headerBg:'#6e2130', headerText:'#ffffff', border:'#551a27', numColor:'#6e2130', cardBg:'#d8c8c8', iconBgAlpha:'0.12', defaultIcon:'pokeball' },
-  { id:'green', label:'Verte \u2014 Nature / Sciences', headerBg:'#2d7d46', headerText:'#ffffff', border:'#1e5c32', numColor:'#1e5c32', cardBg:'#c8dece', iconBgAlpha:'0.12', defaultIcon:'feuille' },
-  { id:'purple', label:'Violette \u2014 Myst\u00e8re / \u00c9nigmes', headerBg:'#6b3fa0', headerText:'#f0e68c', border:'#52308a', numColor:'#52308a', cardBg:'#d8cde8', iconBgAlpha:'0.15', defaultIcon:'loupe' },
-  { id:'orange', label:'Orange \u2014 Sport / Exploits', headerBg:'#e67e22', headerText:'#ffffff', border:'#c0691a', numColor:'#c0691a', cardBg:'#f0dcc0', iconBgAlpha:'0.12', defaultIcon:'trophee' },
-  { id:'pink', label:'Rose \u2014 Amour / Quotidien', headerBg:'#d63384', headerText:'#ffffff', border:'#b02a6f', numColor:'#b02a6f', cardBg:'#f0d0e0', iconBgAlpha:'0.12', defaultIcon:'coeur' },
-  { id:'teal', label:'Turquoise \u2014 Voyages / G\u00e9o', headerBg:'#0097a7', headerText:'#ffffff', border:'#007b8a', numColor:'#007b8a', cardBg:'#c0e0e4', iconBgAlpha:'0.12', defaultIcon:'globe' },
-  { id:'indigo', label:'Indigo \u2014 Espace / Astronomie', headerBg:'#303f9f', headerText:'#e8eaf6', border:'#283593', numColor:'#283593', cardBg:'#c5cae9', iconBgAlpha:'0.15', defaultIcon:'fusee' },
-  { id:'brown', label:'Marron \u2014 Histoire / Patrimoine', headerBg:'#6d4c41', headerText:'#fff8e1', border:'#5d4037', numColor:'#5d4037', cardBg:'#d7ccc8', iconBgAlpha:'0.12', defaultIcon:'livre' },
-  { id:'lime', label:'Citron vert \u2014 Gastronomie', headerBg:'#7cb342', headerText:'#1b3a00', border:'#689f38', numColor:'#558b2f', cardBg:'#dcedc8', iconBgAlpha:'0.15', defaultIcon:'etoile' },
-  { id:'black', label:'Noire \u2014 D\u00e9fi / Expert', headerBg:'#212121', headerText:'#ffd740', border:'#000000', numColor:'#212121', cardBg:'#bdbdbd', iconBgAlpha:'0.10', defaultIcon:'epee' },
-  { id:'gold', label:'Or \u2014 Sp\u00e9cial / Premium', headerBg:'#c8a415', headerText:'#1a1a2e', border:'#a68b10', numColor:'#8b7200', cardBg:'#f5ecc8', iconBgAlpha:'0.20', defaultIcon:'couronne' },
-  { id:'cyan', label:'Cyan \u2014 Technologie / Internet', headerBg:'#00acc1', headerText:'#ffffff', border:'#00838f', numColor:'#00838f', cardBg:'#b2ebf2', iconBgAlpha:'0.12', defaultIcon:'manette' },
-  { id:'coral', label:'Corail \u2014 Musique / Arts', headerBg:'#ff6f61', headerText:'#ffffff', border:'#e55a4f', numColor:'#d84a3a', cardBg:'#fce4e0', iconBgAlpha:'0.12', defaultIcon:'musique' }
+  // ===== 7 thèmes officiels TTMC (cartes 1 à 7) =====
+  { id:'green', label:'Verte — Scolaire', headerBg:'#2d8c3c', headerText:'#ffffff', border:'#1e6e2c', numColor:'#c0392b', cardBg:'#e8f5e9', iconBgAlpha:'0.15', defaultIcon:'feuille' },
+  { id:'purple', label:'Violette — Mature', headerBg:'#5b2c6f', headerText:'#ffffff', border:'#4a235a', numColor:'#5b2c6f', cardBg:'#f0e6f6', iconBgAlpha:'0.15', defaultIcon:'loupe' },
+  { id:'blue', label:'Bleue — Improbable', headerBg:'#2471a3', headerText:'#ffffff', border:'#1a5276', numColor:'#1a5276', cardBg:'#d6eaf8', iconBgAlpha:'0.12', defaultIcon:'poisson' },
+  { id:'orange', label:'Orange — Plaisir', headerBg:'#e67e22', headerText:'#ffffff', border:'#c0691a', numColor:'#d35400', cardBg:'#fdebd0', iconBgAlpha:'0.12', defaultIcon:'etoile' },
+  { id:'brown', label:'Marron — Débuter', headerBg:'#795548', headerText:'#ffffff', border:'#5d4037', numColor:'#4e342e', cardBg:'#efebe9', iconBgAlpha:'0.12', defaultIcon:'livre' },
+  { id:'gold', label:'Or — Gagner', headerBg:'#c8a415', headerText:'#1a1a2e', border:'#a68b10', numColor:'#8b7200', cardBg:'#fff8e1', iconBgAlpha:'0.20', defaultIcon:'couronne' },
+  { id:'red', label:'Rouge — Intrépide', headerBg:'#922b21', headerText:'#ffffff', border:'#7b241c', numColor:'#922b21', cardBg:'#fadbd8', iconBgAlpha:'0.12', defaultIcon:'epee' },
+
+  // ===== 8 thèmes bonus =====
+  { id:'yellow', label:'Jaune — Célébrités', headerBg:'#f5d442', headerText:'#1a5276', border:'#c9ad2e', numColor:'#1a5276', cardBg:'#fef9e7', iconBgAlpha:'0.25', defaultIcon:'silhouette' },
+  { id:'pink', label:'Rose — Amour', headerBg:'#d63384', headerText:'#ffffff', border:'#b02a6f', numColor:'#b02a6f', cardBg:'#f0d0e0', iconBgAlpha:'0.12', defaultIcon:'coeur' },
+  { id:'teal', label:'Turquoise — Voyages', headerBg:'#0097a7', headerText:'#ffffff', border:'#007b8a', numColor:'#007b8a', cardBg:'#e0f2f1', iconBgAlpha:'0.12', defaultIcon:'globe' },
+  { id:'indigo', label:'Indigo — Espace', headerBg:'#303f9f', headerText:'#e8eaf6', border:'#283593', numColor:'#283593', cardBg:'#e8eaf6', iconBgAlpha:'0.15', defaultIcon:'fusee' },
+  { id:'lime', label:'Citron vert — Gastronomie', headerBg:'#7cb342', headerText:'#1b3a00', border:'#689f38', numColor:'#558b2f', cardBg:'#f1f8e9', iconBgAlpha:'0.15', defaultIcon:'trophee' },
+  { id:'black', label:'Noire — Expert', headerBg:'#212121', headerText:'#ffd740', border:'#000000', numColor:'#212121', cardBg:'#e0e0e0', iconBgAlpha:'0.10', defaultIcon:'eclair' },
+  { id:'cyan', label:'Cyan — Technologie', headerBg:'#00acc1', headerText:'#ffffff', border:'#00838f', numColor:'#00838f', cardBg:'#e0f7fa', iconBgAlpha:'0.12', defaultIcon:'manette' },
+  { id:'coral', label:'Corail — Musique', headerBg:'#ff6f61', headerText:'#ffffff', border:'#e55a4f', numColor:'#d84a3a', cardBg:'#fce4e0', iconBgAlpha:'0.12', defaultIcon:'musique' }
 ];
 
 window.getThemeById = function(id) {

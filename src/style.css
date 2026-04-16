@@ -20,25 +20,6 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .sidebar-title span { font-weight:400; font-size:15px; color:rgba(255,255,255,.5); }
 .sidebar-sub { font-size:11px; color:rgba(255,255,255,.35); margin:2px 0 16px; }
 
-/* ===== Toggle Recto / Verso ===== */
-.side-toggle {
-  display:flex; gap:4px; margin-bottom:14px; padding:4px;
-  background:rgba(255,255,255,.06); border-radius:10px;
-}
-.side-btn {
-  flex:1; padding:8px 0; border:none; border-radius:8px;
-  font-family:'Poppins',sans-serif; font-size:13px; font-weight:700;
-  cursor:pointer; transition:background .2s, color .2s;
-  background:transparent; color:rgba(255,255,255,.45);
-  letter-spacing:.5px;
-}
-.side-btn:hover { color:rgba(255,255,255,.7); }
-.side-btn.active {
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  color:#fff;
-  box-shadow:0 2px 8px rgba(102,126,234,.35);
-}
-
 /* ===== Sidebar Sections (Accordéon) ===== */
 .sidebar-sections { display:flex; flex-direction:column; gap:4px; flex:1; }
 
@@ -60,7 +41,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .section-header:hover { background:rgba(255,255,255,.06); }
 
 .section-header::after {
-  content:'\25B8'; /* triangle right */
+  content:'\25B8';
   font-size:12px;
   transition:transform .2s;
   color:rgba(255,255,255,.3);
@@ -159,6 +140,24 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   font-variant-numeric:tabular-nums;
 }
 
+/* ===== Bulk Paste Textareas ===== */
+.bulk-paste-group { display:flex; flex-direction:column; gap:8px; }
+.bulk-paste-label {
+  font-size:10px; color:rgba(255,255,255,.5); text-transform:uppercase;
+  letter-spacing:1px; margin-bottom:2px;
+}
+.bulk-paste-area {
+  width:100%; min-height:80px; max-height:160px; resize:vertical;
+  padding:8px 10px; border:1px solid rgba(255,255,255,.1); border-radius:8px;
+  background:rgba(255,255,255,.05); color:#fff; font-family:'Poppins',sans-serif;
+  font-size:11px; line-height:1.5; outline:none;
+}
+.bulk-paste-area::placeholder { color:rgba(255,255,255,.25); }
+.bulk-paste-area:focus { border-color:rgba(102,126,234,.5); }
+.bulk-paste-hint {
+  font-size:9px; color:rgba(255,255,255,.3); line-height:1.4;
+}
+
 /* ===== Logo Upload ===== */
 .logo-area { margin-top:4px; }
 .logo-drop {
@@ -191,36 +190,35 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 #card-wrapper { transform:scale(var(--card-scale,.7)); transform-origin:center center; }
 
 /* =============================================
-   CARD — 936 x 735, panneaux recto/verso TTMC
+   CARD — 936 x 735, panneau unique plein
    Thème via CSS custom properties
    ============================================= */
 .ttmc-card {
   width:936px; height:735px; border-radius:20px; overflow:hidden;
   display:flex; flex-direction:row; gap:10px; padding:14px;
   font-family:inherit; position:relative;
-  background:var(--card-bg, #c5d5df);
+  background:var(--card-bg, #e8f5e9);
 }
-/* Ombre uniquement pour l'aperçu écran */
 #card-preview { box-shadow:0 20px 60px rgba(0,0,0,.5); }
 
-/* ===== Panneaux ===== */
+/* ===== Panneaux côte à côte ===== */
 .card-panel { flex:1; display:flex; flex-direction:column; }
 
 .panel-inner {
   flex:1; border-radius:14px; background:#fff;
   display:flex; flex-direction:column; overflow:hidden; position:relative;
 }
-.panel-bordered { border:3.5px solid var(--border, #2e6483); }
+.panel-bordered { border:3.5px solid var(--border, #1e6e2c); }
 
 /* ===== En-tête panneau ===== */
 .panel-header {
-  height:46px; display:flex; align-items:center; padding:0 14px; position:relative;
+  height:48px; display:flex; align-items:center; padding:0 16px; position:relative;
   background:var(--header-bg); color:var(--header-text);
   border-radius:11px 11px 0 0;
 }
-.panel-header-text { font-size:12px; font-weight:600; font-style:italic; opacity:.85; }
+.panel-header-text { font-size:14px; font-weight:700; font-style:italic; opacity:.9; }
 .panel-header-icon {
-  width:40px; height:40px; border-radius:50%; overflow:hidden;
+  width:42px; height:42px; border-radius:50%; overflow:hidden;
   position:absolute; right:8px; top:3px;
   display:flex; align-items:center; justify-content:center;
   background:rgba(255,255,255, var(--icon-bg-alpha, 0.12));
@@ -229,31 +227,31 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .panel-header-icon svg { width:28px; height:28px; }
 .panel-header-icon img { width:100%; height:100%; object-fit:cover; }
 
-/* ===== Sujet — GROS et GRAS comme l'officiel ===== */
+/* ===== Sujet — GROS et GRAS ===== */
 .panel-subject {
-  padding:6px 14px; border-bottom:2px solid rgba(0,0,0,.1);
-  display:flex; align-items:center; min-height:38px;
+  padding:8px 18px; border-bottom:2.5px solid rgba(0,0,0,.1);
+  display:flex; align-items:center; min-height:44px;
 }
 .panel-subject [contenteditable] {
   display:block; width:100%; outline:none;
-  font-size:var(--subject-size, 20px); font-weight:900;
+  font-size:var(--subject-size, 22px); font-weight:900;
   color:#1a1a2e; text-transform:uppercase; letter-spacing:.5px; line-height:1.15;
 }
 .panel-subject [contenteditable]:empty::before {
   content:attr(data-placeholder); color:rgba(0,0,0,.15);
-  font-style:italic; text-transform:none; font-weight:600; font-size:14px;
+  font-style:italic; text-transform:none; font-weight:600; font-size:15px;
 }
 
 /* ===== Questions (recto) ===== */
-.panel-questions { flex:1; display:flex; flex-direction:column; padding:4px 10px 8px; }
+.panel-questions { flex:1; display:flex; flex-direction:column; padding:4px 14px 8px; }
 .pq-row { flex:1; display:flex; align-items:center; border-bottom:1.5px solid rgba(0,0,0,.07); }
 .pq-row:last-child { border-bottom:none; }
 .pq-num {
-  font-size:var(--num-size, 28px); font-weight:900; width:44px;
+  font-size:var(--num-size, 28px); font-weight:900; width:48px;
   text-align:center; line-height:1; color:var(--num-color);
 }
 .pq-txt {
-  flex:1; margin-left:6px; font-size:var(--question-size, 9.5px);
+  flex:1; margin-left:8px; font-size:var(--question-size, 10px);
   color:#333; outline:none; min-height:14px; border:none; background:none;
   font-family:inherit; line-height:1.3;
 }
@@ -261,34 +259,16 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   content:attr(data-placeholder); color:rgba(0,0,0,.12); font-style:italic;
 }
 
-/* ===== Scores (verso gauche) — numéros + lignes ===== */
-.panel-scores { flex:1; display:flex; flex-direction:column; padding:4px 10px 8px; }
-.ps-row { flex:1; display:flex; align-items:center; border-bottom:1.5px solid rgba(0,0,0,.07); }
-.ps-row:last-child { border-bottom:none; }
-.ps-num { font-size:var(--num-size, 28px); font-weight:900; width:44px; text-align:center; line-height:1; color:var(--num-color); }
-.ps-line { flex:1; height:1.5px; background:rgba(0,0,0,.08); margin-left:8px; }
-
-/* ===== Watermark icône ===== */
-.panel-watermark {
-  position:absolute; bottom:18px; right:18px; width:75px; height:75px;
-  opacity:.1; pointer-events:none; color:var(--num-color);
-}
-.panel-watermark svg { width:100%; height:100%; }
-.panel-watermark img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
-
-/* ===== Titre Réponses (verso droit) ===== */
-.panel-resp-title {
-  font-size:26px; font-weight:800; color:#1a1a2e;
-  text-align:center; margin-bottom:6px; padding-top:6px;
-}
-
-/* ===== Réponses (verso droit) ===== */
-.panel-answers { flex:1; display:flex; flex-direction:column; padding:0 12px; }
+/* ===== Réponses (verso) ===== */
+.panel-answers { flex:1; display:flex; flex-direction:column; padding:6px 18px; }
 .pa-row { flex:1; display:flex; align-items:center; border-bottom:1.5px solid rgba(0,0,0,.08); }
 .pa-row:last-child { border-bottom:none; }
-.pa-num { font-size:13px; font-weight:700; color:#1a1a2e; width:28px; text-align:right; }
+.pa-num {
+  font-size:var(--num-size, 28px); font-weight:900; width:48px;
+  text-align:center; line-height:1; color:var(--num-color);
+}
 .pa-txt {
-  flex:1; margin-left:8px; font-size:var(--answer-size, 9.5px);
+  flex:1; margin-left:8px; font-size:var(--answer-size, 10px);
   color:#333; outline:none; min-height:14px; border:none; background:none;
   font-family:inherit; line-height:1.3;
 }
@@ -296,15 +276,13 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   content:attr(data-placeholder); color:rgba(0,0,0,.12); font-style:italic;
 }
 
-/* ===== Sparkle — étoile 4 branches en CSS pur ===== */
-.panel-sparkle {
-  width:22px; height:22px; align-self:flex-end; margin:6px 4px;
-  position:relative; opacity:.35; color:var(--num-color);
+/* ===== Watermark icône ===== */
+.panel-watermark {
+  position:absolute; bottom:20px; right:20px; width:80px; height:80px;
+  opacity:.08; pointer-events:none; color:var(--num-color);
 }
-.panel-sparkle::before {
-  content:''; position:absolute; inset:0; background:currentColor;
-  clip-path:polygon(50% 0%,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0% 50%,38% 38%);
-}
+.panel-watermark svg { width:100%; height:100%; }
+.panel-watermark img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 
 /* ===== Toast ===== */
 .toast {
