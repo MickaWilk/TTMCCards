@@ -357,7 +357,214 @@
     if (input) input.value = '';
   }
 
-  // ===== 7. Sections accordeon =====
+  // ===== 7. Toggle Grid (visibility toggles) =====
+  function buildToggleGrid() {
+    var container = document.getElementById('toggle-grid');
+    if (!container) return;
+    container.innerHTML = '';
+
+    var items = [
+      { key: 'numbers',   label: 'Num\u00e9ros' },
+      { key: 'questions', label: 'Questions' },
+      { key: 'answers',   label: 'R\u00e9ponses' },
+      { key: 'subject',   label: 'Sujet' },
+      { key: 'header',    label: 'En-t\u00eate' },
+      { key: 'icons',     label: 'Ic\u00f4nes' },
+      { key: 'watermark', label: 'Watermark' }
+    ];
+
+    var current = window.getToggles();
+
+    for (var i = 0; i < items.length; i++) {
+      (function(item) {
+        var row = document.createElement('label');
+        row.className = 'toggle-row';
+
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.className = 'toggle-cb';
+        cb.checked = current[item.key] !== false;
+        cb.setAttribute('data-toggle-key', item.key);
+
+        cb.addEventListener('change', function() {
+          window.setToggle(item.key, cb.checked);
+          window.saveToLocalStorage();
+        });
+
+        var span = document.createElement('span');
+        span.textContent = item.label;
+
+        row.appendChild(cb);
+        row.appendChild(span);
+        container.appendChild(row);
+      })(items[i]);
+    }
+  }
+
+  function updateToggleGrid() {
+    var current = window.getToggles();
+    var cbs = document.querySelectorAll('.toggle-cb');
+    for (var i = 0; i < cbs.length; i++) {
+      var key = cbs[i].getAttribute('data-toggle-key');
+      if (key && current[key] != null) {
+        cbs[i].checked = current[key];
+      }
+    }
+  }
+
+  // ===== 8. Image Uploads =====
+  function setupImageUploads() {
+    // --- Card background ---
+    var cardBgInput = document.getElementById('img-card-bg');
+    var cardBgPreview = document.getElementById('img-card-bg-preview');
+    var cardBgClear = document.getElementById('img-card-bg-clear');
+
+    if (cardBgInput) {
+      cardBgInput.addEventListener('change', function(e) {
+        var f = e.target.files[0];
+        if (!f) return;
+        var r = new FileReader();
+        r.onload = function(ev) {
+          window.setCardBg(ev.target.result);
+          if (cardBgPreview) { cardBgPreview.src = ev.target.result; cardBgPreview.style.display = ''; }
+          if (cardBgClear) cardBgClear.style.display = '';
+        };
+        r.readAsDataURL(f);
+      });
+    }
+    if (cardBgClear) {
+      cardBgClear.addEventListener('click', function() {
+        window.setCardBg(null);
+        if (cardBgPreview) { cardBgPreview.src = ''; cardBgPreview.style.display = 'none'; }
+        cardBgClear.style.display = 'none';
+        if (cardBgInput) cardBgInput.value = '';
+      });
+    }
+
+    // --- Number background ---
+    var numBgInput = document.getElementById('img-num-bg');
+    var numBgPreview = document.getElementById('img-num-bg-preview');
+    var numBgClear = document.getElementById('img-num-bg-clear');
+
+    if (numBgInput) {
+      numBgInput.addEventListener('change', function(e) {
+        var f = e.target.files[0];
+        if (!f) return;
+        var r = new FileReader();
+        r.onload = function(ev) {
+          window.setNumBg(ev.target.result);
+          if (numBgPreview) { numBgPreview.src = ev.target.result; numBgPreview.style.display = ''; }
+          if (numBgClear) numBgClear.style.display = '';
+        };
+        r.readAsDataURL(f);
+      });
+    }
+    if (numBgClear) {
+      numBgClear.addEventListener('click', function() {
+        window.setNumBg(null);
+        if (numBgPreview) { numBgPreview.src = ''; numBgPreview.style.display = 'none'; }
+        numBgClear.style.display = 'none';
+        if (numBgInput) numBgInput.value = '';
+      });
+    }
+
+    // --- Column import (split into 10) ---
+    var colInput = document.getElementById('img-num-column');
+    if (colInput) {
+      colInput.addEventListener('change', function(e) {
+        var f = e.target.files[0];
+        if (!f) return;
+        var r = new FileReader();
+        r.onload = function(ev) {
+          window.importNumColumn(ev.target.result, function(nums) {
+            updateNumButtons(nums);
+            window.showToast('Image d\u00e9coup\u00e9e en 10 num\u00e9ros');
+          });
+        };
+        r.readAsDataURL(f);
+      });
+    }
+
+    // --- Clear all nums ---
+    var clearBtn = document.getElementById('btn-clear-nums');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function() {
+        window.clearNumImages();
+        resetNumButtons();
+        window.showToast('Images de num\u00e9ros effac\u00e9es');
+      });
+    }
+  }
+
+  // ===== 9. Num Buttons (individual 1-10) =====
+  var activeNumIndex = null;
+
+  function buildNumButtons() {
+    var container = document.getElementById('num-buttons');
+    if (!container) return;
+    container.innerHTML = '';
+
+    for (var i = 1; i <= 10; i++) {
+      (function(num) {
+        var btn = document.createElement('button');
+        btn.className = 'num-mini-btn';
+        btn.textContent = num;
+        btn.title = 'Importer image pour ' + num;
+        btn.setAttribute('data-num', num);
+
+        btn.addEventListener('click', function() {
+          activeNumIndex = num;
+          var input = document.getElementById('img-num-single');
+          if (input) { input.value = ''; input.click(); }
+        });
+
+        container.appendChild(btn);
+      })(i);
+    }
+
+    // Wire hidden single file input
+    var singleInput = document.getElementById('img-num-single');
+    if (singleInput) {
+      singleInput.addEventListener('change', function(e) {
+        if (activeNumIndex == null) return;
+        var f = e.target.files[0];
+        if (!f) return;
+        var num = activeNumIndex;
+        var r = new FileReader();
+        r.onload = function(ev) {
+          window.setNumImage(num, ev.target.result);
+          // Update button visual
+          var btn = document.querySelector('.num-mini-btn[data-num="' + num + '"]');
+          if (btn) {
+            btn.classList.add('has-img');
+            btn.innerHTML = '<img src="' + ev.target.result + '">';
+          }
+        };
+        r.readAsDataURL(f);
+      });
+    }
+  }
+
+  function updateNumButtons(nums) {
+    if (!nums) return;
+    for (var num in nums) {
+      var btn = document.querySelector('.num-mini-btn[data-num="' + num + '"]');
+      if (btn && nums[num]) {
+        btn.classList.add('has-img');
+        btn.innerHTML = '<img src="' + nums[num] + '">';
+      }
+    }
+  }
+
+  function resetNumButtons() {
+    var btns = document.querySelectorAll('.num-mini-btn');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.remove('has-img');
+      btns[i].textContent = btns[i].getAttribute('data-num');
+    }
+  }
+
+  // ===== 10. Sections accordeon =====
   function setupSections() {
     var headers = document.querySelectorAll('.section-header');
     for (var i = 0; i < headers.length; i++) {
@@ -569,12 +776,15 @@
   document.addEventListener('DOMContentLoaded', function() {
     buildCardTypePicker();
     buildColorPicker();
+    buildToggleGrid();
     buildIconPicker();
     buildFontSelector();
     buildFontSizeControls();
+    buildNumButtons();
 
     setupBulkPaste();
     setupLogoUpload();
+    setupImageUploads();
     setupSections();
     setupSampleCards();
 
@@ -588,13 +798,28 @@
     if (btnReset) {
       btnReset.addEventListener('click', function() {
         window.clearCard();
+        window.setAllToggles({ numbers:true, questions:true, answers:true, subject:true, header:true, icons:true, watermark:true });
+        window.setCardBg(null);
+        window.setNumBg(null);
+        window.clearNumImages();
         updateCardTypePickerActive();
         updateColorPickerActive();
         updateIconPickerActive();
         updateBulkPasteLabels();
         updateExportBothVisibility();
         updateFontSizeControls();
+        updateToggleGrid();
+        resetNumButtons();
         clearLogoPreview();
+        // Clear image previews
+        var cardBgPreview = document.getElementById('img-card-bg-preview');
+        var cardBgClear = document.getElementById('img-card-bg-clear');
+        var numBgPreview = document.getElementById('img-num-bg-preview');
+        var numBgClear = document.getElementById('img-num-bg-clear');
+        if (cardBgPreview) { cardBgPreview.src = ''; cardBgPreview.style.display = 'none'; }
+        if (cardBgClear) cardBgClear.style.display = 'none';
+        if (numBgPreview) { numBgPreview.src = ''; numBgPreview.style.display = 'none'; }
+        if (numBgClear) numBgClear.style.display = 'none';
         var qArea = document.getElementById('bulk-questions');
         var aArea = document.getElementById('bulk-answers');
         if (qArea) qArea.value = '';

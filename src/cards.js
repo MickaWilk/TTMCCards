@@ -35,8 +35,40 @@
     footerB: '',
     subtitleB: '',
     challengeAnswerB: '',
+    // Debuter headers
+    debuterHeader: '',
+    debuterLabel: '',
+    debuterHeaderB: '',
+    debuterLabelB: '',
+    // Gagner headers
+    gagnerHeader: '',
+    gagnerHeaderB: '',
+    answerLabel: '',
+    answerLabelB: '',
+    // Intrepide headers
+    intrepideHeaderL: '',
+    intrepideHeaderR: '',
+    intrepideSub: '',
     // Intrepide
     responses: ''
+  };
+
+  // Toggles de visibilite
+  var toggles = {
+    numbers: true,
+    questions: true,
+    answers: true,
+    subject: true,
+    header: true,
+    icons: true,
+    watermark: true
+  };
+
+  // Images personnalisees
+  var customImages = {
+    cardBg: null,   // data URL fond de carte
+    numBg: null,    // data URL fond de numeros
+    nums: {}        // { '1': dataURL, ... '10': dataURL }
   };
 
   var LS_KEY = 'ttmc-card-draft';
@@ -92,8 +124,57 @@
     }
 
     restoreFromMemory();
+    applyToggles(p);
+    applyCustomImages(p);
     setupAutoSave(p);
   };
+
+  // ===== Toggles de visibilite =====
+  function applyToggles(p) {
+    p.classList.toggle('hide-numbers', !toggles.numbers);
+    p.classList.toggle('hide-questions', !toggles.questions);
+    p.classList.toggle('hide-answers', !toggles.answers);
+    p.classList.toggle('hide-subject', !toggles.subject);
+    p.classList.toggle('hide-header', !toggles.header);
+    p.classList.toggle('hide-icons', !toggles.icons);
+    p.classList.toggle('hide-watermark', !toggles.watermark);
+  }
+
+  // ===== Images personnalisees =====
+  function applyCustomImages(p) {
+    // Background de carte
+    if (customImages.cardBg) {
+      p.style.backgroundImage = 'url(' + customImages.cardBg + ')';
+      p.style.backgroundSize = 'cover';
+      p.style.backgroundPosition = 'center';
+    } else {
+      p.style.backgroundImage = '';
+    }
+
+    // Background de numeros
+    var allNums = p.querySelectorAll('.pq-num, .pa-num');
+    for (var n = 0; n < allNums.length; n++) {
+      if (customImages.numBg) {
+        allNums[n].style.backgroundImage = 'url(' + customImages.numBg + ')';
+        allNums[n].style.backgroundSize = 'contain';
+        allNums[n].style.backgroundRepeat = 'no-repeat';
+        allNums[n].style.backgroundPosition = 'center';
+        allNums[n].classList.add('has-num-bg');
+      } else {
+        allNums[n].style.backgroundImage = '';
+        allNums[n].classList.remove('has-num-bg');
+      }
+    }
+
+    // Images de numeros individuels
+    for (var num in customImages.nums) {
+      if (!customImages.nums[num]) continue;
+      var els = p.querySelectorAll('.pq-num[data-num="' + num + '"], .pa-num[data-num="' + num + '"]');
+      for (var e = 0; e < els.length; e++) {
+        els[e].innerHTML = '<img src="' + customImages.nums[num] + '" class="custom-num-img">';
+      }
+    }
+  }
 
   // =========================================================================
   // STANDARD Q&A — "Tu te mets combien en..."
@@ -103,7 +184,7 @@
     var qRows = '';
     for (var i = 1; i <= 10; i++) {
       qRows += '<div class="pq-row">' +
-        '<div class="pq-num">' + i + '</div>' +
+        '<div class="pq-num" data-num="' + i + '">' + i + '</div>' +
         '<div class="pq-txt" contenteditable="true" data-placeholder="Question ' + i + '..." data-i="' + i + '"></div>' +
         '</div>';
     }
@@ -123,7 +204,7 @@
     var aRows = '';
     for (var j = 1; j <= 10; j++) {
       aRows += '<div class="pa-row">' +
-        '<div class="pa-num">' + j + '.</div>' +
+        '<div class="pa-num" data-num="' + j + '">' + j + '.</div>' +
         '<div class="pa-txt" contenteditable="true" data-placeholder="R\u00e9ponse ' + j + '..." data-i="' + j + '"></div>' +
         '</div>';
     }
@@ -154,8 +235,8 @@
       '<div class="debuter-inner">' +
         '<div class="debuter-border">' +
           '<div class="debuter-header">' +
-            '<div class="debuter-header-text">H\u00c9SITE PAS \u00c0</div>' +
-            '<div class="debuter-header-title">D\u00c9BUTER</div>' +
+            '<div class="debuter-header-text" contenteditable="true" data-field="debuterHeader' + sfx + '">H\u00c9SITE PAS \u00c0</div>' +
+            '<div class="debuter-header-title" contenteditable="true" data-field="debuterLabel' + sfx + '">D\u00c9BUTER</div>' +
           '</div>' +
           '<div class="debuter-title" contenteditable="true" data-placeholder="Titre du challenge (' + ph + ')..." data-field="title' + sfx + '"></div>' +
           '<div class="debuter-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici..." data-field="body' + sfx + '"></div>' +
@@ -182,13 +263,13 @@
       '<div class="gagner-inner">' +
         '<div class="gagner-header">' +
           '<span class="gagner-star">&#9733;</span>' +
-          '<span class="gagner-header-text">H\u00c9SITE PAS \u00c0 GAGNER</span>' +
+          '<span class="gagner-header-text" contenteditable="true" data-field="gagnerHeader' + sfx + '">H\u00c9SITE PAS \u00c0 GAGNER</span>' +
           '<span class="gagner-star">&#9733;</span>' +
         '</div>' +
         '<div class="gagner-subtitle" contenteditable="true" data-placeholder="NOM DU CHALLENGE (' + ph + ')" data-field="subtitle' + sfx + '"></div>' +
         '<div class="gagner-body" contenteditable="true" data-placeholder="D\u00e9crivez la question ou le challenge ici..." data-field="body' + sfx + '"></div>' +
         '<div class="gagner-divider"></div>' +
-        '<div class="gagner-answer-label">R\u00e9ponse</div>' +
+        '<div class="gagner-answer-label" contenteditable="true" data-field="answerLabel' + sfx + '">R\u00e9ponse</div>' +
         '<div class="gagner-answer" contenteditable="true" data-placeholder="Tapez la r\u00e9ponse ici..." data-field="challengeAnswer' + sfx + '"></div>' +
         '<div class="gagner-logo">' + ttmcLogo() + '</div>' +
       '</div>' +
@@ -208,7 +289,7 @@
       '<div class="card-panel">' +
         '<div class="intrepide-inner panel-bordered">' +
           '<div class="intrepide-header">' +
-            '<span class="intrepide-header-text">Intr\u00e9pide</span>' +
+            '<span class="intrepide-header-text" contenteditable="true" data-field="intrepideHeaderL">Intr\u00e9pide</span>' +
           '</div>' +
           '<div class="intrepide-title" contenteditable="true" data-placeholder="NOM DU D\u00c9FI" data-field="title"></div>' +
           '<div class="intrepide-body" contenteditable="true" data-placeholder="D\u00e9crivez le d\u00e9fi ici...\n\nExemple : Dommage, tu es tomb\u00e9 sur une tuile. Tu recules de 5 cases sauf si le plus m\u00e9lomane de ton \u00e9quipe nous chante le refrain de Quelque part de Sheryl Luna..." data-field="body"></div>' +
@@ -220,8 +301,8 @@
       '<div class="card-panel">' +
         '<div class="intrepide-inner panel-bordered">' +
           '<div class="intrepide-header">' +
-            '<span class="intrepide-header-text">Intr\u00e9pide</span>' +
-            '<span class="intrepide-header-sub">R\u00c9PONSES</span>' +
+            '<span class="intrepide-header-text" contenteditable="true" data-field="intrepideHeaderR">Intr\u00e9pide</span>' +
+            '<span class="intrepide-header-sub" contenteditable="true" data-field="intrepideSub">R\u00c9PONSES</span>' +
           '</div>' +
           '<div class="intrepide-responses" contenteditable="true" data-placeholder="Tapez les r\u00e9ponses ici...\n\n\u00c9cris-moi une autre histoire\nT\'es le seul \u00e0 me comprendre\nEmm\u00e8ne-moi quelque part\nNe me laissez pas surprendre\nInvente-moi un monde \u00e0 part\nApprends-moi une nouvelle danse\nEmm\u00e8ne-moi quelque part\nBoy, je te fais confiance" data-field="responses"></div>' +
           '<div class="intrepide-logo">' + ttmcLogo() + '</div>' +
@@ -359,6 +440,20 @@
     if (d.footerB != null) cardData.footerB = d.footerB;
     if (d.subtitleB != null) cardData.subtitleB = d.subtitleB;
     if (d.challengeAnswerB != null) cardData.challengeAnswerB = d.challengeAnswerB;
+    // Debuter headers
+    if (d.debuterHeader != null) cardData.debuterHeader = d.debuterHeader;
+    if (d.debuterLabel != null) cardData.debuterLabel = d.debuterLabel;
+    if (d.debuterHeaderB != null) cardData.debuterHeaderB = d.debuterHeaderB;
+    if (d.debuterLabelB != null) cardData.debuterLabelB = d.debuterLabelB;
+    // Gagner headers
+    if (d.gagnerHeader != null) cardData.gagnerHeader = d.gagnerHeader;
+    if (d.gagnerHeaderB != null) cardData.gagnerHeaderB = d.gagnerHeaderB;
+    if (d.answerLabel != null) cardData.answerLabel = d.answerLabel;
+    if (d.answerLabelB != null) cardData.answerLabelB = d.answerLabelB;
+    // Intrepide headers
+    if (d.intrepideHeaderL != null) cardData.intrepideHeaderL = d.intrepideHeaderL;
+    if (d.intrepideHeaderR != null) cardData.intrepideHeaderR = d.intrepideHeaderR;
+    if (d.intrepideSub != null) cardData.intrepideSub = d.intrepideSub;
     // Intrepide
     if (d.responses != null) cardData.responses = d.responses;
 
@@ -402,6 +497,20 @@
         footerB: cardData.footerB,
         subtitleB: cardData.subtitleB,
         challengeAnswerB: cardData.challengeAnswerB,
+        // Debuter headers
+        debuterHeader: cardData.debuterHeader,
+        debuterLabel: cardData.debuterLabel,
+        debuterHeaderB: cardData.debuterHeaderB,
+        debuterLabelB: cardData.debuterLabelB,
+        // Gagner headers
+        gagnerHeader: cardData.gagnerHeader,
+        gagnerHeaderB: cardData.gagnerHeaderB,
+        answerLabel: cardData.answerLabel,
+        answerLabelB: cardData.answerLabelB,
+        // Intrepide headers
+        intrepideHeaderL: cardData.intrepideHeaderL,
+        intrepideHeaderR: cardData.intrepideHeaderR,
+        intrepideSub: cardData.intrepideSub,
         // Intrepide
         responses: cardData.responses,
         timestamp: Date.now()
@@ -429,7 +538,7 @@
     currentIconId = 'feuille';
     currentFontId = 'poppins';
     fontSizes = { subject: 22, question: 10, answer: 10, number: 28 };
-    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', responses: '' };
+    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '' };
     window.renderCard('green', 'feuille', 'poppins');
   };
 
@@ -443,7 +552,7 @@
     currentFontId = 'poppins';
     window.customLogoDataURL = null;
 
-    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', responses: '' };
+    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '' };
 
     // Standard Q&A
     if (card.sujet) cardData.subject = card.sujet;
@@ -466,6 +575,20 @@
     if (card.footerB) cardData.footerB = card.footerB;
     if (card.subtitleB) cardData.subtitleB = card.subtitleB;
     if (card.challengeAnswerB) cardData.challengeAnswerB = card.challengeAnswerB;
+    // Debuter headers
+    if (card.debuterHeader) cardData.debuterHeader = card.debuterHeader;
+    if (card.debuterLabel) cardData.debuterLabel = card.debuterLabel;
+    if (card.debuterHeaderB) cardData.debuterHeaderB = card.debuterHeaderB;
+    if (card.debuterLabelB) cardData.debuterLabelB = card.debuterLabelB;
+    // Gagner headers
+    if (card.gagnerHeader) cardData.gagnerHeader = card.gagnerHeader;
+    if (card.gagnerHeaderB) cardData.gagnerHeaderB = card.gagnerHeaderB;
+    if (card.answerLabel) cardData.answerLabel = card.answerLabel;
+    if (card.answerLabelB) cardData.answerLabelB = card.answerLabelB;
+    // Intrepide headers
+    if (card.intrepideHeaderL) cardData.intrepideHeaderL = card.intrepideHeaderL;
+    if (card.intrepideHeaderR) cardData.intrepideHeaderR = card.intrepideHeaderR;
+    if (card.intrepideSub) cardData.intrepideSub = card.intrepideSub;
     // Intrepide
     if (card.responses) cardData.responses = card.responses;
 
@@ -518,8 +641,86 @@
       footerB: cardData.footerB,
       subtitleB: cardData.subtitleB,
       challengeAnswerB: cardData.challengeAnswerB,
+      debuterHeader: cardData.debuterHeader,
+      debuterLabel: cardData.debuterLabel,
+      debuterHeaderB: cardData.debuterHeaderB,
+      debuterLabelB: cardData.debuterLabelB,
+      gagnerHeader: cardData.gagnerHeader,
+      gagnerHeaderB: cardData.gagnerHeaderB,
+      answerLabel: cardData.answerLabel,
+      answerLabelB: cardData.answerLabelB,
+      intrepideHeaderL: cardData.intrepideHeaderL,
+      intrepideHeaderR: cardData.intrepideHeaderR,
+      intrepideSub: cardData.intrepideSub,
       responses: cardData.responses
     };
+  };
+
+  // ===== Toggles getters/setters =====
+  window.getToggles = function() { return Object.assign({}, toggles); };
+  window.setToggle = function(key, val) {
+    if (toggles.hasOwnProperty(key)) {
+      toggles[key] = val;
+      var p = document.getElementById('card-preview');
+      if (p) applyToggles(p);
+    }
+  };
+  window.setAllToggles = function(t) {
+    for (var k in t) {
+      if (toggles.hasOwnProperty(k)) toggles[k] = t[k];
+    }
+  };
+
+  // ===== Custom images getters/setters =====
+  window.getCustomImages = function() {
+    return { cardBg: customImages.cardBg, numBg: customImages.numBg, nums: Object.assign({}, customImages.nums) };
+  };
+  window.setCardBg = function(dataURL) {
+    customImages.cardBg = dataURL;
+    var p = document.getElementById('card-preview');
+    if (p) applyCustomImages(p);
+  };
+  window.setNumBg = function(dataURL) {
+    customImages.numBg = dataURL;
+    var p = document.getElementById('card-preview');
+    if (p) applyCustomImages(p);
+  };
+  window.setNumImage = function(num, dataURL) {
+    customImages.nums[String(num)] = dataURL;
+    var p = document.getElementById('card-preview');
+    if (p) applyCustomImages(p);
+  };
+  window.clearNumImages = function() {
+    customImages.nums = {};
+    var p = document.getElementById('card-preview');
+    if (p) {
+      // Restore original text numbers
+      window.renderCard(currentThemeId, currentIconId, currentFontId);
+    }
+  };
+
+  // Import colonne : une image decoupee en 10 parts egales
+  window.importNumColumn = function(dataURL, callback) {
+    var img = new Image();
+    img.onload = function() {
+      var sliceH = img.height / 10;
+      var canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = Math.round(sliceH);
+      var ctx = canvas.getContext('2d');
+
+      customImages.nums = {};
+      for (var i = 0; i < 10; i++) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, Math.round(i * sliceH), img.width, Math.round(sliceH), 0, 0, canvas.width, Math.round(sliceH));
+        customImages.nums[String(i + 1)] = canvas.toDataURL('image/png');
+      }
+
+      var p = document.getElementById('card-preview');
+      if (p) applyCustomImages(p);
+      if (callback) callback(customImages.nums);
+    };
+    img.src = dataURL;
   };
 
   // Kept for export.js compatibility

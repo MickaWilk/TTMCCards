@@ -47,7 +47,8 @@
   function cloneCardForExport(preview) {
     var clone = preview.cloneNode(true);
     clone.id = '';
-    clone.style.cssText = 'position:fixed;left:-9999px;top:0;width:936px;height:735px;box-shadow:none;border-radius:20px;overflow:hidden;z-index:-1;';
+    // Export: rectangle plein, pas de coins arrondis visibles
+    clone.style.cssText = 'position:fixed;left:-9999px;top:0;width:936px;height:735px;box-shadow:none;border-radius:0;overflow:hidden;z-index:-1;';
 
     var computedStyle = getComputedStyle(preview);
     for (var p = 0; p < CSS_PROPS.length; p++) {
@@ -85,7 +86,7 @@
 
       html2canvas(clone, {
         width: 936, height: 735, scale: scale,
-        useCORS: true, allowTaint: true, backgroundColor: null, logging: false
+        useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false
       }).then(function(canvas) {
         var out = document.createElement('canvas');
         out.width = exportW;
@@ -133,7 +134,7 @@
 
       html2canvas(clone, {
         width: 936, height: 735, scale: scale,
-        useCORS: true, allowTaint: true, backgroundColor: null, logging: false
+        useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false
       }).then(function(canvas) {
         // Découper la moitié gauche (recto) ou droite (verso)
         var srcX = (side === 'verso') ? canvas.width / 2 : 0;

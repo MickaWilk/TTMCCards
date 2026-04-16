@@ -17,7 +17,8 @@
       <p class="sidebar-sub">Generateur de cartes personnalisees</p>
 
       <div class="sidebar-sections">
-        <!-- Section: Type de carte -->
+
+        <!-- Type de carte — toujours ouvert -->
         <div class="sidebar-section open">
           <div class="section-header">Type de carte</div>
           <div class="section-body">
@@ -25,15 +26,25 @@
           </div>
         </div>
 
-        <!-- Section: Couleur -->
+        <!-- Couleur — toujours ouvert -->
         <div class="sidebar-section open">
-          <div class="section-header">Couleur du theme</div>
+          <div class="section-header">Couleur</div>
           <div class="section-body">
             <div id="color-picker"></div>
           </div>
         </div>
 
-        <!-- Section: Coller du texte -->
+        <!-- Affichage (toggles) — toujours ouvert -->
+        <div class="sidebar-section open">
+          <div class="section-header">Affichage</div>
+          <div class="section-body">
+            <div class="toggle-grid" id="toggle-grid">
+              <!-- Built dynamically by app.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Coller du texte -->
         <div class="sidebar-section">
           <div class="section-header">Coller du texte</div>
           <div class="section-body">
@@ -47,7 +58,41 @@
           </div>
         </div>
 
-        <!-- Section: Typographie -->
+        <!-- Images personnalisees -->
+        <div class="sidebar-section">
+          <div class="section-header">Images personnalisees</div>
+          <div class="section-body">
+            <div class="img-upload-wrap">
+              <!-- Background carte -->
+              <div class="img-upload-row">
+                <span class="img-upload-label">Fond de carte</span>
+                <label class="img-upload-btn">Choisir<input type="file" id="img-card-bg" accept="image/*" style="display:none"></label>
+                <img class="img-upload-preview" id="img-card-bg-preview" style="display:none">
+                <button class="img-upload-clear" id="img-card-bg-clear" style="display:none" title="Supprimer">&#10005;</button>
+              </div>
+              <!-- Background numeros -->
+              <div class="img-upload-row">
+                <span class="img-upload-label">Fond numeros</span>
+                <label class="img-upload-btn">Choisir<input type="file" id="img-num-bg" accept="image/*" style="display:none"></label>
+                <img class="img-upload-preview" id="img-num-bg-preview" style="display:none">
+                <button class="img-upload-clear" id="img-num-bg-clear" style="display:none" title="Supprimer">&#10005;</button>
+              </div>
+              <!-- Numeros individuels -->
+              <div style="margin-top:6px">
+                <span class="img-upload-label" style="display:block;margin-bottom:4px">Numeros (cliquer = individuel)</span>
+                <div class="num-import-row" id="num-buttons">
+                  <!-- 10 mini boutons generes par app.js -->
+                </div>
+                <div style="display:flex;gap:4px;margin-top:6px">
+                  <label class="img-upload-btn" style="flex:1;text-align:center">Importer colonne 1-10<input type="file" id="img-num-column" accept="image/*" style="display:none"></label>
+                  <button class="img-upload-btn" id="btn-clear-nums" style="color:#e74c3c">Vider</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Typographie -->
         <div class="sidebar-section">
           <div class="section-header">Typographie</div>
           <div class="section-body">
@@ -57,7 +102,7 @@
           </div>
         </div>
 
-        <!-- Section: Taille du texte -->
+        <!-- Taille du texte -->
         <div class="sidebar-section">
           <div class="section-header">Taille du texte</div>
           <div class="section-body">
@@ -65,7 +110,7 @@
           </div>
         </div>
 
-        <!-- Section: Icone -->
+        <!-- Icone -->
         <div class="sidebar-section">
           <div class="section-header">Icone</div>
           <div class="section-body">
@@ -73,7 +118,7 @@
           </div>
         </div>
 
-        <!-- Section: Logo personnalise -->
+        <!-- Logo personnalise -->
         <div class="sidebar-section">
           <div class="section-header">Logo personnalise</div>
           <div class="section-body">
@@ -91,7 +136,7 @@
           </div>
         </div>
 
-        <!-- Section: Export -->
+        <!-- Export -->
         <div class="sidebar-section">
           <div class="section-header">Taille d'export</div>
           <div class="section-body">
@@ -116,7 +161,6 @@
 
       <div class="sidebar-footer">
         <p>Texte editable directement sur la carte</p>
-        <p>Double-cliquer sur le .html pour ouvrir</p>
       </div>
     </aside>
 
@@ -133,6 +177,9 @@
 
   <!-- Sample Modal -->
   <div id="sample-modal"></div>
+
+  <!-- Hidden file inputs for num images -->
+  <input type="file" id="img-num-single" accept="image/*" style="display:none">
 
   <!-- Scripts : ordre de chargement obligatoire -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>

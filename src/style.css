@@ -559,6 +559,122 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .intrepide-logo .ttmc-logo { color:var(--header-bg, #B71C1C); opacity:.3; }
 
 /* =============================================
+   TOGGLES DE VISIBILITE
+   ============================================= */
+.hide-numbers .pq-num,
+.hide-numbers .pa-num { visibility:hidden; }
+
+.hide-questions .pq-txt { visibility:hidden; }
+.hide-answers .pa-txt { visibility:hidden; }
+
+.hide-subject .panel-subject { display:none; }
+.hide-subject .debuter-title,
+.hide-subject .gagner-subtitle,
+.hide-subject .intrepide-title { display:none; }
+
+.hide-header .panel-header,
+.hide-header .debuter-header,
+.hide-header .gagner-header,
+.hide-header .intrepide-header { display:none; }
+
+.hide-icons .panel-header-icon { display:none; }
+.hide-watermark .panel-watermark,
+.hide-watermark .debuter-logo,
+.hide-watermark .gagner-logo,
+.hide-watermark .intrepide-logo { display:none; }
+
+/* =============================================
+   CUSTOM NUMBER IMAGES
+   ============================================= */
+.custom-num-img {
+  width:100%; height:100%; object-fit:contain;
+  display:block;
+}
+.pq-num.has-num-bg,
+.pa-num.has-num-bg {
+  border-radius:50%;
+  color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.3);
+}
+
+/* =============================================
+   TOGGLE SWITCHES (sidebar)
+   ============================================= */
+.toggle-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:4px 10px;
+}
+.toggle-row {
+  display:flex; align-items:center; gap:6px; padding:3px 0;
+}
+.toggle-label {
+  font-size:10px; color:rgba(255,255,255,.55); flex:1;
+  white-space:nowrap; cursor:pointer; user-select:none;
+}
+.toggle-cb {
+  width:32px; height:16px; border-radius:8px;
+  background:rgba(255,255,255,.12);
+  position:relative; cursor:pointer;
+  -webkit-appearance:none; appearance:none;
+  outline:none; flex-shrink:0;
+  transition:background .2s;
+}
+.toggle-cb:checked { background:#667eea; }
+.toggle-cb::after {
+  content:''; position:absolute; top:2px; left:2px;
+  width:12px; height:12px; border-radius:50%;
+  background:#fff; transition:transform .2s;
+}
+.toggle-cb:checked::after { transform:translateX(16px); }
+
+/* =============================================
+   IMAGE UPLOAD ROWS (sidebar)
+   ============================================= */
+.img-upload-row {
+  display:flex; align-items:center; gap:8px;
+  padding:6px 0;
+}
+.img-upload-label {
+  font-size:10px; color:rgba(255,255,255,.5); flex:1;
+  white-space:nowrap;
+}
+.img-upload-btn {
+  padding:4px 10px; border:1px solid rgba(255,255,255,.15);
+  border-radius:6px; background:rgba(255,255,255,.05);
+  color:rgba(255,255,255,.6); font-size:10px; cursor:pointer;
+  font-family:'Poppins',sans-serif; transition:background .2s;
+  white-space:nowrap;
+}
+.img-upload-btn:hover { background:rgba(255,255,255,.1); }
+.img-upload-clear {
+  background:none; border:none; color:#e74c3c; cursor:pointer;
+  font-size:14px; padding:2px 4px; line-height:1;
+}
+.img-upload-preview {
+  width:28px; height:28px; border-radius:4px; object-fit:cover;
+  border:1px solid rgba(255,255,255,.15);
+}
+.img-upload-wrap {
+  display:flex; flex-direction:column; gap:6px;
+}
+.num-import-row {
+  display:flex; gap:4px; flex-wrap:wrap;
+}
+.num-mini-btn {
+  width:24px; height:24px; border:1px solid rgba(255,255,255,.1);
+  border-radius:4px; background:rgba(255,255,255,.05);
+  color:rgba(255,255,255,.5); font-size:9px; font-weight:700;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background .2s; position:relative; overflow:hidden;
+}
+.num-mini-btn:hover { background:rgba(255,255,255,.1); }
+.num-mini-btn.has-img {
+  border-color:rgba(102,126,234,.4); background:rgba(102,126,234,.1);
+}
+.num-mini-btn img {
+  width:100%; height:100%; object-fit:contain; position:absolute; inset:0;
+}
+
+/* =============================================
    TOAST
    ============================================= */
 .toast {
