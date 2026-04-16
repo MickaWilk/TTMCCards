@@ -93,11 +93,13 @@
         out.getContext('2d').drawImage(canvas, 0, 0, exportW, exportH);
 
         var data = window.getCardData();
-        var suffix = data.subject ? window.slugify(data.subject) : 'vide';
+        var label = data.subject || data.title || data.subtitle || '';
+        var suffix = label ? window.slugify(label) : 'vide';
         var themeId = window.getCurrentThemeId();
+        var cardType = data.cardType || 'standard';
 
         var link = document.createElement('a');
-        link.download = 'ttmc-' + themeId + '-' + suffix + '-' + exportW + 'x' + exportH + '.png';
+        link.download = 'ttmc-' + cardType + '-' + themeId + '-' + suffix + '-' + exportW + 'x' + exportH + '.png';
         link.href = out.toDataURL('image/png');
         link.click();
 
@@ -143,11 +145,13 @@
         out.getContext('2d').drawImage(canvas, srcX, 0, srcW, canvas.height, 0, 0, halfW, halfH);
 
         var data = window.getCardData();
-        var suffix = data.subject ? window.slugify(data.subject) : 'vide';
+        var label = data.subject || data.title || data.subtitle || '';
+        var suffix = label ? window.slugify(label) : 'vide';
         var themeId = window.getCurrentThemeId();
+        var cardType = data.cardType || 'standard';
 
         var link = document.createElement('a');
-        link.download = 'ttmc-' + themeId + '-' + side + '-' + suffix + '-' + halfW + 'x' + halfH + '.png';
+        link.download = 'ttmc-' + cardType + '-' + themeId + '-' + side + '-' + suffix + '-' + halfW + 'x' + halfH + '.png';
         link.href = out.toDataURL('image/png');
         link.click();
 

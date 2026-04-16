@@ -1,28 +1,52 @@
-// ===== themes.js — Thèmes couleur (7 officiels TTMC + 8 extras) =====
+// ===== themes.js — Types de cartes + Thèmes couleur officiels TTMC =====
 
+// ===== 4 types de cartes TTMC =====
+window.CARD_TYPES = [
+  { id: 'standard',  label: 'Questions / Reponses',   description: 'Carte classique "Tu te mets combien en..."', defaultTheme: 'green' },
+  { id: 'debuter',   label: 'Hesite pas a Debuter',   description: 'Carte challenge pour demarrer la partie',    defaultTheme: 'brown' },
+  { id: 'gagner',    label: 'Hesite pas a Gagner',     description: 'Carte bonus / challenge',                    defaultTheme: 'gold' },
+  { id: 'intrepide', label: 'Intrepide',               description: 'Carte defi / dare',                         defaultTheme: 'darkred' }
+];
+
+window.getCardTypeById = function(id) {
+  return CARD_TYPES.find(function(t) { return t.id === id; }) || CARD_TYPES[0];
+};
+
+// ===== Themes couleur =====
+// 7 themes officiels TTMC (correspondant aux 7 cartes de reference)
+// + 8 themes bonus pour personnalisation
 window.THEMES = [
-  // ===== 7 thèmes officiels TTMC (cartes 1 à 7) =====
-  { id:'green', label:'Verte — Scolaire', headerBg:'#2d8c3c', headerText:'#ffffff', border:'#1e6e2c', numColor:'#c0392b', cardBg:'#e8f5e9', iconBgAlpha:'0.15', defaultIcon:'feuille' },
-  { id:'purple', label:'Violette — Mature', headerBg:'#5b2c6f', headerText:'#ffffff', border:'#4a235a', numColor:'#5b2c6f', cardBg:'#f0e6f6', iconBgAlpha:'0.15', defaultIcon:'loupe' },
-  { id:'blue', label:'Bleue — Improbable', headerBg:'#2471a3', headerText:'#ffffff', border:'#1a5276', numColor:'#1a5276', cardBg:'#d6eaf8', iconBgAlpha:'0.12', defaultIcon:'poisson' },
-  { id:'orange', label:'Orange — Plaisir', headerBg:'#e67e22', headerText:'#ffffff', border:'#c0691a', numColor:'#d35400', cardBg:'#fdebd0', iconBgAlpha:'0.12', defaultIcon:'etoile' },
-  { id:'brown', label:'Marron — Débuter', headerBg:'#795548', headerText:'#ffffff', border:'#5d4037', numColor:'#4e342e', cardBg:'#efebe9', iconBgAlpha:'0.12', defaultIcon:'livre' },
-  { id:'gold', label:'Or — Gagner', headerBg:'#c8a415', headerText:'#1a1a2e', border:'#a68b10', numColor:'#8b7200', cardBg:'#fff8e1', iconBgAlpha:'0.20', defaultIcon:'couronne' },
-  { id:'red', label:'Rouge — Intrépide', headerBg:'#922b21', headerText:'#ffffff', border:'#7b241c', numColor:'#922b21', cardBg:'#fadbd8', iconBgAlpha:'0.12', defaultIcon:'epee' },
+  // --- 4 themes Standard Q&A (cartes 4-7 officielles) ---
+  { id:'green',   label:'Verte — Nature / Scolaire',     headerBg:'#3B9B3A', headerText:'#ffffff', border:'#2D7A2C', numColor:'#C0392B', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'feuille',   cardType:'standard' },
+  { id:'purple',  label:'Violette — Savoir / Mature',     headerBg:'#6B2D8E', headerText:'#ffffff', border:'#522070', numColor:'#6B2D8E', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'loupe',     cardType:'standard' },
+  { id:'blue',    label:'Bleue — Improbable / Divers',    headerBg:'#2979B1', headerText:'#ffffff', border:'#1E5F8C', numColor:'#1E5F8C', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'poisson',   cardType:'standard' },
+  { id:'orange',  label:'Orange — Loisirs / Plaisir',     headerBg:'#F18A00', headerText:'#ffffff', border:'#C97200', numColor:'#D35400', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'etoile',    cardType:'standard' },
 
-  // ===== 8 thèmes bonus =====
-  { id:'yellow', label:'Jaune — Célébrités', headerBg:'#f5d442', headerText:'#1a5276', border:'#c9ad2e', numColor:'#1a5276', cardBg:'#fef9e7', iconBgAlpha:'0.25', defaultIcon:'silhouette' },
-  { id:'pink', label:'Rose — Amour', headerBg:'#d63384', headerText:'#ffffff', border:'#b02a6f', numColor:'#b02a6f', cardBg:'#f0d0e0', iconBgAlpha:'0.12', defaultIcon:'coeur' },
-  { id:'teal', label:'Turquoise — Voyages', headerBg:'#0097a7', headerText:'#ffffff', border:'#007b8a', numColor:'#007b8a', cardBg:'#e0f2f1', iconBgAlpha:'0.12', defaultIcon:'globe' },
-  { id:'indigo', label:'Indigo — Espace', headerBg:'#303f9f', headerText:'#e8eaf6', border:'#283593', numColor:'#283593', cardBg:'#e8eaf6', iconBgAlpha:'0.15', defaultIcon:'fusee' },
-  { id:'lime', label:'Citron vert — Gastronomie', headerBg:'#7cb342', headerText:'#1b3a00', border:'#689f38', numColor:'#558b2f', cardBg:'#f1f8e9', iconBgAlpha:'0.15', defaultIcon:'trophee' },
-  { id:'black', label:'Noire — Expert', headerBg:'#212121', headerText:'#ffd740', border:'#000000', numColor:'#212121', cardBg:'#e0e0e0', iconBgAlpha:'0.10', defaultIcon:'eclair' },
-  { id:'cyan', label:'Cyan — Technologie', headerBg:'#00acc1', headerText:'#ffffff', border:'#00838f', numColor:'#00838f', cardBg:'#e0f7fa', iconBgAlpha:'0.12', defaultIcon:'manette' },
-  { id:'coral', label:'Corail — Musique', headerBg:'#ff6f61', headerText:'#ffffff', border:'#e55a4f', numColor:'#d84a3a', cardBg:'#fce4e0', iconBgAlpha:'0.12', defaultIcon:'musique' }
+  // --- 3 themes Challenge (cartes 1-3 officielles) ---
+  { id:'brown',   label:'Marron — Debuter',              headerBg:'#6D4C2A', headerText:'#8B1A1A', border:'#5D3A1A', numColor:'#4E342E', cardBg:'#D4B896', iconBgAlpha:'0.12', defaultIcon:'livre',     cardType:'debuter' },
+  { id:'gold',    label:'Or — Gagner',                    headerBg:'#C8960C', headerText:'#ffffff', border:'#A07A08', numColor:'#8B6914', cardBg:'#E8C84A', iconBgAlpha:'0.20', defaultIcon:'couronne',  cardType:'gagner' },
+  { id:'darkred', label:'Rouge — Intrepide',              headerBg:'#B71C1C', headerText:'#ffffff', border:'#8B1515', numColor:'#B71C1C', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'epee',      cardType:'intrepide' },
+
+  // --- 8 themes bonus (personnalisation) ---
+  { id:'yellow',  label:'Jaune — Celebrites',             headerBg:'#F5D442', headerText:'#1a5276', border:'#C9AD2E', numColor:'#1a5276', cardBg:'#ffffff', iconBgAlpha:'0.25', defaultIcon:'silhouette', cardType:'standard' },
+  { id:'pink',    label:'Rose — Amour',                   headerBg:'#D63384', headerText:'#ffffff', border:'#B02A6F', numColor:'#B02A6F', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'coeur',     cardType:'standard' },
+  { id:'teal',    label:'Turquoise — Voyages',            headerBg:'#0097A7', headerText:'#ffffff', border:'#007B8A', numColor:'#007B8A', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'globe',     cardType:'standard' },
+  { id:'indigo',  label:'Indigo — Espace',                headerBg:'#303F9F', headerText:'#E8EAF6', border:'#283593', numColor:'#283593', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'fusee',     cardType:'standard' },
+  { id:'lime',    label:'Citron vert — Gastronomie',      headerBg:'#7CB342', headerText:'#1B3A00', border:'#689F38', numColor:'#558B2F', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'trophee',   cardType:'standard' },
+  { id:'black',   label:'Noire — Expert',                 headerBg:'#212121', headerText:'#FFD740', border:'#000000', numColor:'#212121', cardBg:'#E0E0E0', iconBgAlpha:'0.10', defaultIcon:'eclair',    cardType:'standard' },
+  { id:'cyan',    label:'Cyan — Technologie',             headerBg:'#00ACC1', headerText:'#ffffff', border:'#00838F', numColor:'#00838F', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'manette',   cardType:'standard' },
+  { id:'coral',   label:'Corail — Musique',               headerBg:'#FF6F61', headerText:'#ffffff', border:'#E55A4F', numColor:'#D84A3A', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'musique',   cardType:'standard' }
 ];
 
 window.getThemeById = function(id) {
   return THEMES.find(function(t) { return t.id === id; }) || THEMES[0];
+};
+
+window.getThemesForCardType = function(cardTypeId) {
+  // Standard cards can use any theme
+  if (cardTypeId === 'standard') return THEMES;
+  // Challenge cards show their own theme + all standard themes for customization
+  return THEMES;
 };
 
 window.applyTheme = function(cardEl, theme) {

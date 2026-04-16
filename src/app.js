@@ -1,7 +1,79 @@
-// ===== app.js — Point d'entrée / orchestration =====
+// ===== app.js — Point d'entree / orchestration =====
 
 (function() {
   'use strict';
+
+  // ===== 0. Card Type Picker =====
+  function buildCardTypePicker() {
+    var container = document.getElementById('card-type-picker');
+    if (!container) return;
+    container.innerHTML = '';
+
+    var defaultColors = {
+      standard: '#3B9B3A',
+      debuter: '#6D4C2A',
+      gagner: '#C8960C',
+      intrepide: '#B71C1C'
+    };
+
+    for (var i = 0; i < CARD_TYPES.length; i++) {
+      (function(ct, index) {
+        var btn = document.createElement('button');
+        btn.className = 'card-type-btn' + (index === 0 ? ' active' : '');
+        btn.setAttribute('data-card-type', ct.id);
+
+        var dot = document.createElement('span');
+        dot.className = 'card-type-btn-dot';
+        dot.style.background = defaultColors[ct.id] || '#667eea';
+
+        var textWrap = document.createElement('div');
+
+        var label = document.createElement('div');
+        label.className = 'card-type-btn-label';
+        label.textContent = ct.label;
+
+        var desc = document.createElement('div');
+        desc.className = 'card-type-btn-desc';
+        desc.textContent = ct.description;
+
+        textWrap.appendChild(label);
+        textWrap.appendChild(desc);
+        btn.appendChild(dot);
+        btn.appendChild(textWrap);
+
+        btn.addEventListener('click', function() {
+          var all = container.querySelectorAll('.card-type-btn');
+          for (var j = 0; j < all.length; j++) all[j].classList.remove('active');
+          btn.classList.add('active');
+
+          window.setCurrentCardType(ct.id);
+
+          // Switch to the default theme for this card type
+          var cardType = window.getCardTypeById(ct.id);
+          var newTheme = window.getThemeById(cardType.defaultTheme);
+          window.setCurrentThemeId(cardType.defaultTheme);
+          window.setCurrentIconId(newTheme.defaultIcon);
+
+          updateColorPickerActive();
+          updateIconPickerActive();
+          updateBulkPasteLabels();
+          updateExportBothVisibility();
+          window.renderCard(cardType.defaultTheme, newTheme.defaultIcon, window.getCurrentFontId());
+          window.saveToLocalStorage();
+        });
+
+        container.appendChild(btn);
+      })(CARD_TYPES[i], i);
+    }
+  }
+
+  function updateCardTypePickerActive() {
+    var btns = document.querySelectorAll('.card-type-btn');
+    var current = window.getCurrentCardType();
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle('active', btns[i].getAttribute('data-card-type') === current);
+    }
+  }
 
   // ===== 1. Color Picker =====
   function buildColorPicker() {
@@ -79,7 +151,61 @@
     }
   }
 
-  // ===== 3a. Font Size Controls =====
+  // ===== 3. Bulk Paste Labels — adapt to card type =====
+  function updateBulkPasteLabels() {
+    var label1 = document.getElementById('bulk-label-1');
+    var label2 = document.getElementById('bulk-label-2');
+    var area1 = document.getElementById('bulk-questions');
+    var area2 = document.getElementById('bulk-answers');
+    var hint = document.getElementById('bulk-hint');
+
+    var ct = window.getCurrentCardType();
+
+    if (ct === 'standard') {
+      if (label1) label1.textContent = 'Questions (1 par ligne)';
+      if (label2) label2.textContent = 'Reponses (1 par ligne)';
+      if (area1) area1.placeholder = 'Coller 10 questions ici...\nQuestion 1\nQuestion 2\n...';
+      if (area2) area2.placeholder = 'Coller 10 reponses ici...\nReponse 1\nReponse 2\n...';
+      if (hint) hint.textContent = 'Collez ou tapez 10 lignes, elles remplissent automatiquement la carte.';
+      if (area2) area2.style.display = '';
+      if (label2) label2.style.display = '';
+    } else if (ct === 'debuter') {
+      if (label1) label1.textContent = 'Texte du challenge';
+      if (area1) area1.placeholder = 'Collez le texte du challenge ici...';
+      if (label2) label2.textContent = 'Note de bas de page';
+      if (area2) area2.placeholder = 'Texte optionnel en bas de carte...';
+      if (hint) hint.textContent = 'Le texte remplit directement le corps de la carte.';
+      if (area2) area2.style.display = '';
+      if (label2) label2.style.display = '';
+    } else if (ct === 'gagner') {
+      if (label1) label1.textContent = 'Question / Challenge';
+      if (area1) area1.placeholder = 'Collez le texte de la question ou du challenge...';
+      if (label2) label2.textContent = 'Reponse';
+      if (area2) area2.placeholder = 'Collez la reponse ici...';
+      if (hint) hint.textContent = 'Le texte remplit le corps et la zone de reponse.';
+      if (area2) area2.style.display = '';
+      if (label2) label2.style.display = '';
+    } else if (ct === 'intrepide') {
+      if (label1) label1.textContent = 'Description du defi';
+      if (area1) area1.placeholder = 'Collez la description du defi...';
+      if (label2) label2.textContent = 'Reponses';
+      if (area2) area2.placeholder = 'Collez les reponses ici...';
+      if (hint) hint.textContent = 'Le texte remplit les deux panneaux de la carte.';
+      if (area2) area2.style.display = '';
+      if (label2) label2.style.display = '';
+    }
+  }
+
+  // ===== 3b. Show/hide "export both sides" depending on card type =====
+  function updateExportBothVisibility() {
+    var btn = document.getElementById('btn-export-both');
+    if (!btn) return;
+    var ct = window.getCurrentCardType();
+    // Only show "export both sides" for dual-panel types
+    btn.style.display = (ct === 'standard' || ct === 'intrepide') ? '' : 'none';
+  }
+
+  // ===== 4a. Font Size Controls =====
   function buildFontSizeControls() {
     var container = document.getElementById('font-size-controls');
     if (!container) return;
@@ -88,8 +214,8 @@
     var controls = [
       { key: 'subject',  label: 'Sujet',     min: 10, max: 36, step: 1, default: 22 },
       { key: 'question', label: 'Questions',  min: 6,  max: 20, step: 0.5, default: 10 },
-      { key: 'answer',   label: 'R\u00e9ponses',   min: 6,  max: 20, step: 0.5, default: 10 },
-      { key: 'number',   label: 'Num\u00e9ros',    min: 14, max: 42, step: 1, default: 28 }
+      { key: 'answer',   label: 'Reponses',   min: 6,  max: 20, step: 0.5, default: 10 },
+      { key: 'number',   label: 'Numeros',    min: 14, max: 42, step: 1, default: 28 }
     ];
 
     var sizes = window.getFontSizes();
@@ -143,7 +269,7 @@
     }
   }
 
-  // ===== 3b. Font Selector =====
+  // ===== 4b. Font Selector =====
   function buildFontSelector() {
     var wrap = document.getElementById('font-select-wrap');
     if (!wrap) return;
@@ -172,7 +298,7 @@
     wrap.appendChild(sel);
   }
 
-  // ===== 4. Bulk Paste =====
+  // ===== 5. Bulk Paste =====
   function setupBulkPaste() {
     var qArea = document.getElementById('bulk-questions');
     var aArea = document.getElementById('bulk-answers');
@@ -190,7 +316,7 @@
     }
   }
 
-  // ===== 5. Logo Upload =====
+  // ===== 6. Logo Upload =====
   function setupLogoUpload() {
     var input = document.getElementById('logo-input');
     var wrap = document.getElementById('logo-preview-wrap');
@@ -232,7 +358,7 @@
     if (input) input.value = '';
   }
 
-  // ===== 6. Sections accordéon =====
+  // ===== 7. Sections accordeon =====
   function setupSections() {
     var headers = document.querySelectorAll('.section-header');
     for (var i = 0; i < headers.length; i++) {
@@ -242,11 +368,9 @@
         });
       })(headers[i]);
     }
-    var first = document.querySelector('.sidebar-section');
-    if (first) first.classList.add('open');
   }
 
-  // ===== 7. Sample Cards Modal =====
+  // ===== 8. Sample Cards Modal =====
   function setupSampleCards() {
     var btn = document.getElementById('btn-sample');
     var modal = document.getElementById('sample-modal');
@@ -279,27 +403,55 @@
     var list = document.createElement('div');
     list.className = 'sample-card-list';
 
-    for (var i = 0; i < SAMPLE_CARDS.length; i++) {
-      (function(card) {
-        var item = document.createElement('button');
-        item.className = 'sample-card-item';
-        var theme = window.getThemeById(card.themeId);
-        item.innerHTML = '<span class="sample-dot" style="background:' + theme.headerBg + '"></span>' +
-          '<span class="sample-label">' + card.sujet + '</span>' +
-          '<span class="sample-theme">' + theme.label + '</span>';
-        item.addEventListener('click', function() {
-          var result = window.loadSampleCard(card);
-          if (result) {
-            updateColorPickerActive();
-            updateIconPickerActive();
-            var sel = document.getElementById('font-select');
-            if (sel) sel.value = result.fontId;
-          }
-          modal.classList.remove('visible');
-          window.showToast('Carte charg\u00e9e : ' + card.sujet);
-        });
-        list.appendChild(item);
-      })(SAMPLE_CARDS[i]);
+    // Group samples by card type
+    var groups = {};
+    var typeLabels = {};
+    for (var t = 0; t < CARD_TYPES.length; t++) {
+      groups[CARD_TYPES[t].id] = [];
+      typeLabels[CARD_TYPES[t].id] = CARD_TYPES[t].label;
+    }
+
+    for (var s = 0; s < SAMPLE_CARDS.length; s++) {
+      var ct = SAMPLE_CARDS[s].cardType || 'standard';
+      if (!groups[ct]) groups[ct] = [];
+      groups[ct].push(SAMPLE_CARDS[s]);
+    }
+
+    // Render each group
+    for (var typeId in groups) {
+      if (groups[typeId].length === 0) continue;
+
+      var sectionTitle = document.createElement('div');
+      sectionTitle.className = 'sample-section-title';
+      sectionTitle.textContent = typeLabels[typeId] || typeId;
+      list.appendChild(sectionTitle);
+
+      for (var c = 0; c < groups[typeId].length; c++) {
+        (function(card) {
+          var item = document.createElement('button');
+          item.className = 'sample-card-item';
+          var theme = window.getThemeById(card.themeId);
+          var cardLabel = card.sujet || card.title || card.subtitle || 'Carte';
+          item.innerHTML = '<span class="sample-dot" style="background:' + theme.headerBg + '"></span>' +
+            '<span class="sample-label">' + cardLabel + '</span>' +
+            '<span class="sample-theme">' + theme.label + '</span>';
+          item.addEventListener('click', function() {
+            var result = window.loadSampleCard(card);
+            if (result) {
+              updateCardTypePickerActive();
+              updateColorPickerActive();
+              updateIconPickerActive();
+              updateBulkPasteLabels();
+              updateExportBothVisibility();
+              var sel = document.getElementById('font-select');
+              if (sel) sel.value = result.fontId;
+            }
+            modal.classList.remove('visible');
+            window.showToast('Carte chargee : ' + cardLabel);
+          });
+          list.appendChild(item);
+        })(groups[typeId][c]);
+      }
     }
 
     inner.appendChild(list);
@@ -315,14 +467,14 @@
     modal.classList.add('visible');
   }
 
-  // ===== 8. Restauration brouillon =====
+  // ===== 9. Restauration brouillon =====
   function checkDraftRestore() {
     var draft = window.loadFromLocalStorage();
     if (!draft) return;
 
     var hasContent = false;
 
-    // Nouveau format plat
+    // Standard Q&A
     if (draft.subject && draft.subject.trim()) hasContent = true;
     if (!hasContent && draft.questions) {
       for (var k in draft.questions) {
@@ -335,7 +487,13 @@
       }
     }
 
-    // Ancien format recto/verso
+    // Challenge fields
+    if (!hasContent && draft.title && draft.title.trim()) hasContent = true;
+    if (!hasContent && draft.body && draft.body.trim()) hasContent = true;
+    if (!hasContent && draft.subtitle && draft.subtitle.trim()) hasContent = true;
+    if (!hasContent && draft.responses && draft.responses.trim()) hasContent = true;
+
+    // Legacy recto/verso format
     if (!hasContent && draft.recto) {
       var subj = draft.recto.subject || draft.recto.subjectA || '';
       if (subj.trim()) hasContent = true;
@@ -347,7 +505,7 @@
     frag.className = 'toast-inner';
 
     var msg = document.createElement('span');
-    msg.textContent = 'Brouillon trouv\u00e9. Restaurer ?';
+    msg.textContent = 'Brouillon trouve. Restaurer ?';
     frag.appendChild(msg);
 
     var actions = document.createElement('div');
@@ -357,6 +515,7 @@
     btnYes.className = 'toast-btn toast-btn-yes';
     btnYes.textContent = 'Restaurer';
     btnYes.addEventListener('click', function() {
+      if (draft.cardType) window.setCurrentCardType(draft.cardType);
       if (draft.themeId) window.setCurrentThemeId(draft.themeId);
       if (draft.iconId) window.setCurrentIconId(draft.iconId);
       if (draft.fontId) window.setCurrentFontId(draft.fontId);
@@ -367,8 +526,11 @@
         window.renderCard(draft.themeId, draft.iconId, fontId);
         window.restoreCardContent(draft);
 
+        updateCardTypePickerActive();
         updateColorPickerActive();
         updateIconPickerActive();
+        updateBulkPasteLabels();
+        updateExportBothVisibility();
         updateFontSizeControls();
         var sel = document.getElementById('font-select');
         if (sel) sel.value = fontId;
@@ -392,7 +554,7 @@
     window.showToast(frag, 0);
   }
 
-  // ===== 9. Auto Scale =====
+  // ===== 10. Auto Scale =====
   function updateCardScale() {
     var m = document.querySelector('.main');
     if (!m) return;
@@ -406,6 +568,7 @@
 
   // ===== Init =====
   document.addEventListener('DOMContentLoaded', function() {
+    buildCardTypePicker();
     buildColorPicker();
     buildIconPicker();
     buildFontSelector();
@@ -426,8 +589,11 @@
     if (btnReset) {
       btnReset.addEventListener('click', function() {
         window.clearCard();
+        updateCardTypePickerActive();
         updateColorPickerActive();
         updateIconPickerActive();
+        updateBulkPasteLabels();
+        updateExportBothVisibility();
         updateFontSizeControls();
         clearLogoPreview();
         var qArea = document.getElementById('bulk-questions');
@@ -436,11 +602,13 @@
         if (aArea) aArea.value = '';
         var sel = document.getElementById('font-select');
         if (sel) sel.value = 'poppins';
-        window.showToast('Carte r\u00e9initialis\u00e9e');
+        window.showToast('Carte reinitialisee');
       });
     }
 
     updateCardScale();
+    updateBulkPasteLabels();
+    updateExportBothVisibility();
     window.addEventListener('resize', updateCardScale);
 
     window.renderCard('green', 'feuille', 'poppins');

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TTMC Cards — Générateur de cartes</title>
+  <title>TTMC Cards — Generateur de cartes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -14,12 +14,20 @@
     <!-- ===== Sidebar ===== -->
     <aside class="sidebar">
       <h1 class="sidebar-title">TTMC<br><span>Cards</span></h1>
-      <p class="sidebar-sub">Générateur de cartes personnalisées</p>
+      <p class="sidebar-sub">Generateur de cartes personnalisees</p>
 
       <div class="sidebar-sections">
+        <!-- Section: Type de carte -->
+        <div class="sidebar-section open">
+          <div class="section-header">Type de carte</div>
+          <div class="section-body">
+            <div id="card-type-picker" class="card-type-selector"></div>
+          </div>
+        </div>
+
         <!-- Section: Couleur -->
         <div class="sidebar-section open">
-          <div class="section-header">Couleur du thème</div>
+          <div class="section-header">Couleur du theme</div>
           <div class="section-body">
             <div id="color-picker"></div>
           </div>
@@ -30,11 +38,11 @@
           <div class="section-header">Coller du texte</div>
           <div class="section-body">
             <div class="bulk-paste-group">
-              <span class="bulk-paste-label">Questions (1 par ligne)</span>
+              <span class="bulk-paste-label" id="bulk-label-1">Questions (1 par ligne)</span>
               <textarea class="bulk-paste-area" id="bulk-questions" placeholder="Coller 10 questions ici...&#10;Question 1&#10;Question 2&#10;..."></textarea>
-              <span class="bulk-paste-label">Réponses (1 par ligne)</span>
-              <textarea class="bulk-paste-area" id="bulk-answers" placeholder="Coller 10 réponses ici...&#10;Réponse 1&#10;Réponse 2&#10;..."></textarea>
-              <p class="bulk-paste-hint">Collez ou tapez 10 lignes, elles remplissent automatiquement la carte.</p>
+              <span class="bulk-paste-label" id="bulk-label-2">Reponses (1 par ligne)</span>
+              <textarea class="bulk-paste-area" id="bulk-answers" placeholder="Coller 10 reponses ici...&#10;Reponse 1&#10;Reponse 2&#10;..."></textarea>
+              <p class="bulk-paste-hint" id="bulk-hint">Collez ou tapez 10 lignes, elles remplissent automatiquement la carte.</p>
             </div>
           </div>
         </div>
@@ -57,17 +65,17 @@
           </div>
         </div>
 
-        <!-- Section: Icône -->
+        <!-- Section: Icone -->
         <div class="sidebar-section">
-          <div class="section-header">Icône</div>
+          <div class="section-header">Icone</div>
           <div class="section-body">
             <div id="icon-picker"></div>
           </div>
         </div>
 
-        <!-- Section: Logo personnalisé -->
+        <!-- Section: Logo personnalise -->
         <div class="sidebar-section">
-          <div class="section-header">Logo personnalisé</div>
+          <div class="section-header">Logo personnalise</div>
           <div class="section-body">
             <div class="logo-area">
               <div class="logo-drop" id="logo-drop">
@@ -101,13 +109,13 @@
       <!-- Boutons d'action -->
       <div class="btn-group">
         <button id="btn-export" class="btn btn-primary">Exporter PNG</button>
-        <button id="btn-export-both" class="btn btn-primary" style="background:linear-gradient(135deg,#764ba2,#667eea)">Exporter les 2 faces séparemment</button>
+        <button id="btn-export-both" class="btn btn-primary" style="background:linear-gradient(135deg,#764ba2,#667eea)">Exporter les 2 faces separement</button>
         <button id="btn-sample" class="btn btn-secondary">Charger un exemple</button>
-        <button id="btn-reset" class="btn btn-secondary">Réinitialiser</button>
+        <button id="btn-reset" class="btn btn-secondary">Reinitialiser</button>
       </div>
 
       <div class="sidebar-footer">
-        <p>Texte éditable directement sur la carte</p>
+        <p>Texte editable directement sur la carte</p>
         <p>Double-cliquer sur le .html pour ouvrir</p>
       </div>
     </aside>

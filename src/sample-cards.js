@@ -1,155 +1,200 @@
-// ===== sample-cards.js — Données d'exemple inline =====
-// Pas de fetch() pour compatibilité file://
-// Données issues de cards/bleues.json, cards/jaunes.json, cards/rouges.json
+// ===== sample-cards.js — Donnees d'exemple pour les 4 types de cartes =====
+// Pas de fetch() pour compatibilite file://
 
 window.SAMPLE_CARDS = [
-  // ===== Bleues — Divers / Improbable =====
+  // =================================================================
+  // STANDARD Q&A — "Tu te mets combien en..."
+  // =================================================================
+
+  // --- Vertes (Nature / Scolaire) ---
   {
+    cardType: 'standard',
+    themeId: 'green',
+    sujet: 'Safaris en Afrique ?',
+    questions: {
+      '1': 'Pourquoi la prochaine fois il va capturer du 5G pour signaler a ses congeneres la presence de la viande ?',
+      '2': 'Lorsqu\'un safari part, le cameraman doit rester debout en ecoutant les precieux conseils du ranger ?',
+      '3': 'Le mambo noir appele ainsi en reference a la couleur noire de ses yeux ?',
+      '4': 'Le guepard dispose de griffes retractiles, non retractiles ou decapotables ?',
+      '5': 'Nommer 4 des 5 merveilles faisant partie des Big Five d\'Afrique du Sud ?',
+      '6': 'Dans quel pays se trouve la somptueuse reserve du Masai Mara ?',
+      '7': 'De quoi se nourrit essentiellement un pangolin ?',
+      '8': 'Comment reagit un acacia brule par une girafe ?',
+      '9': 'Quel serpent fait le plus de victimes en Afrique du Sud ?',
+      '10': 'Indiquer le regne, l\'embranchement, la famille et le genre de la hyene tachetee.'
+    },
+    answers: {
+      '1': 'Pour signaler a ses congeneres la presence de la viande',
+      '2': 'Rester debout en ecoutant les precieux conseils du ranger',
+      '3': 'En reference a l\'interieur de sa bouche',
+      '4': 'De griffes semi-retractiles',
+      '5': 'Lion, leopard, elephant, rhinoceros et buffle',
+      '6': 'Le Kenya',
+      '7': 'On accepte aussi fourmis, invertebres et les termites',
+      '8': 'Il degage un gaz pour alerter les acacias voisins de la menace',
+      '9': 'La vipere heurtante (ou Puff Adder)',
+      '10': 'Animal (ou Animalia), Chorde (ou Chordata), Hyenidae, Crocuta'
+    }
+  },
+
+  // --- Violettes (Savoir / Mature) ---
+  {
+    cardType: 'standard',
+    themeId: 'purple',
+    sujet: 'Swift ?',
+    questions: {
+      '1': 'Lorsqu\'elle consomme trop de guacamole, elle se sent comment ?',
+      '2': 'Quelle console de jeux est sortie en 2017 ?',
+      '3': 'Quelle marque automobile a sorti une version hybride de la Swift ?',
+      '4': 'Citer 5 chansons de Taylor Swift ayant depasse le milliard de vues sur YouTube ?',
+      '5': 'Nommer le code SWIFT, quel autre code a 3 lettres est utilise pour decoder le code des devises ?',
+      '6': 'De quelle nationalite etait Jonathan Swift, auteur du livre Les Voyages de Gulliver ?',
+      '7': 'Si on parle le langage d\'Apple, que signifie Swift ?',
+      '8': 'Trouver la franchise dans laquelle Stromile Swift a effectue le plus de saisons en NBA ?',
+      '9': 'Quel est le vrai prenom de Taylor Swift ?',
+      '10': 'Lorsqu\'on parle de reseau interbancaire, que signifie SWIFT ?'
+    },
+    answers: {
+      '1': 'Vraiment pas',
+      '2': 'La Nintendo Switch',
+      '3': 'Suzuki',
+      '4': 'Shake it off, Blank Space, Bad Blood, Look what you made me do et You Belong with me',
+      '5': 'Le code BIC',
+      '6': 'Irlandaise',
+      '7': 'C\'est un langage de programmation cree par Apple',
+      '8': 'Les Memphis Grizzlies',
+      '9': 'Alison',
+      '10': 'Society for Worldwide Interbank Financial Telecommunication'
+    }
+  },
+
+  // --- Bleues (Improbable / Divers) ---
+  {
+    cardType: 'standard',
     themeId: 'blue',
     sujet: 'Les records du monde absurdes',
     questions: {
-      '1': 'Existe-t-il un record du monde de lancer de téléphone portable ?',
-      '2': 'Dans quel pays a été établi le record du plus long câlin ?',
-      '3': 'Combien de temps a duré le plus long hoquet jamais enregistré (en années) ?',
-      '4': 'Quel est le record du monde du plus grand nombre de t-shirts enfilés en même temps ?',
-      '5': 'Quelle distance a parcourue la plus longue domino chain jamais réalisée (en km) ?',
-      '6': 'En quelle année Charles Osborne a-t-il commencé à hoqueter sans s\'arrêter pendant 68 ans ?',
-      '7': 'Quel est le record du nombre de personnes déguisées en Schtroumpfs au même endroit ?',
-      '8': 'Combien de hot-dogs Joey Chestnut a-t-il mangé en 10 min pour son record de 2021 ?',
-      '9': 'Quel est le record de vitesse d\'un lit motorisé homologué par le Guinness (en km/h) ?',
-      '10': 'Combien de jours a duré le plus long marathon de lecture à voix haute (record Guinness) ?'
-    }
-  },
-  {
-    themeId: 'blue',
-    sujet: 'Les lois les plus bizarres',
-    questions: {
-      '1': 'Vrai ou faux : en Suisse, il est interdit de tirer la chasse d\'eau après 22h dans un appartement ?',
-      '2': 'Dans quel pays est-il illégal de marcher sur les billets de banque ?',
-      '3': 'Dans quel État américain est-il interdit de porter des fausses moustaches à l\'église ?',
-      '4': 'Quel animal est-il interdit de promener sans laisse à Venise ?',
-      '5': 'Dans quelle ville française est-il techniquement interdit de mourir par arrêté municipal ?',
-      '6': 'En Angleterre, quelle loi de 1313 interdit de porter une armure au Parlement ?',
-      '7': 'Dans quel pays est-il obligatoire de sourire en public sauf lors des funérailles ?',
-      '8': 'Quel article du Code civil français interdisait aux femmes de porter un pantalon jusqu\'en 2013 ?',
-      '9': 'En Australie, quelle loi interdit de changer une ampoule si on n\'est pas électricien agréé ?',
-      '10': 'Dans quel État américain une loi de 1897 a failli changer la valeur de Pi à 3,2 ?'
-    }
-  },
-  {
-    themeId: 'blue',
-    sujet: 'Les inventions complètement ratées',
-    questions: {
-      '1': 'Le Segway était censé révolutionner quoi : le transport ou la cuisine ?',
-      '2': 'Quel géant de la tech a sorti les Google Glass, retirées pour manque de succès ?',
-      '3': 'Comment s\'appelait le réseau social de Google qui a fermé en 2019 ?',
-      '4': 'Quel format vidéo de Sony a perdu la guerre contre le VHS dans les années 80 ?',
-      '5': 'Comment s\'appelait la console de jeu d\'Apple sortie en 1996 ?',
-      '6': 'Quel téléphone Microsoft/Nokia tournait sous Windows Phone et a été un échec commercial ?',
-      '7': 'En quelle année le Concorde a-t-il effectué son dernier vol commercial ?',
-      '8': 'Comment s\'appelait la tablette de Microsoft sortie en 2002, bien avant l\'iPad ?',
-      '9': 'Quel projet de dirigeable de la NASA des années 2000 devait remplacer les satellites ?',
-      '10': 'Comment s\'appelait le système de vidéodisque de RCA lancé en 1981, abandonné après 2 ans ?'
+      '1': 'Existe-t-il un record du monde de lancer de telephone portable ?',
+      '2': 'Dans quel pays a ete etabli le record du plus long calin ?',
+      '3': 'Combien de temps a dure le plus long hoquet jamais enregistre (en annees) ?',
+      '4': 'Quel est le record du monde du plus grand nombre de t-shirts enfiles en meme temps ?',
+      '5': 'Quelle distance a parcourue la plus longue domino chain jamais realisee (en km) ?',
+      '6': 'En quelle annee Charles Osborne a-t-il commence a hoqueter sans s\'arreter pendant 68 ans ?',
+      '7': 'Quel est le record du nombre de personnes deguisees en Schtroumpfs au meme endroit ?',
+      '8': 'Combien de hot-dogs Joey Chestnut a-t-il mange en 10 min pour son record de 2021 ?',
+      '9': 'Quel est le record de vitesse d\'un lit motorise homologue par le Guinness (en km/h) ?',
+      '10': 'Combien de jours a dure le plus long marathon de lecture a voix haute (record Guinness) ?'
     }
   },
 
-  // ===== Jaunes — Personnages / Célébrités =====
+  // --- Oranges (Loisirs / Plaisir) ---
   {
-    themeId: 'yellow',
-    sujet: 'Cyril Féraud',
+    cardType: 'standard',
+    themeId: 'orange',
+    sujet: 'Fetes foraines ?',
     questions: {
-      '1': 'Cyril Féraud est connu pour présenter des émissions sur quelle chaîne ?',
-      '2': 'Quelle émission de jeu Cyril Féraud présente-t-il sur France 3 ?',
-      '3': 'Dans quelle émission Cyril Féraud a-t-il été révélé au grand public ?',
-      '4': 'En quelle année Cyril Féraud a-t-il commencé à présenter Slam ?',
-      '5': 'Dans quelle ville du sud de la France Cyril Féraud est-il né ?',
-      '6': 'Quel diplôme Cyril Féraud a-t-il obtenu avant de devenir animateur TV ?',
-      '7': 'Avec quel autre animateur a-t-il co-présenté le concert des Enfoirés ?',
-      '8': 'Quelle émission éphémère a-t-il présentée sur France 2 en access prime time ?',
-      '9': 'En quelle année exacte est né Cyril Féraud ?',
-      '10': 'Combien de candidats ont participé à la première saison de Slam ?'
-    }
-  },
-  {
-    themeId: 'yellow',
-    sujet: 'Les présidents français',
-    questions: {
-      '1': 'Qui est le président actuel de la République française ?',
-      '2': 'Combien de temps dure un mandat présidentiel en France ?',
-      '3': 'Qui était président avant Emmanuel Macron ?',
-      '4': 'Quel président a instauré la Ve République ?',
-      '5': 'Quel président a aboli la peine de mort en France ?',
-      '6': 'Qui est le seul président de la Ve République à n\'avoir fait qu\'un seul mandat de 7 ans ?',
-      '7': 'En quelle année le mandat présidentiel est-il passé de 7 à 5 ans ?',
-      '8': 'Qui fut le plus jeune président de la Ve République au moment de son élection ?',
-      '9': 'Combien de présidents la Ve République a-t-elle compté au total (en 2024) ?',
-      '10': 'Quel pourcentage exact des voix Jacques Chirac a-t-il obtenu au second tour en 2002 ?'
-    }
-  },
-  {
-    themeId: 'yellow',
-    sujet: 'Les Youtubeurs français',
-    questions: {
-      '1': 'Quel Youtubeur français est connu pour ses vidéos "Bref." ?',
-      '2': 'Comment s\'appelle la chaîne de Squeezie ?',
-      '3': 'Quel Youtubeur est célèbre pour ses tests de produits et ses "C\'est pas sorcier" modernes ?',
-      '4': 'Comment s\'appelle le duo derrière la chaîne McFly et Carlito ?',
-      '5': 'Quel Youtubeur a créé le format "Point Culture" ?',
-      '6': 'En quelle année Squeezie a-t-il créé sa chaîne YouTube ?',
-      '7': 'Quel Youtubeur français a été le premier à dépasser les 10 millions d\'abonnés ?',
-      '8': 'Comment s\'appelle l\'événement caritatif créé par ZEvent ?',
-      '9': 'Combien de millions d\'euros le ZEvent 2021 a-t-il récolté ?',
-      '10': 'Quel Youtubeur français détient le record du plus grand nombre de vues sur une seule vidéo en France ?'
+      '1': 'Si la fete de la peche aux canards a la Foire Saint-Romain de Rouen est une attraction, quel type de jouets en plastique ?',
+      '2': 'Parmi les activites d\'une fete foraine, la grande roue, les auto-tamponneuses et les montagnes russes ?',
+      '3': 'Laquelle de ces activites n\'est pas une attraction foraine : le toboggan, le tir a la carabine ?',
+      '4': 'Qu\'obtenaient d\'habitude les enfants au stand des chamboule-tout ?',
+      '5': 'Quels sont les 2 principaux ingredients de la barbe a papa ?',
+      '6': 'Quel type d\'attraction s\'appelle Anxylos Horror Show au Parc Asterix ?',
+      '7': 'Quel prenom, promoteur de la Foire du Trone, est surnomme le PCG Manouche ?',
+      '8': 'Trouve la date et le nom de la cite allemande qui a donne naissance a la Foire de Noel ?',
+      '9': 'Quel animal a donne son nom au Grand Prix de la Course des Garcons de Cafe ?',
+      '10': 'Quel rapport entre le debut d\'un alphabet et le numero d\'un departement francais ?'
+    },
+    answers: {
+      '1': 'Des jouets en plastique',
+      '2': 'La grande roue',
+      '3': 'Le lanceur de plastique',
+      '4': 'Le pompon',
+      '5': 'Du sucre et du colorant alimentaire',
+      '6': 'Des trains fantomes',
+      '7': 'Marcel Champion',
+      '8': 'Luxembourg-Ville',
+      '9': 'Le chameau',
+      '10': 'C\'est la vie'
     }
   },
 
-  // ===== Rouges — Pop Culture =====
+  // --- Jaune (Celebrites) ---
   {
-    themeId: 'red',
-    sujet: 'Dragon Ball',
+    cardType: 'standard',
+    themeId: 'yellow',
+    sujet: 'Cyril Feraud',
     questions: {
-      '1': 'Comment s\'appelle le héros principal de Dragon Ball ?',
-      '2': 'De quelle couleur sont les cheveux d\'un Super Saiyen ?',
-      '3': 'Comment s\'appelle le meilleur ami de Goku depuis l\'enfance ?',
-      '4': 'Combien de Dragon Balls faut-il réunir pour invoquer Shenron ?',
-      '5': 'Comment s\'appelle la technique signature de Goku (vague d\'énergie) ?',
-      '6': 'Quel est le vrai nom Saiyen de Goku ?',
-      '7': 'Comment s\'appelle le fils aîné de Goku ?',
-      '8': 'En quelle année le premier manga Dragon Ball a-t-il été publié au Japon ?',
-      '9': 'Quel est le niveau de puissance de Goku lors de son combat contre Freezer sur Namek ?',
-      '10': 'Comment s\'appelle la technique d\'arts martiaux utilisée par le Maître des Grues (Tsuru Sennin) ?'
+      '1': 'Cyril Feraud est connu pour presenter des emissions sur quelle chaine ?',
+      '2': 'Quelle emission de jeu Cyril Feraud presente-t-il sur France 3 ?',
+      '3': 'Dans quelle emission Cyril Feraud a-t-il ete revele au grand public ?',
+      '4': 'En quelle annee Cyril Feraud a-t-il commence a presenter Slam ?',
+      '5': 'Dans quelle ville du sud de la France Cyril Feraud est-il ne ?',
+      '6': 'Quel diplome Cyril Feraud a-t-il obtenu avant de devenir animateur TV ?',
+      '7': 'Avec quel autre animateur a-t-il co-presente le concert des Enfoires ?',
+      '8': 'Quelle emission ephemere a-t-il presentee sur France 2 en access prime time ?',
+      '9': 'En quelle annee exacte est ne Cyril Feraud ?',
+      '10': 'Combien de candidats ont participe a la premiere saison de Slam ?'
     }
   },
+
+  // =================================================================
+  // DEBUTER — "Hesite pas a Debuter"
+  // =================================================================
   {
-    themeId: 'red',
-    sujet: 'Pokémon',
-    questions: {
-      '1': 'Comment s\'appelle le Pokémon jaune mascotte de la franchise ?',
-      '2': 'Quel est le starter de type Feu de la première génération ?',
-      '3': 'Comment s\'appelle le dresseur principal dans l\'anime Pokémon ?',
-      '4': 'Combien de Pokémon comptait le Pokédex de la première génération ?',
-      '5': 'Quel type est super efficace contre le type Eau ?',
-      '6': 'En quelle année les premiers jeux Pokémon sont-ils sortis au Japon ?',
-      '7': 'Comment s\'appelle le Pokémon n\u00b0150 dans le Pokédex original ?',
-      '8': 'Quel Pokémon légendaire orne la couverture de Pokémon Or ?',
-      '9': 'Combien de générations de Pokémon existent au total (en 2024) ?',
-      '10': 'Quel est le Pokémon ayant le plus haut total de stats de base toutes générations confondues ?'
-    }
+    cardType: 'debuter',
+    themeId: 'brown',
+    title: 'La Fourchette',
+    body: 'Designez une personne de chaque equipe.\n\nLa personne imitant le mieux la fourchette debute la partie.',
+    footer: 'crrrrriiiiiii'
   },
   {
-    themeId: 'red',
-    sujet: 'Les films Marvel (MCU)',
-    questions: {
-      '1': 'Quel super-héros porte une armure rouge et or ?',
-      '2': 'Comment s\'appelle le méchant violet qui collecte les Pierres d\'Infinité ?',
-      '3': 'Quel film a lancé le MCU en 2008 ?',
-      '4': 'Comment s\'appelle le marteau de Thor ?',
-      '5': 'Dans quel film les Avengers se réunissent-ils pour la première fois ?',
-      '6': 'Combien de Pierres d\'Infinité existe-t-il au total ?',
-      '7': 'Quel acteur incarne Doctor Strange ?',
-      '8': 'Dans quel film du MCU apparaît Spider-Man pour la première fois ?',
-      '9': 'Combien de films composent la saga de l\'Infinité (Infinity Saga) ?',
-      '10': 'Quel est le montant exact du box-office mondial d\'Avengers: Endgame en milliards de dollars ?'
-    }
+    cardType: 'debuter',
+    themeId: 'brown',
+    title: 'Le Pantalon',
+    body: 'L\'equipe avec le joueur portant le pantalon (ou short/jupe) le plus moche peut demarrer la partie.',
+    footer: 'Si vous etes tous nus, rhabillez-vous tres vite.'
+  },
+  {
+    cardType: 'debuter',
+    themeId: 'brown',
+    title: 'Carte Intrepide',
+    body: 'Tous les joueurs prennent une carte Intrepide. Le but va etre de faire tenir le plus longtemps la carte en utilisant exclusivement le petit doigt. Vous devez rester immobiles mais pouvez souffler sur vos adversaires.',
+    footer: 'Tout le monde est pret ? 3, 2, 1, c\'est parti pour l\'equilibre sur un doigt !'
+  },
+
+  // =================================================================
+  // GAGNER — "Hesite pas a Gagner"
+  // =================================================================
+  {
+    cardType: 'gagner',
+    themeId: 'gold',
+    subtitle: 'La boite de Jazz',
+    body: 'Qu\'est-ce que le depigeonage ?\n\nA. Une pratique visant a se debarrasser des pigeons\nB. Un equivalent haitien de la pinata\nC. Une technique efficace pour enlever les soutiens-gorge\nD. Un groupe de fanatiques de Michel Pigeon\nE. Une methode ou l\'on desapprend ses acquis pour les apprendre de nouveau',
+    challengeAnswer: 'Reponse A'
+  },
+  {
+    cardType: 'gagner',
+    themeId: 'gold',
+    subtitle: 'Give Me A Sign',
+    body: 'Retrouver 8 des 14 pays de la tournee mondiale de Britney Spears en 2000 et 2001.\n\nOn parle bien sur de la tournee Oops!... I Did It Again Tour.\n\nTu auras le droit a 12 propositions max (donc 4 erreurs max).',
+    challengeAnswer: 'Etats-Unis, Canada, Royaume-Uni (Angleterre ou Grande-Bretagne), Allemagne, Belgique, Espagne, Italie, Suisse, Pays-Bas, Suede, Norvege, Danemark, France et Bresil.'
+  },
+
+  // =================================================================
+  // INTREPIDE
+  // =================================================================
+  {
+    cardType: 'intrepide',
+    themeId: 'darkred',
+    title: 'La Tuile',
+    body: 'Dommage, tu es tombe sur une tuile.\n\nTu recules de 5 cases sauf si le plus melomane de ton equipe nous chante le refrain de Quelque part de Sheryl Luna.\n\nSi tu y arrives, tu restes sur la meme case et retournes une carte Intrepide au prochain tour, sinon, les 5 cases en arriere t\'attendent !',
+    responses: 'Ecris-moi une autre histoire\nT\'es le seul a me comprendre\nEmmene-moi quelque part\nNe me laissez pas surprendre\nInvente-moi un monde a part\nApprends-moi une nouvelle danse\nEmmene-moi quelque part\nBoy, je te fais confiance'
+  },
+  {
+    cardType: 'intrepide',
+    themeId: 'darkred',
+    title: 'Un Deux Zero',
+    body: 'Retrouver le nombre recherche pour chacune de ces propositions.\nLe nombre recherche sera 0, 1 ou 2.\n\nTu avanceras d\'une case par bonne reponse.\n\nA. Le nombre de bras du personnage Lumineo\nB. Le nombre de chaussures apparaissant sur le logo Le Petit Marseillais\nC. Le nombre de pays plus enclaves que la Grece en 2019\nD. Le nombre de des dans le jeu Zombie Kidz\nE. Le nombre de lettres figurant dans l\'alphabet americain mais pas dans l\'alphabet francais\nF. Le nombre de manteaux de donocephalides commercialises a 750 watts',
+    responses: 'A. 2\nB. 2\nC. 1 (le Japon)\nD. 1\nE. 0\nF. 1'
   }
 ];
