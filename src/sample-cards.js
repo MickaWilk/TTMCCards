@@ -145,21 +145,20 @@ window.SAMPLE_CARDS = [
     themeId: 'brown',
     title: 'La Fourchette',
     body: 'Designez une personne de chaque equipe.\n\nLa personne imitant le mieux la fourchette debute la partie.',
-    footer: 'crrrrriiiiiii'
-  },
-  {
-    cardType: 'debuter',
-    themeId: 'brown',
-    title: 'Le Pantalon',
-    body: 'L\'equipe avec le joueur portant le pantalon (ou short/jupe) le plus moche peut demarrer la partie.',
-    footer: 'Si vous etes tous nus, rhabillez-vous tres vite.'
+    footer: 'crrrrriiiiiii',
+    titleB: 'Le Pantalon',
+    bodyB: 'L\'equipe avec le joueur portant le pantalon (ou short/jupe) le plus moche peut demarrer la partie.',
+    footerB: 'Si vous etes tous nus, rhabillez-vous tres vite.'
   },
   {
     cardType: 'debuter',
     themeId: 'brown',
     title: 'Carte Intrepide',
     body: 'Tous les joueurs prennent une carte Intrepide. Le but va etre de faire tenir le plus longtemps la carte en utilisant exclusivement le petit doigt. Vous devez rester immobiles mais pouvez souffler sur vos adversaires.',
-    footer: 'Tout le monde est pret ? 3, 2, 1, c\'est parti pour l\'equilibre sur un doigt !'
+    footer: 'Tout le monde est pret ? 3, 2, 1, c\'est parti pour l\'equilibre sur un doigt !',
+    titleB: 'Carte Moteur',
+    bodyB: 'Le joueur lisant cette carte tire au hasard une carte Moteur et tente de repondre a la question 5. S\'il repond correctement, son equipe peut commencer la partie sur la premiere case du plateau.',
+    footerB: 'S\'il repond mal, il choisit l\'equipe qui commence (mais pas la sienne).'
   },
 
   // =================================================================
@@ -170,14 +169,20 @@ window.SAMPLE_CARDS = [
     themeId: 'gold',
     subtitle: 'La boite de Jazz',
     body: 'Qu\'est-ce que le depigeonage ?\n\nA. Une pratique visant a se debarrasser des pigeons\nB. Un equivalent haitien de la pinata\nC. Une technique efficace pour enlever les soutiens-gorge\nD. Un groupe de fanatiques de Michel Pigeon\nE. Une methode ou l\'on desapprend ses acquis pour les apprendre de nouveau',
-    challengeAnswer: 'Reponse A'
+    challengeAnswer: 'Reponse A',
+    subtitleB: 'A eviter !',
+    bodyB: 'Comment peut-on etre son propre oncle ou sa propre tante ?\n\nTu as 52 secondes pour reflechir a tout ca et donner une reponse.\n\nTout ce qui est demi-soeur, grand-oncle ou beau-pere n\'est pas autorise.',
+    challengeAnswerB: 'Si tu te maries avec la tante ou l\'oncle, quel amusant set de noms pour toi !'
   },
   {
     cardType: 'gagner',
     themeId: 'gold',
     subtitle: 'Give Me A Sign',
     body: 'Retrouver 8 des 14 pays de la tournee mondiale de Britney Spears en 2000 et 2001.\n\nOn parle bien sur de la tournee Oops!... I Did It Again Tour.\n\nTu auras le droit a 12 propositions max (donc 4 erreurs max).',
-    challengeAnswer: 'Etats-Unis, Canada, Royaume-Uni (Angleterre ou Grande-Bretagne), Allemagne, Belgique, Espagne, Italie, Suisse, Pays-Bas, Suede, Norvege, Danemark, France et Bresil.'
+    challengeAnswer: 'Etats-Unis, Canada, Royaume-Uni (Angleterre ou Grande-Bretagne), Allemagne, Belgique, Espagne, Italie, Suisse, Pays-Bas, Suede, Norvege, Danemark, France et Bresil.',
+    subtitleB: 'La Fureur',
+    bodyB: 'Qu\'est-ce que l\'ippitsuryu, a ton avis ?\n\nA. L\'art de se deguiser en dragon\nB. L\'art de peindre un dragon d\'un seul coup de pinceau\nC. L\'art de raconter les histoires ancestrales des dragons\nD. L\'art d\'imiter un dragon en train de baller\nE. L\'art de dessiner un dragon dans les nuages',
+    challengeAnswerB: 'Reponse B'
   },
 
   // =================================================================

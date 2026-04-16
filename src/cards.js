@@ -23,12 +23,19 @@
     subject: '',
     questions: {},
     answers: {},
-    // Challenge cards (debuter, gagner, intrepide)
+    // Challenge cards — Face A (recto / panneau gauche)
     title: '',
     body: '',
     footer: '',
     subtitle: '',
     challengeAnswer: '',
+    // Challenge cards — Face B (verso / panneau droit)
+    titleB: '',
+    bodyB: '',
+    footerB: '',
+    subtitleB: '',
+    challengeAnswerB: '',
+    // Intrepide
     responses: ''
   };
 
@@ -138,49 +145,59 @@
 
   // =========================================================================
   // DEBUTER — "Hesite pas a Debuter"
-  // Single panel, kraft/ticket style, free-form text
+  // Dual panel recto/verso, kraft/ticket style, free-form text
   // =========================================================================
-  function renderDebuter(p) {
-    p.innerHTML =
-      '<div class="debuter-card">' +
-        '<div class="debuter-inner">' +
-          '<div class="debuter-border">' +
-            '<div class="debuter-header">' +
-              '<div class="debuter-header-text">H\u00c9SITE PAS \u00c0</div>' +
-              '<div class="debuter-header-title">D\u00c9BUTER</div>' +
-            '</div>' +
-            '<div class="debuter-title" contenteditable="true" data-placeholder="Titre du challenge..." data-field="title"></div>' +
-            '<div class="debuter-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici...\n\nExemple : D\u00e9signez une personne de chaque \u00e9quipe. La personne imitant le mieux la fourchette d\u00e9bute la partie." data-field="body"></div>' +
-            '<div class="debuter-footer" contenteditable="true" data-placeholder="Note de bas de page (optionnel)..." data-field="footer"></div>' +
-            '<div class="debuter-logo">' + ttmcLogo() + '</div>' +
+  function renderDebuterPanel(side) {
+    var sfx = (side === 'B') ? 'B' : '';
+    var ph = (side === 'B') ? 'Face verso' : 'Face recto';
+    return '<div class="card-panel">' +
+      '<div class="debuter-inner">' +
+        '<div class="debuter-border">' +
+          '<div class="debuter-header">' +
+            '<div class="debuter-header-text">H\u00c9SITE PAS \u00c0</div>' +
+            '<div class="debuter-header-title">D\u00c9BUTER</div>' +
           '</div>' +
+          '<div class="debuter-title" contenteditable="true" data-placeholder="Titre du challenge (' + ph + ')..." data-field="title' + sfx + '"></div>' +
+          '<div class="debuter-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici..." data-field="body' + sfx + '"></div>' +
+          '<div class="debuter-footer" contenteditable="true" data-placeholder="Note de bas de page..." data-field="footer' + sfx + '"></div>' +
+          '<div class="debuter-logo">' + ttmcLogo() + '</div>' +
         '</div>' +
-        '<div class="panel-watermark">' + iconHTML() + '</div>' +
-      '</div>';
+      '</div>' +
+      '<div class="panel-watermark">' + iconHTML() + '</div>' +
+    '</div>';
+  }
+
+  function renderDebuter(p) {
+    p.innerHTML = renderDebuterPanel('A') + renderDebuterPanel('B');
   }
 
   // =========================================================================
   // GAGNER — "Hesite pas a Gagner"
-  // Single panel, gold/amber, subtitle + body + answer
+  // Dual panel recto/verso, gold/amber, subtitle + body + answer
   // =========================================================================
-  function renderGagner(p) {
-    p.innerHTML =
-      '<div class="gagner-card">' +
-        '<div class="gagner-inner">' +
-          '<div class="gagner-header">' +
-            '<span class="gagner-star">&#9733;</span>' +
-            '<span class="gagner-header-text">H\u00c9SITE PAS \u00c0 GAGNER</span>' +
-            '<span class="gagner-star">&#9733;</span>' +
-          '</div>' +
-          '<div class="gagner-subtitle" contenteditable="true" data-placeholder="NOM DU CHALLENGE" data-field="subtitle"></div>' +
-          '<div class="gagner-body" contenteditable="true" data-placeholder="D\u00e9crivez la question ou le challenge ici...\n\nExemple : Qu\'est-ce que le d\u00e9pigeonage ?\nA. Une pratique visant \u00e0 se d\u00e9barrasser des pigeons\nB. Un \u00e9quivalent ha\u00eftien de la pi\u00f1ata\nC. Une technique efficace pour enlever les soutiens-gorge\nD. Un groupe de fanatiques de Michel Pigeon\nE. Une m\u00e9thode pour oublier ses acquis" data-field="body"></div>' +
-          '<div class="gagner-divider"></div>' +
-          '<div class="gagner-answer-label">R\u00e9ponse</div>' +
-          '<div class="gagner-answer" contenteditable="true" data-placeholder="Tapez la r\u00e9ponse ici..." data-field="challengeAnswer"></div>' +
-          '<div class="gagner-logo">' + ttmcLogo() + '</div>' +
+  function renderGagnerPanel(side) {
+    var sfx = (side === 'B') ? 'B' : '';
+    var ph = (side === 'B') ? 'Face verso' : 'Face recto';
+    return '<div class="card-panel">' +
+      '<div class="gagner-inner">' +
+        '<div class="gagner-header">' +
+          '<span class="gagner-star">&#9733;</span>' +
+          '<span class="gagner-header-text">H\u00c9SITE PAS \u00c0 GAGNER</span>' +
+          '<span class="gagner-star">&#9733;</span>' +
         '</div>' +
-        '<div class="panel-watermark">' + iconHTML() + '</div>' +
-      '</div>';
+        '<div class="gagner-subtitle" contenteditable="true" data-placeholder="NOM DU CHALLENGE (' + ph + ')" data-field="subtitle' + sfx + '"></div>' +
+        '<div class="gagner-body" contenteditable="true" data-placeholder="D\u00e9crivez la question ou le challenge ici..." data-field="body' + sfx + '"></div>' +
+        '<div class="gagner-divider"></div>' +
+        '<div class="gagner-answer-label">R\u00e9ponse</div>' +
+        '<div class="gagner-answer" contenteditable="true" data-placeholder="Tapez la r\u00e9ponse ici..." data-field="challengeAnswer' + sfx + '"></div>' +
+        '<div class="gagner-logo">' + ttmcLogo() + '</div>' +
+      '</div>' +
+      '<div class="panel-watermark">' + iconHTML() + '</div>' +
+    '</div>';
+  }
+
+  function renderGagner(p) {
+    p.innerHTML = renderGagnerPanel('A') + renderGagnerPanel('B');
   }
 
   // =========================================================================
@@ -292,8 +309,10 @@
       for (var i = 0; i < Math.min(lines.length, 10); i++) {
         cardData.questions[String(i + 1)] = lines[i].trim();
       }
+    } else if (currentCardType === 'intrepide') {
+      cardData.body = text;
     } else {
-      // For challenge cards, bulk-questions maps to body
+      // Debuter/Gagner: textarea 1 = face A body
       cardData.body = text;
     }
     restoreFromMemory();
@@ -307,12 +326,11 @@
       for (var i = 0; i < Math.min(lines.length, 10); i++) {
         cardData.answers[String(i + 1)] = lines[i].trim();
       }
-    } else if (currentCardType === 'gagner') {
-      cardData.challengeAnswer = text;
     } else if (currentCardType === 'intrepide') {
       cardData.responses = text;
     } else {
-      cardData.footer = text;
+      // Debuter/Gagner: textarea 2 = face B body
+      cardData.bodyB = text;
     }
     restoreFromMemory();
     window.saveToLocalStorage();
@@ -329,12 +347,19 @@
     if (d.questions) cardData.questions = d.questions;
     if (d.answers) cardData.answers = d.answers;
 
-    // Challenge fields
+    // Challenge fields — Face A
     if (d.title != null) cardData.title = d.title;
     if (d.body != null) cardData.body = d.body;
     if (d.footer != null) cardData.footer = d.footer;
     if (d.subtitle != null) cardData.subtitle = d.subtitle;
     if (d.challengeAnswer != null) cardData.challengeAnswer = d.challengeAnswer;
+    // Challenge fields — Face B
+    if (d.titleB != null) cardData.titleB = d.titleB;
+    if (d.bodyB != null) cardData.bodyB = d.bodyB;
+    if (d.footerB != null) cardData.footerB = d.footerB;
+    if (d.subtitleB != null) cardData.subtitleB = d.subtitleB;
+    if (d.challengeAnswerB != null) cardData.challengeAnswerB = d.challengeAnswerB;
+    // Intrepide
     if (d.responses != null) cardData.responses = d.responses;
 
     // Legacy format support
@@ -365,12 +390,19 @@
         subject: cardData.subject,
         questions: Object.assign({}, cardData.questions),
         answers: Object.assign({}, cardData.answers),
-        // Challenge
+        // Challenge — Face A
         title: cardData.title,
         body: cardData.body,
         footer: cardData.footer,
         subtitle: cardData.subtitle,
         challengeAnswer: cardData.challengeAnswer,
+        // Challenge — Face B
+        titleB: cardData.titleB,
+        bodyB: cardData.bodyB,
+        footerB: cardData.footerB,
+        subtitleB: cardData.subtitleB,
+        challengeAnswerB: cardData.challengeAnswerB,
+        // Intrepide
         responses: cardData.responses,
         timestamp: Date.now()
       };
@@ -397,7 +429,7 @@
     currentIconId = 'feuille';
     currentFontId = 'poppins';
     fontSizes = { subject: 22, question: 10, answer: 10, number: 28 };
-    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', responses: '' };
+    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', responses: '' };
     window.renderCard('green', 'feuille', 'poppins');
   };
 
@@ -411,7 +443,7 @@
     currentFontId = 'poppins';
     window.customLogoDataURL = null;
 
-    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', responses: '' };
+    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', responses: '' };
 
     // Standard Q&A
     if (card.sujet) cardData.subject = card.sujet;
@@ -422,12 +454,19 @@
       for (var k2 in card.answers) cardData.answers[k2] = card.answers[k2];
     }
 
-    // Challenge fields
+    // Challenge fields — Face A
     if (card.title) cardData.title = card.title;
     if (card.body) cardData.body = card.body;
     if (card.footer) cardData.footer = card.footer;
     if (card.subtitle) cardData.subtitle = card.subtitle;
     if (card.challengeAnswer) cardData.challengeAnswer = card.challengeAnswer;
+    // Challenge fields — Face B
+    if (card.titleB) cardData.titleB = card.titleB;
+    if (card.bodyB) cardData.bodyB = card.bodyB;
+    if (card.footerB) cardData.footerB = card.footerB;
+    if (card.subtitleB) cardData.subtitleB = card.subtitleB;
+    if (card.challengeAnswerB) cardData.challengeAnswerB = card.challengeAnswerB;
+    // Intrepide
     if (card.responses) cardData.responses = card.responses;
 
     window.renderCard(currentThemeId, currentIconId, currentFontId);
@@ -474,6 +513,11 @@
       footer: cardData.footer,
       subtitle: cardData.subtitle,
       challengeAnswer: cardData.challengeAnswer,
+      titleB: cardData.titleB,
+      bodyB: cardData.bodyB,
+      footerB: cardData.footerB,
+      subtitleB: cardData.subtitleB,
+      challengeAnswerB: cardData.challengeAnswerB,
       responses: cardData.responses
     };
   };

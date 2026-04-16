@@ -170,19 +170,19 @@
       if (area2) area2.style.display = '';
       if (label2) label2.style.display = '';
     } else if (ct === 'debuter') {
-      if (label1) label1.textContent = 'Texte du challenge';
-      if (area1) area1.placeholder = 'Collez le texte du challenge ici...';
-      if (label2) label2.textContent = 'Note de bas de page';
-      if (area2) area2.placeholder = 'Texte optionnel en bas de carte...';
-      if (hint) hint.textContent = 'Le texte remplit directement le corps de la carte.';
+      if (label1) label1.textContent = 'Texte recto (face gauche)';
+      if (area1) area1.placeholder = 'Collez le texte du challenge recto...';
+      if (label2) label2.textContent = 'Texte verso (face droite)';
+      if (area2) area2.placeholder = 'Collez le texte du challenge verso...';
+      if (hint) hint.textContent = 'Chaque face a son propre challenge. Editez aussi directement sur la carte.';
       if (area2) area2.style.display = '';
       if (label2) label2.style.display = '';
     } else if (ct === 'gagner') {
-      if (label1) label1.textContent = 'Question / Challenge';
-      if (area1) area1.placeholder = 'Collez le texte de la question ou du challenge...';
-      if (label2) label2.textContent = 'Reponse';
-      if (area2) area2.placeholder = 'Collez la reponse ici...';
-      if (hint) hint.textContent = 'Le texte remplit le corps et la zone de reponse.';
+      if (label1) label1.textContent = 'Question recto (face gauche)';
+      if (area1) area1.placeholder = 'Collez le texte du challenge recto...';
+      if (label2) label2.textContent = 'Question verso (face droite)';
+      if (area2) area2.placeholder = 'Collez le texte du challenge verso...';
+      if (hint) hint.textContent = 'Chaque face a son propre challenge. Editez aussi directement sur la carte.';
       if (area2) area2.style.display = '';
       if (label2) label2.style.display = '';
     } else if (ct === 'intrepide') {
@@ -200,9 +200,8 @@
   function updateExportBothVisibility() {
     var btn = document.getElementById('btn-export-both');
     if (!btn) return;
-    var ct = window.getCurrentCardType();
-    // Only show "export both sides" for dual-panel types
-    btn.style.display = (ct === 'standard' || ct === 'intrepide') ? '' : 'none';
+    // All card types are now dual-panel, always show
+    btn.style.display = '';
   }
 
   // ===== 4a. Font Size Controls =====
