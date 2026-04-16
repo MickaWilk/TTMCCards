@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TTMC Cards — Générateur de cartes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+/* ===== Reset ===== */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:100vh; overflow:hidden; }
+
+:root {
+  --blue-bg:#3d7a9e; --blue-border:#2e6483; --blue-text:#f5d442; --blue-num:#2e6483; --blue-card-bg:#c5d5df;
+  --yellow-bg:#f5d442; --yellow-border:#c9ad2e; --yellow-text:#1a5276; --yellow-num:#1a5276; --yellow-card-bg:#f0e6c0;
+  --red-bg:#6e2130; --red-border:#551a27; --red-text:#ffffff; --red-num:#6e2130; --red-card-bg:#d8c8c8;
+  --sidebar-bg:#1a1a2e; --sidebar-width:290px;
+}
+
+/* ===== Layout ===== */
+.app { display:flex; height:100vh; }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  width:var(--sidebar-width); background:var(--sidebar-bg); padding:24px 20px;
+  display:flex; flex-direction:column; border-right:1px solid rgba(255,255,255,.06);
+  overflow-y:auto; flex-shrink:0;
+}
+.sidebar-title { font-size:24px; font-weight:800; letter-spacing:2px; line-height:1.1; }
+.sidebar-title span { font-weight:400; font-size:15px; color:rgba(255,255,255,.5); }
+.sidebar-sub { font-size:11px; color:rgba(255,255,255,.35); margin:2px 0 20px; }
+
+.controls { display:flex; flex-direction:column; gap:8px; }
+.controls label { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:rgba(255,255,255,.45); margin-top:10px; }
+.controls select, .controls input[type=number] {
+  width:100%; padding:8px 10px; border:1px solid rgba(255,255,255,.1); border-radius:8px;
+  background:rgba(255,255,255,.05); color:#fff; font-family:'Poppins',sans-serif; font-size:12px; outline:none;
+}
+.controls select option { background:#1a1a2e; }
+
+.size-row { display:flex; gap:6px; align-items:center; }
+.size-row input { width:1px; flex:1; text-align:center; }
+.size-row .sep { color:rgba(255,255,255,.3); font-size:13px; }
+
+/* Logo upload */
+.logo-area { margin-top:4px; }
+.logo-drop {
+  border:2px dashed rgba(255,255,255,.15); border-radius:10px; padding:14px 10px;
+  text-align:center; cursor:pointer; transition:border-color .2s; position:relative;
+}
+.logo-drop:hover { border-color:rgba(255,255,255,.35); }
+.logo-drop input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.logo-drop p { font-size:11px; color:rgba(255,255,255,.4); pointer-events:none; }
+.logo-preview-wrap { display:flex; align-items:center; gap:10px; margin-top:8px; }
+.logo-preview { width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,.2); }
+.logo-preview-name { font-size:11px; color:rgba(255,255,255,.5); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.logo-remove { background:none; border:none; color:#e74c3c; cursor:pointer; font-size:16px; padding:4px; }
+
+/* Icon picker */
+.icon-picker { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin-top:4px; }
+.icon-picker-btn {
+  aspect-ratio:1; border:2px solid rgba(255,255,255,.1); border-radius:8px;
+  background:rgba(255,255,255,.05); cursor:pointer; display:flex; align-items:center;
+  justify-content:center; padding:5px; color:rgba(255,255,255,.6); transition:border-color .2s,background .2s;
+}
+.icon-picker-btn:hover { border-color:rgba(255,255,255,.3); background:rgba(255,255,255,.1); }
+.icon-picker-btn.active { border-color:#667eea; background:rgba(102,126,234,.15); color:#fff; }
+.icon-picker-btn svg { width:100%; height:100%; }
+
+/* Buttons */
+.btn-group { display:flex; flex-direction:column; gap:6px; margin-top:16px; }
+.btn {
+  padding:10px 14px; border:none; border-radius:8px; font-family:'Poppins',sans-serif;
+  font-size:13px; font-weight:600; cursor:pointer; transition:transform .15s,opacity .15s;
+}
+.btn:hover { transform:translateY(-1px); opacity:.9; }
+.btn-primary { background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; }
+.btn-secondary { background:rgba(255,255,255,.08); color:rgba(255,255,255,.7); border:1px solid rgba(255,255,255,.1); }
+
+.sidebar-footer { margin-top:auto; padding-top:16px; border-top:1px solid rgba(255,255,255,.06); }
+.sidebar-footer p { font-size:10px; color:rgba(255,255,255,.25); line-height:1.6; }
+
+/* ===== Main ===== */
+.main { flex:1; display:flex; align-items:center; justify-content:center; background:#16162a; overflow:auto; position:relative; }
+#card-wrapper { transform:scale(var(--card-scale,.7)); transform-origin:center center; }
+
+/* =============================================
+   CARD — 936 x 735 two-panel TTMC
+   ============================================= */
+.ttmc-card {
+  width:936px; height:735px; border-radius:20px; overflow:hidden;
+  display:flex; flex-direction:row; gap:10px; padding:14px;
+  font-family:'Poppins',sans-serif; position:relative;
+}
+/* shadow only for on-screen preview */
+#card-preview { box-shadow:0 20px 60px rgba(0,0,0,.5); }
+
+/* -- Left Panel -- */
+.cl { flex:1; border-radius:14px; border:3.5px solid; display:flex; flex-direction:column; overflow:hidden; background:#fff; position:relative; }
+
+/* Header */
+.cl-head { height:50px; display:flex; align-items:center; padding:0 14px; position:relative; }
+.cl-head-txt { font-size:12.5px; font-weight:600; font-style:italic; opacity:.85; }
+.cl-head-icon {
+  width:44px; height:44px; border-radius:50%; overflow:hidden;
+  position:absolute; right:8px; top:3px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.15);
+}
+.cl-head-icon img { width:100%; height:100%; object-fit:cover; display:block; }
+.cl-head-icon svg { width:30px; height:30px; }
+
+/* Subject */
+.cl-subj {
+  padding:2px 14px 4px; border-bottom:1.5px solid rgba(0,0,0,.07); min-height:26px;
+  font-size:11px; color:#333;
+}
+.cl-subj [contenteditable] { display:block; outline:none; min-height:16px; }
+.cl-subj [contenteditable]:empty::before { content:'Sujet...'; color:rgba(0,0,0,.18); font-style:italic; }
+
+/* Number rows */
+.cl-rows { flex:1; display:flex; flex-direction:column; padding:4px 10px 8px; }
+.cl-row { flex:1; display:flex; align-items:center; border-bottom:1.5px solid rgba(0,0,0,.07); }
+.cl-row:last-child { border-bottom:none; }
+.cl-num { font-size:28px; font-weight:900; width:44px; text-align:center; line-height:1; }
+.cl-txt { flex:1; margin-left:6px; font-size:9.5px; color:#333; outline:none; min-height:16px; border:none; background:none; font-family:'Poppins',sans-serif; }
+.cl-txt:empty::before { content:''; }
+
+/* Deco watermark */
+.cl-deco {
+  position:absolute; bottom:18px; right:18px; width:75px; height:75px; opacity:.1;
+  pointer-events:none;
+}
+.cl-deco img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.cl-deco svg { width:100%; height:100%; }
+
+/* -- Right Panel -- */
+.cr { flex:1; border-radius:14px; background:#fff; display:flex; flex-direction:column; padding:14px 18px 12px; }
+.cr-title { font-size:26px; font-weight:800; color:#1a1a2e; text-align:center; margin-bottom:6px; }
+.cr-rows { flex:1; display:flex; flex-direction:column; }
+.cr-row { flex:1; display:flex; align-items:center; border-bottom:1.5px solid rgba(0,0,0,.08); }
+.cr-row:last-child { border-bottom:none; }
+.cr-num { font-size:13px; font-weight:700; color:#1a1a2e; width:28px; text-align:right; }
+.cr-txt { flex:1; margin-left:8px; font-size:9.5px; color:#333; outline:none; min-height:16px; border:none; background:none; font-family:'Poppins',sans-serif; }
+.cr-txt:empty::before { content:''; }
+
+/* Sparkle — pure CSS 4-pointed star */
+.cr-star {
+  width:22px; height:22px; align-self:flex-end; margin-top:6px; position:relative; opacity:.35;
+}
+.cr-star::before {
+  content:''; position:absolute; inset:0;
+  background:currentColor;
+  clip-path:polygon(50% 0%,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0% 50%,38% 38%);
+}
+
+/* ===== Themes ===== */
+.card-blue  { background:var(--blue-card-bg); }
+.card-blue .cl  { border-color:var(--blue-border); }
+.card-blue .cl-head { background:var(--blue-bg); color:var(--blue-text); }
+.card-blue .cl-head-icon { background:rgba(255,255,255,.12); color:var(--blue-text); }
+.card-blue .cl-num { color:var(--blue-num); }
+.card-blue .cl-deco { color:var(--blue-num); }
+.card-blue .cr-star { color:var(--blue-num); }
+
+.card-yellow  { background:var(--yellow-card-bg); }
+.card-yellow .cl { border-color:var(--yellow-border); }
+.card-yellow .cl-head { background:var(--yellow-bg); color:var(--yellow-text); }
+.card-yellow .cl-head-icon { background:rgba(255,255,255,.25); color:var(--yellow-text); }
+.card-yellow .cl-num { color:var(--yellow-num); }
+.card-yellow .cl-deco { color:var(--yellow-num); }
+.card-yellow .cr-star { color:var(--yellow-num); }
+
+.card-red  { background:var(--red-card-bg); }
+.card-red .cl { border-color:var(--red-border); }
+.card-red .cl-head { background:var(--red-bg); color:var(--red-text); }
+.card-red .cl-head-icon { background:rgba(255,255,255,.12); color:var(--red-text); }
+.card-red .cl-num { color:var(--red-num); }
+.card-red .cl-deco { color:var(--red-num); }
+.card-red .cr-star { color:var(--red-num); }
+
+/* ===== Toast ===== */
+.toast {
+  position:fixed; bottom:32px; right:32px; background:#27ae60; color:#fff;
+  padding:14px 24px; border-radius:10px; font-family:'Poppins',sans-serif;
+  font-size:14px; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,.3);
+  transition:transform .3s ease,opacity .3s ease; z-index:1000;
+}
+.toast.hidden { transform:translateY(20px); opacity:0; pointer-events:none; }
+.toast.visible { transform:translateY(0); opacity:1; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h1 class="sidebar-title">TTMC<br><span>Cards</span></h1>
+      <p class="sidebar-sub">Générateur de cartes</p>
+
+      <div class="controls">
+        <label for="theme-select">Thème</label>
+        <select id="theme-select">
+          <option value="blue">Bleue — Divers / Improbable</option>
+          <option value="yellow">Jaune — Personnages / Célébrités</option>
+          <option value="red">Rouge — Pop Culture</option>
+        </select>
+
+        <label>Logo / Image personnalisée</label>
+        <div class="logo-area">
+          <div class="logo-drop" id="logo-drop">
+            <input type="file" id="logo-input" accept="image/*">
+            <p>Glisser une image ou cliquer</p>
+          </div>
+          <div class="logo-preview-wrap" id="logo-preview-wrap" style="display:none">
+            <img class="logo-preview" id="logo-preview-img">
+            <span class="logo-preview-name" id="logo-preview-name"></span>
+            <button class="logo-remove" id="logo-remove" title="Supprimer">✕</button>
+          </div>
+        </div>
+
+        <label>Ou icône intégrée</label>
+        <div id="icon-picker" class="icon-picker"></div>
+
+        <label>Taille export (L × H px)</label>
+        <div class="size-row">
+          <input type="number" id="export-w" value="936" min="100" max="4000">
+          <span class="sep">×</span>
+          <input type="number" id="export-h" value="735" min="100" max="4000">
+        </div>
+
+        <div class="btn-group">
+          <button id="btn-export" class="btn btn-primary">Exporter PNG</button>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <p>Texte éditable sur la carte</p>
+        <p>Double-cliquer sur le .html pour ouvrir</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div id="card-wrapper">
+        <div id="card-preview" class="ttmc-card"></div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+// ========== Inline SVG Icons ==========
+const BUILTIN_ICONS = [
+  { name:'Poisson', svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><ellipse cx="36" cy="40" rx="24" ry="16"/><polygon points="58,40 76,24 76,56"/><circle cx="24" cy="35" r="4" fill="white"/><circle cx="23" cy="34" r="2" fill="#1a1a2e"/><path d="M30,24 Q36,12 42,24"/><path d="M32,56 Q36,64 42,56"/><path d="M12,38 Q14,42 12,44" stroke="white" stroke-width="2" fill="none"/></svg>' },
+  { name:'Silhouette', svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><circle cx="40" cy="22" r="14"/><path d="M26,18 Q28,6 40,8 Q52,6 54,18"/><path d="M16,80 Q16,50 26,42 Q32,38 40,36 Q48,38 54,42 Q64,50 64,80 Z"/><path d="M34,36 L40,48 L46,36" fill="white" opacity=".3"/><rect x="58" y="52" width="4" height="14" rx="2"/><circle cx="60" cy="50" r="4"/></svg>' },
+  { name:'Pokéball', svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><path d="M4,40 A36,36 0 0,1 76,40 Z"/><path d="M4,40 A36,36 0 0,0 76,40 Z" opacity=".6"/><rect x="4" y="37" width="72" height="6"/><circle cx="40" cy="40" r="12"/><circle cx="40" cy="40" r="7" fill="white"/><circle cx="40" cy="40" r="3"/></svg>' },
+  { name:'Dragon Ball', svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><circle cx="40" cy="40" r="36"/><polygon points="40,14 42,20 48,20 43,24 45,30 40,26 35,30 37,24 32,20 38,20" fill="white" opacity=".9"/><polygon points="28,30 30,36 36,36 31,40 33,46 28,42 23,46 25,40 20,36 26,36" fill="white" opacity=".9"/><polygon points="52,30 54,36 60,36 55,40 57,46 52,42 47,46 49,40 44,36 50,36" fill="white" opacity=".9"/><polygon points="40,44 42,50 48,50 43,54 45,60 40,56 35,60 37,54 32,50 38,50" fill="white" opacity=".9"/><ellipse cx="28" cy="24" rx="6" ry="4" fill="white" opacity=".2" transform="rotate(-30 28 24)"/></svg>' },
+  { name:'Épée', svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><rect x="37" y="4" width="6" height="44" rx="1"/><polygon points="37,4 40,0 43,4"/><rect x="24" y="48" width="32" height="6" rx="3"/><rect x="36" y="54" width="8" height="16" rx="2"/><circle cx="40" cy="74" r="5"/></svg>' },
+  { name:'Manette', svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><path d="M12,34 Q12,24 22,24 L58,24 Q68,24 68,34 L68,46 Q68,62 56,62 L50,62 Q46,62 44,56 L36,56 Q34,62 30,62 L24,62 Q12,62 12,46 Z"/><rect x="22" y="38" width="14" height="5" rx="1" fill="white" opacity=".3"/><rect x="27" y="33" width="5" height="14" rx="1" fill="white" opacity=".3"/><circle cx="52" cy="36" r="3" fill="white" opacity=".3"/><circle cx="58" cy="42" r="3" fill="white" opacity=".3"/><circle cx="52" cy="48" r="3" fill="white" opacity=".3"/><circle cx="46" cy="42" r="3" fill="white" opacity=".3"/></svg>' },
+  { name:'Étoile', svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><path d="M40 4L48.5 28.5H74L53 44.5L61 70L40 54L19 70L27 44.5L6 28.5H31.5Z"/></svg>' }
+];
+
+const THEMES = {
+  blue:   { className:'card-blue',   label:'Divers / Improbable',            headerText:'Tu te mets combien en...', defaultIcon:0 },
+  yellow: { className:'card-yellow', label:'Personnages / Célébrités / Nous', headerText:'Tu te mets combien en...', defaultIcon:1 },
+  red:    { className:'card-red',    label:'Pop Culture',                     headerText:'Tu te mets combien en...', defaultIcon:2 }
+};
+
+let currentIconIndex = 0;
+let customLogoDataURL = null;
+
+// ===== Icon HTML =====
+function iconHeaderHTML() {
+  if (customLogoDataURL) return '<img src="'+customLogoDataURL+'">';
+  return BUILTIN_ICONS[currentIconIndex].svg;
+}
+function iconDecoHTML() {
+  if (customLogoDataURL) return '<img src="'+customLogoDataURL+'">';
+  return BUILTIN_ICONS[currentIconIndex].svg;
+}
+
+// ===== Save / Restore editable text =====
+function saveContent() {
+  const s = document.querySelector('#card-preview .cl-subj [contenteditable]');
+  if (!s) return null;
+  const d = { subject:s.innerText, q:{}, a:{} };
+  document.querySelectorAll('#card-preview .cl-txt').forEach(el => { d.q[el.dataset.i] = el.innerText; });
+  document.querySelectorAll('#card-preview .cr-txt').forEach(el => { d.a[el.dataset.i] = el.innerText; });
+  return d;
+}
+function restoreContent(d) {
+  if (!d) return;
+  const s = document.querySelector('#card-preview .cl-subj [contenteditable]');
+  if (s && d.subject) s.innerText = d.subject;
+  document.querySelectorAll('#card-preview .cl-txt').forEach(el => { if (d.q[el.dataset.i]) el.innerText = d.q[el.dataset.i]; });
+  document.querySelectorAll('#card-preview .cr-txt').forEach(el => { if (d.a[el.dataset.i]) el.innerText = d.a[el.dataset.i]; });
+}
+
+// ===== Render =====
+function renderCard(theme) {
+  const cfg = THEMES[theme];
+  const saved = saveContent();
+  const p = document.getElementById('card-preview');
+  p.className = 'ttmc-card ' + cfg.className;
+
+  let leftRows = '', rightRows = '';
+  for (let i = 1; i <= 10; i++) {
+    leftRows += '<div class="cl-row"><div class="cl-num">'+i+'</div><div class="cl-txt" contenteditable="true" data-i="'+i+'"></div></div>';
+    rightRows += '<div class="cr-row"><div class="cr-num">'+i+'.</div><div class="cr-txt" contenteditable="true" data-i="'+i+'"></div></div>';
+  }
+
+  p.innerHTML =
+    '<div class="cl">' +
+      '<div class="cl-head">' +
+        '<div class="cl-head-txt">'+cfg.headerText+'</div>' +
+        '<div class="cl-head-icon">'+iconHeaderHTML()+'</div>' +
+      '</div>' +
+      '<div class="cl-subj"><span contenteditable="true"></span></div>' +
+      '<div class="cl-rows">'+leftRows+'</div>' +
+      '<div class="cl-deco">'+iconDecoHTML()+'</div>' +
+    '</div>' +
+    '<div class="cr">' +
+      '<div class="cr-title">Réponses</div>' +
+      '<div class="cr-rows">'+rightRows+'</div>' +
+      '<div class="cr-star"></div>' +
+    '</div>';
+
+  restoreContent(saved);
+}
+
+// ===== Icon Picker =====
+function buildIconPicker() {
+  const pk = document.getElementById('icon-picker');
+  pk.innerHTML = '';
+  BUILTIN_ICONS.forEach((ic, i) => {
+    const b = document.createElement('button');
+    b.className = 'icon-picker-btn' + (i === currentIconIndex && !customLogoDataURL ? ' active' : '');
+    b.title = ic.name;
+    b.innerHTML = ic.svg;
+    b.addEventListener('click', () => {
+      customLogoDataURL = null;
+      currentIconIndex = i;
+      clearLogoPreview();
+      updatePickerActive();
+      renderCard(getCurrentTheme());
+    });
+    pk.appendChild(b);
+  });
+}
+
+function updatePickerActive() {
+  document.querySelectorAll('.icon-picker-btn').forEach((b, j) => {
+    b.classList.toggle('active', j === currentIconIndex && !customLogoDataURL);
+  });
+}
+
+// ===== Logo Upload =====
+function setupLogoUpload() {
+  const input = document.getElementById('logo-input');
+  const wrap = document.getElementById('logo-preview-wrap');
+  const img = document.getElementById('logo-preview-img');
+  const nm = document.getElementById('logo-preview-name');
+
+  input.addEventListener('change', e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      customLogoDataURL = ev.target.result;
+      img.src = customLogoDataURL;
+      nm.textContent = f.name;
+      wrap.style.display = 'flex';
+      updatePickerActive();
+      renderCard(getCurrentTheme());
+    };
+    r.readAsDataURL(f);
+  });
+
+  document.getElementById('logo-remove').addEventListener('click', () => {
+    customLogoDataURL = null;
+    clearLogoPreview();
+    updatePickerActive();
+    renderCard(getCurrentTheme());
+  });
+}
+
+function clearLogoPreview() {
+  document.getElementById('logo-preview-wrap').style.display = 'none';
+  document.getElementById('logo-input').value = '';
+}
+
+// ===== Auto Scale =====
+function updateCardScale() {
+  const m = document.querySelector('.main');
+  const sw = (m.clientWidth - 60) / 936;
+  const sh = (m.clientHeight - 60) / 735;
+  document.getElementById('card-wrapper').style.setProperty('--card-scale', Math.min(sw, sh, 1).toFixed(4));
+}
+
+// ===== Export =====
+function slugify(t) { return t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.remove('hidden'); t.classList.add('visible');
+  setTimeout(() => { t.classList.remove('visible'); t.classList.add('hidden'); }, 3000);
+}
+
+async function exportCard() {
+  const exportW = parseInt(document.getElementById('export-w').value) || 936;
+  const exportH = parseInt(document.getElementById('export-h').value) || 735;
+  const preview = document.getElementById('card-preview');
+
+  // 1. Clone the card at native size, off-screen
+  const clone = preview.cloneNode(true);
+  clone.id = '';
+  clone.style.cssText = 'position:fixed;left:-9999px;top:0;width:936px;height:735px;box-shadow:none;border-radius:20px;overflow:hidden;z-index:-1;';
+
+  // 2. Strip all contenteditable (prevents html2canvas text shifting)
+  clone.querySelectorAll('[contenteditable]').forEach(el => {
+    el.removeAttribute('contenteditable');
+    // Remove placeholder pseudo-element by setting a data attr
+    if (!el.innerText.trim()) el.innerHTML = '&nbsp;';
+  });
+
+  document.body.appendChild(clone);
+
+  // 3. Small delay for layout
+  await new Promise(r => setTimeout(r, 100));
+
+  // 4. Render with html2canvas
+  const scale = Math.max(exportW / 936, exportH / 735, 1);
+  const canvas = await html2canvas(clone, {
+    width: 936,
+    height: 735,
+    scale: scale,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: null,
+    logging: false
+  });
+
+  // 5. Resize to exact dimensions
+  const out = document.createElement('canvas');
+  out.width = exportW;
+  out.height = exportH;
+  out.getContext('2d').drawImage(canvas, 0, 0, exportW, exportH);
+
+  // 6. Download
+  const theme = getCurrentTheme();
+  const subjectEl = preview.querySelector('.cl-subj [contenteditable]');
+  const subject = subjectEl ? subjectEl.innerText.trim() : '';
+  const suffix = subject ? slugify(subject) : 'vide';
+
+  const link = document.createElement('a');
+  link.download = 'ttmc-' + theme + '-' + suffix + '-' + exportW + 'x' + exportH + '.png';
+  link.href = out.toDataURL('image/png');
+  link.click();
+
+  // 7. Cleanup
+  document.body.removeChild(clone);
+  showToast('Exporté en ' + exportW + ' × ' + exportH + ' px');
+}
+
+// ===== Helpers =====
+function getCurrentTheme() { return document.getElementById('theme-select').value; }
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded', () => {
+  buildIconPicker();
+  setupLogoUpload();
+
+  document.getElementById('theme-select').addEventListener('change', () => {
+    const t = getCurrentTheme();
+    currentIconIndex = THEMES[t].defaultIcon;
+    updatePickerActive();
+    renderCard(t);
+  });
+
+  document.getElementById('btn-export').addEventListener('click', exportCard);
+
+  updateCardScale();
+  window.addEventListener('resize', updateCardScale);
+
+  renderCard('blue');
+});
+  </script>
+</body>
+</html>

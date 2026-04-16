@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor">
+  <!-- Corps manette -->
+  <path d="M12,34 Q12,24 22,24 L58,24 Q68,24 68,34 L68,46 Q68,62 56,62 L50,62 Q46,62 44,56 L36,56 Q34,62 30,62 L24,62 Q12,62 12,46 Z"/>
+  <!-- Croix directionnelle gauche -->
+  <rect x="22" y="38" width="14" height="5" rx="1" fill="white" opacity="0.3"/>
+  <rect x="27" y="33" width="5" height="14" rx="1" fill="white" opacity="0.3"/>
+  <!-- Boutons droite -->
+  <circle cx="52" cy="36" r="3" fill="white" opacity="0.3"/>
+  <circle cx="58" cy="42" r="3" fill="white" opacity="0.3"/>
+  <circle cx="52" cy="48" r="3" fill="white" opacity="0.3"/>
+  <circle cx="46" cy="42" r="3" fill="white" opacity="0.3"/>
+</svg>

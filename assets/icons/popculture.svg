@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor">
+  <!-- Moitié haute -->
+  <path d="M4,40 A36,36 0 0,1 76,40 Z"/>
+  <!-- Moitié basse (légèrement plus claire) -->
+  <path d="M4,40 A36,36 0 0,0 76,40 Z" opacity="0.6"/>
+  <!-- Ligne centrale -->
+  <rect x="4" y="37" width="72" height="6" fill="currentColor"/>
+  <!-- Cercle central extérieur -->
+  <circle cx="40" cy="40" r="12" fill="currentColor"/>
+  <!-- Cercle central intérieur -->
+  <circle cx="40" cy="40" r="7" fill="white"/>
+  <!-- Point central -->
+  <circle cx="40" cy="40" r="3" fill="currentColor"/>
+</svg>

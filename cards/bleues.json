@@ -1,0 +1,51 @@
+{
+  "theme": "Divers / Improbable",
+  "color": "blue",
+  "cards": [
+    {
+      "sujet": "Les records du monde absurdes",
+      "questions": {
+        "1": "Existe-t-il un record du monde de lancer de téléphone portable ?",
+        "2": "Dans quel pays a été établi le record du plus long câlin ?",
+        "3": "Combien de temps a duré le plus long hoquet jamais enregistré (en années) ?",
+        "4": "Quel est le record du monde du plus grand nombre de t-shirts enfilés en même temps ?",
+        "5": "Quelle distance a parcourue la plus longue domino chain jamais réalisée (en km) ?",
+        "6": "En quelle année Charles Osborne a-t-il commencé à hoqueter sans s'arrêter pendant 68 ans ?",
+        "7": "Quel est le record du nombre de personnes déguisées en Schtroumpfs au même endroit ?",
+        "8": "Combien de hot-dogs Joey Chestnut a-t-il mangé en 10 min pour son record de 2021 ?",
+        "9": "Quel est le record de vitesse d'un lit motorisé homologué par le Guinness (en km/h) ?",
+        "10": "Combien de jours a duré le plus long marathon de lecture à voix haute (record Guinness) ?"
+      }
+    },
+    {
+      "sujet": "Les lois les plus bizarres",
+      "questions": {
+        "1": "Vrai ou faux : en Suisse, il est interdit de tirer la chasse d'eau après 22h dans un appartement ?",
+        "2": "Dans quel pays est-il illégal de marcher sur les billets de banque ?",
+        "3": "Dans quel État américain est-il interdit de porter des fausses moustaches à l'église ?",
+        "4": "Quel animal est-il interdit de promener sans laisse à Venise ?",
+        "5": "Dans quelle ville française est-il techniquement interdit de mourir par arrêté municipal ?",
+        "6": "En Angleterre, quelle loi de 1313 interdit de porter une armure au Parlement ?",
+        "7": "Dans quel pays est-il obligatoire de sourire en public sauf lors des funérailles ?",
+        "8": "Quel article du Code civil français interdisait aux femmes de porter un pantalon jusqu'en 2013 ?",
+        "9": "En Australie, quelle loi interdit de changer une ampoule si on n'est pas électricien agréé ?",
+        "10": "Dans quel État américain une loi de 1897 a failli changer la valeur de Pi à 3,2 ?"
+      }
+    },
+    {
+      "sujet": "Les inventions complètement ratées",
+      "questions": {
+        "1": "Le Segway était censé révolutionner quoi : le transport ou la cuisine ?",
+        "2": "Quel géant de la tech a sorti les Google Glass, retirées pour manque de succès ?",
+        "3": "Comment s'appelait le réseau social de Google qui a fermé en 2019 ?",
+        "4": "Quel format vidéo de Sony a perdu la guerre contre le VHS dans les années 80 ?",
+        "5": "Comment s'appelait la console de jeu d'Apple sortie en 1996 ?",
+        "6": "Quel téléphone Microsoft/Nokia tournait sous Windows Phone et a été un échec commercial ?",
+        "7": "En quelle année le Concorde a-t-il effectué son dernier vol commercial ?",
+        "8": "Comment s'appelait la tablette de Microsoft sortie en 2002, bien avant l'iPad ?",
+        "9": "Quel projet de dirigeable de la NASA des années 2000 devait remplacer les satellites ?",
+        "10": "Comment s'appelait le système de vidéodisque de RCA lancé en 1981, abandonné après 2 ans ?"
+      }
+    }
+  ]
+}

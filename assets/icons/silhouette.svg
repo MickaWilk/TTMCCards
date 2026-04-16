@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor">
+  <!-- Tête -->
+  <circle cx="40" cy="22" r="14"/>
+  <!-- Cheveux/coiffure -->
+  <path d="M26,18 Q28,6 40,8 Q52,6 54,18" fill="currentColor"/>
+  <!-- Corps (buste avec veste) -->
+  <path d="M16,80 Q16,50 26,42 Q32,38 40,36 Q48,38 54,42 Q64,50 64,80 Z"/>
+  <!-- Col de chemise -->
+  <path d="M34,36 L40,48 L46,36" fill="white" opacity="0.3"/>
+  <!-- Micro (main droite) -->
+  <rect x="58" y="52" width="4" height="14" rx="2"/>
+  <circle cx="60" cy="50" r="4"/>
+</svg>

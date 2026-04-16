@@ -1,0 +1,547 @@
+/* ===== Fonts & Reset ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #0f0f1a;
+  color: #fff;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* ===== Theme Colors ===== */
+:root {
+  --blue-bg: #3b6e8f;
+  --blue-border: #2c5a78;
+  --blue-text: #f4d03f;
+  --blue-num: #2c5a78;
+
+  --yellow-bg: #f4d03f;
+  --yellow-border: #d4b52f;
+  --yellow-text: #1a5276;
+  --yellow-num: #1a5276;
+
+  --red-bg: #7a2332;
+  --red-border: #5e1a27;
+  --red-text: #ffffff;
+  --red-num: #7a2332;
+
+  --sidebar-bg: #1a1a2e;
+  --sidebar-width: 280px;
+}
+
+/* ===== App Layout ===== */
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+.sidebar-title {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 2px;
+}
+
+.sidebar-title span {
+  font-weight: 400;
+  font-size: 18px;
+  color: rgba(255,255,255,0.5);
+}
+
+.sidebar-subtitle {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 4px;
+  margin-bottom: 32px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.controls label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.5);
+  margin-top: 8px;
+}
+
+.controls select,
+.controls input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.controls select:hover,
+.controls select:focus,
+.controls input:hover,
+.controls input:focus {
+  border-color: rgba(255,255,255,0.3);
+}
+
+.controls select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.btn {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.sidebar-footer p {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  line-height: 1.6;
+}
+
+/* ===== Main Area ===== */
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #16162a;
+  overflow: auto;
+}
+
+#card-wrapper {
+  padding: 40px;
+  transform: scale(var(--card-scale, 0.75));
+  transform-origin: center center;
+}
+
+/* =============================================
+   CARD — 936 x 735, two-panel TTMC layout
+   ============================================= */
+
+#card-preview {
+  width: 936px;
+  height: 735px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: row;
+  background: #e8e4df;
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ===== Left Panel (Question side) ===== */
+.card-left {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 14px;
+}
+
+.card-left-inner {
+  flex: 1;
+  border-radius: 14px;
+  border: 3px solid;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Header strip */
+.card-left-header {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  position: relative;
+  border-radius: 11px 11px 0 0;
+}
+
+.card-left-header-text {
+  font-size: 13px;
+  font-weight: 600;
+  font-style: italic;
+  opacity: 0.9;
+  flex: 1;
+}
+
+.card-left-header-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.card-left-header-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+/* Subject line (editable placeholder) */
+.card-subject-line {
+  padding: 4px 16px 2px;
+  border-bottom: 2px solid rgba(0,0,0,0.06);
+  min-height: 28px;
+}
+
+.card-subject-line span {
+  font-size: 11px;
+  color: rgba(0,0,0,0.25);
+  font-style: italic;
+}
+
+/* Numbers list */
+.card-numbers {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+}
+
+.card-number-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border-bottom: 1.5px solid rgba(0,0,0,0.06);
+  padding: 0 4px;
+}
+
+.card-number-row:last-child {
+  border-bottom: none;
+}
+
+.card-number-val {
+  font-size: 26px;
+  font-weight: 900;
+  width: 40px;
+  text-align: center;
+  line-height: 1;
+}
+
+.card-number-line {
+  flex: 1;
+  height: 1.5px;
+  background: rgba(0,0,0,0.08);
+  margin-left: 8px;
+}
+
+/* Decorative icon bottom-left */
+.card-left-deco {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 80px;
+  height: 80px;
+  opacity: 0.12;
+}
+
+.card-left-deco svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== Right Panel (Réponses side) ===== */
+.card-right {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 14px 14px 0;
+}
+
+.card-right-inner {
+  flex: 1;
+  border-radius: 14px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+}
+
+.card-right-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a1a2e;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.card-answers {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-answer-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border-bottom: 1.5px solid rgba(0,0,0,0.08);
+  gap: 8px;
+}
+
+.card-answer-row:last-child {
+  border-bottom: none;
+}
+
+.card-answer-num {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+  width: 28px;
+  text-align: right;
+}
+
+.card-answer-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(0,0,0,0.1);
+}
+
+/* Decorative sparkle bottom-right */
+.card-right-deco {
+  width: 24px;
+  height: 24px;
+  align-self: flex-end;
+  margin-top: 8px;
+  opacity: 0.3;
+}
+
+.card-right-deco svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== Theme: Blue ===== */
+.card-blue {
+  background: #d6dfe6;
+}
+
+.card-blue .card-left-inner {
+  border-color: var(--blue-border);
+}
+
+.card-blue .card-left-header {
+  background: var(--blue-bg);
+  color: var(--blue-text);
+}
+
+.card-blue .card-left-header-icon {
+  background: rgba(255,255,255,0.15);
+  color: var(--blue-text);
+}
+
+.card-blue .card-number-val {
+  color: var(--blue-num);
+}
+
+.card-blue .card-left-deco {
+  color: var(--blue-num);
+}
+
+.card-blue .card-right-deco {
+  color: var(--blue-num);
+}
+
+/* ===== Theme: Yellow ===== */
+.card-yellow {
+  background: #f0e8c8;
+}
+
+.card-yellow .card-left-inner {
+  border-color: var(--yellow-border);
+}
+
+.card-yellow .card-left-header {
+  background: var(--yellow-bg);
+  color: var(--yellow-text);
+}
+
+.card-yellow .card-left-header-icon {
+  background: rgba(255,255,255,0.3);
+  color: var(--yellow-text);
+}
+
+.card-yellow .card-number-val {
+  color: var(--yellow-num);
+}
+
+.card-yellow .card-left-deco {
+  color: var(--yellow-num);
+}
+
+.card-yellow .card-right-deco {
+  color: var(--yellow-num);
+}
+
+/* ===== Theme: Red ===== */
+.card-red {
+  background: #e0d0d0;
+}
+
+.card-red .card-left-inner {
+  border-color: var(--red-border);
+}
+
+.card-red .card-left-header {
+  background: var(--red-bg);
+  color: var(--red-text);
+}
+
+.card-red .card-left-header-icon {
+  background: rgba(255,255,255,0.15);
+  color: var(--red-text);
+}
+
+.card-red .card-number-val {
+  color: var(--red-num);
+}
+
+.card-red .card-left-deco {
+  color: var(--red-num);
+}
+
+.card-red .card-right-deco {
+  color: var(--red-num);
+}
+
+/* ===== Icon Picker ===== */
+.icon-picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.icon-picker-btn {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  color: rgba(255,255,255,0.6);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.icon-picker-btn:hover {
+  border-color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+}
+
+.icon-picker-btn.active {
+  border-color: #667eea;
+  background: rgba(102,126,234,0.15);
+  color: #fff;
+}
+
+.icon-picker-btn svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== Toast ===== */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  background: #27ae60;
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 1000;
+}
+
+.toast.hidden {
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toast.visible {
+  transform: translateY(0);
+  opacity: 1;
+}

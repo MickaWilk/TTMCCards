@@ -1,0 +1,51 @@
+{
+  "theme": "Pop Culture",
+  "color": "red",
+  "cards": [
+    {
+      "sujet": "Dragon Ball",
+      "questions": {
+        "1": "Comment s'appelle le héros principal de Dragon Ball ?",
+        "2": "De quelle couleur sont les cheveux d'un Super Saiyen ?",
+        "3": "Comment s'appelle le meilleur ami de Goku depuis l'enfance ?",
+        "4": "Combien de Dragon Balls faut-il réunir pour invoquer Shenron ?",
+        "5": "Comment s'appelle la technique signature de Goku (vague d'énergie) ?",
+        "6": "Quel est le vrai nom Saiyen de Goku ?",
+        "7": "Comment s'appelle le fils aîné de Goku ?",
+        "8": "En quelle année le premier manga Dragon Ball a-t-il été publié au Japon ?",
+        "9": "Quel est le niveau de puissance de Goku lors de son combat contre Freezer sur Namek ?",
+        "10": "Comment s'appelle la technique d'arts martiaux utilisée par le Maître des Grues (Tsuru Sennin) ?"
+      }
+    },
+    {
+      "sujet": "Pokémon",
+      "questions": {
+        "1": "Comment s'appelle le Pokémon jaune mascotte de la franchise ?",
+        "2": "Quel est le starter de type Feu de la première génération ?",
+        "3": "Comment s'appelle le dresseur principal dans l'anime Pokémon ?",
+        "4": "Combien de Pokémon comptait le Pokédex de la première génération ?",
+        "5": "Quel type est super efficace contre le type Eau ?",
+        "6": "En quelle année les premiers jeux Pokémon sont-ils sortis au Japon ?",
+        "7": "Comment s'appelle le Pokémon n°150 dans le Pokédex original ?",
+        "8": "Quel Pokémon légendaire orne la couverture de Pokémon Or ?",
+        "9": "Combien de générations de Pokémon existent au total (en 2024) ?",
+        "10": "Quel est le Pokémon ayant le plus haut total de stats de base toutes générations confondues ?"
+      }
+    },
+    {
+      "sujet": "Les films Marvel (MCU)",
+      "questions": {
+        "1": "Quel super-héros porte une armure rouge et or ?",
+        "2": "Comment s'appelle le méchant violet qui collecte les Pierres d'Infinité ?",
+        "3": "Quel film a lancé le MCU en 2008 ?",
+        "4": "Comment s'appelle le marteau de Thor ?",
+        "5": "Dans quel film les Avengers se réunissent-ils pour la première fois ?",
+        "6": "Combien de Pierres d'Infinité existe-t-il au total ?",
+        "7": "Quel acteur incarne Doctor Strange ?",
+        "8": "Dans quel film du MCU apparaît Spider-Man pour la première fois ?",
+        "9": "Combien de films composent la saga de l'Infinité (Infinity Saga) ?",
+        "10": "Quel est le montant exact du box-office mondial d'Avengers: Endgame en milliards de dollars ?"
+      }
+    }
+  ]
+}

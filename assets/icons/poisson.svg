@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor">
+  <!-- Corps du poisson -->
+  <ellipse cx="36" cy="40" rx="24" ry="16"/>
+  <!-- Queue -->
+  <polygon points="58,40 76,24 76,56"/>
+  <!-- Oeil -->
+  <circle cx="24" cy="35" r="4" fill="white"/>
+  <circle cx="23" cy="34" r="2" fill="#1a1a2e"/>
+  <!-- Nageoire dorsale -->
+  <path d="M30,24 Q36,12 42,24" fill="currentColor"/>
+  <!-- Nageoire ventrale -->
+  <path d="M32,56 Q36,64 42,56" fill="currentColor"/>
+  <!-- Bouche -->
+  <path d="M12,38 Q14,42 12,44" stroke="white" stroke-width="2" fill="none"/>
+</svg>

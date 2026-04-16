@@ -1,0 +1,51 @@
+{
+  "theme": "Personnages / Célébrités / Nous",
+  "color": "yellow",
+  "cards": [
+    {
+      "sujet": "Cyril Féraud",
+      "questions": {
+        "1": "Cyril Féraud est connu pour présenter des émissions sur quelle chaîne ?",
+        "2": "Quelle émission de jeu Cyril Féraud présente-t-il sur France 3 ?",
+        "3": "Dans quelle émission Cyril Féraud a-t-il été révélé au grand public ?",
+        "4": "En quelle année Cyril Féraud a-t-il commencé à présenter Slam ?",
+        "5": "Dans quelle ville du sud de la France Cyril Féraud est-il né ?",
+        "6": "Quel diplôme Cyril Féraud a-t-il obtenu avant de devenir animateur TV ?",
+        "7": "Avec quel autre animateur a-t-il co-présenté le concert des Enfoirés ?",
+        "8": "Quelle émission éphémère a-t-il présentée sur France 2 en access prime time ?",
+        "9": "En quelle année exacte est né Cyril Féraud ?",
+        "10": "Combien de candidats ont participé à la première saison de Slam ?"
+      }
+    },
+    {
+      "sujet": "Les présidents français",
+      "questions": {
+        "1": "Qui est le président actuel de la République française ?",
+        "2": "Combien de temps dure un mandat présidentiel en France ?",
+        "3": "Qui était président avant Emmanuel Macron ?",
+        "4": "Quel président a instauré la Ve République ?",
+        "5": "Quel président a aboli la peine de mort en France ?",
+        "6": "Qui est le seul président de la Ve République à n'avoir fait qu'un seul mandat de 7 ans ?",
+        "7": "En quelle année le mandat présidentiel est-il passé de 7 à 5 ans ?",
+        "8": "Qui fut le plus jeune président de la Ve République au moment de son élection ?",
+        "9": "Combien de présidents la Ve République a-t-elle compté au total (en 2024) ?",
+        "10": "Quel pourcentage exact des voix Jacques Chirac a-t-il obtenu au second tour en 2002 ?"
+      }
+    },
+    {
+      "sujet": "Les Youtubeurs français",
+      "questions": {
+        "1": "Quel Youtubeur français est connu pour ses vidéos « Bref. » ?",
+        "2": "Comment s'appelle la chaîne de Squeezie ?",
+        "3": "Quel Youtubeur est célèbre pour ses tests de produits et ses « C'est pas sorcier » modernes ?",
+        "4": "Comment s'appelle le duo derrière la chaîne McFly et Carlito ?",
+        "5": "Quel Youtubeur a créé le format « Point Culture » ?",
+        "6": "En quelle année Squeezie a-t-il créé sa chaîne YouTube ?",
+        "7": "Quel Youtubeur français a été le premier à dépasser les 10 millions d'abonnés ?",
+        "8": "Comment s'appelle l'événement caritatif créé par ZEvent ?",
+        "9": "Combien de millions d'euros le ZEvent 2021 a-t-il récolté ?",
+        "10": "Quel Youtubeur français détient le record du plus grand nombre de vues sur une seule vidéo en France ?"
+      }
+    }
+  ]
+}
