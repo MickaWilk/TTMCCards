@@ -1,84 +1,121 @@
-// ===== Utilitaire slug =====
-function slugify(text) {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
+// ===== export.js — Export PNG via html2canvas =====
 
-// ===== Toast =====
-function showToast(message) {
-  const toast = document.getElementById('toast');
-  toast.textContent = message;
-  toast.classList.remove('hidden');
-  toast.classList.add('visible');
-  setTimeout(() => {
-    toast.classList.remove('visible');
-    toast.classList.add('hidden');
-  }, 3000);
-}
+(function() {
+  'use strict';
 
-// ===== Export de la carte courante =====
-async function exportCurrentCard() {
-  const preview = document.getElementById('card-preview');
-  const theme = getCurrentTheme();
-  const label = THEMES[theme].label;
+  // ===== Slugify =====
+  window.slugify = function(t) {
+    return t.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  };
 
-  const canvas = await html2canvas(preview, {
-    width: 936,
-    height: 735,
-    scale: 1,
-    useCORS: true,
-    backgroundColor: null
-  });
+  // ===== Toast =====
+  window.showToast = function(msg, duration) {
+    var t = document.getElementById('toast');
+    if (!t) return;
+    // Nettoyer le contenu précédent
+    t.innerHTML = '';
+    if (typeof msg === 'string') {
+      t.textContent = msg;
+    } else {
+      // msg est un élément DOM (pour les toasts avec boutons)
+      t.appendChild(msg);
+    }
+    t.classList.remove('hidden');
+    t.classList.add('visible');
+    if (duration !== 0) {
+      setTimeout(function() {
+        t.classList.remove('visible');
+        t.classList.add('hidden');
+      }, duration || 3000);
+    }
+  };
 
-  const link = document.createElement('a');
-  link.download = `ttmc-${theme}-${slugify(label)}-vide.png`;
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  window.hideToast = function() {
+    var t = document.getElementById('toast');
+    if (!t) return;
+    t.classList.remove('visible');
+    t.classList.add('hidden');
+  };
 
-  showToast(`Carte exportée : ${label}`);
-}
+  // ===== Export carte en PNG =====
+  window.exportCard = function() {
+    var exportW = 936;
+    var exportH = 735;
+    var wInput = document.getElementById('export-w');
+    var hInput = document.getElementById('export-h');
+    if (wInput) exportW = parseInt(wInput.value) || 936;
+    if (hInput) exportH = parseInt(hInput.value) || 735;
 
-// ===== Export de toutes les cartes (une par thème) =====
-async function exportAllCards() {
-  const themes = Object.keys(THEMES);
-  const total = themes.length;
+    var preview = document.getElementById('card-preview');
+    if (!preview) return;
 
-  showToast(`Export en cours... 0/${total}`);
+    // 1. Clone la carte à taille native, hors écran
+    var clone = preview.cloneNode(true);
+    clone.id = '';
+    clone.style.cssText = 'position:fixed;left:-9999px;top:0;width:936px;height:735px;box-shadow:none;border-radius:20px;overflow:hidden;z-index:-1;';
 
-  for (let i = 0; i < total; i++) {
-    await renderCard(themes[i]);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Copier les custom properties du preview vers le clone
+    var computedStyle = getComputedStyle(preview);
+    var props = ['--header-bg','--header-text','--border','--num-color','--card-bg','--icon-bg-alpha','--subject-size','--question-size','--answer-size','--num-size','--answer-num-size'];
+    for (var p = 0; p < props.length; p++) {
+      var val = computedStyle.getPropertyValue(props[p]);
+      if (val) clone.style.setProperty(props[p], val);
+    }
+    // Copier la font-family
+    clone.style.fontFamily = preview.style.fontFamily || computedStyle.fontFamily;
 
-    const preview = document.getElementById('card-preview');
-    const canvas = await html2canvas(preview, {
-      width: 936,
-      height: 735,
-      scale: 1,
-      useCORS: true,
-      backgroundColor: null
-    });
+    // 2. Supprimer contenteditable (empêche décalage de texte par html2canvas)
+    var editables = clone.querySelectorAll('[contenteditable]');
+    for (var e = 0; e < editables.length; e++) {
+      editables[e].removeAttribute('contenteditable');
+      if (!editables[e].innerText.trim()) editables[e].innerHTML = '&nbsp;';
+    }
 
-    const link = document.createElement('a');
-    link.download = `ttmc-${themes[i]}-${slugify(THEMES[themes[i]].label)}-vide.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    document.body.appendChild(clone);
 
-    showToast(`Export en cours... ${i + 1}/${total}`);
-  }
+    // 3. Petit délai pour le layout
+    setTimeout(function() {
+      var scale = Math.max(exportW / 936, exportH / 735, 1);
 
-  // Revenir au thème sélectionné
-  const current = getCurrentTheme();
-  await renderCard(current);
+      html2canvas(clone, {
+        width: 936,
+        height: 735,
+        scale: scale,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
+        logging: false
+      }).then(function(canvas) {
+        // 4. Redimensionner aux dimensions exactes
+        var out = document.createElement('canvas');
+        out.width = exportW;
+        out.height = exportH;
+        out.getContext('2d').drawImage(canvas, 0, 0, exportW, exportH);
 
-  showToast(`${total} cartes exportées !`);
-}
+        // 5. Télécharger
+        var themeId = window.getCurrentThemeId();
+        var subjectEl = preview.querySelector('.cl-subj [contenteditable]');
+        var subject = subjectEl ? subjectEl.innerText.trim() : '';
+        var suffix = subject ? window.slugify(subject) : 'vide';
 
-// ===== Wiring des boutons =====
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('btn-export').addEventListener('click', exportCurrentCard);
-  document.getElementById('btn-export-all').addEventListener('click', exportAllCards);
-});
+        var link = document.createElement('a');
+        link.download = 'ttmc-' + themeId + '-' + suffix + '-' + exportW + 'x' + exportH + '.png';
+        link.href = out.toDataURL('image/png');
+        link.click();
+
+        // 6. Nettoyage
+        document.body.removeChild(clone);
+        window.showToast('Export\u00e9 en ' + exportW + ' \u00d7 ' + exportH + ' px');
+      }).catch(function(err) {
+        document.body.removeChild(clone);
+        window.showToast('Erreur lors de l\'export');
+        console.error(err);
+      });
+    }, 100);
+  };
+
+})();

@@ -1,174 +1,244 @@
-// ===== Liste de toutes les icônes disponibles =====
-const ICONS = [
-  { name: 'Poisson', file: 'assets/icons/poisson.svg' },
-  { name: 'Silhouette', file: 'assets/icons/silhouette.svg' },
-  { name: 'Pokéball', file: 'assets/icons/popculture.svg' },
-  { name: 'Dragon Ball', file: 'assets/icons/dragonball.svg' },
-  { name: 'Épée', file: 'assets/icons/epee.svg' },
-  { name: 'Manette', file: 'assets/icons/manette.svg' },
-  { name: 'Étoile', file: 'assets/icons/etoile.svg' }
-];
+// ===== cards.js — Rendu de carte + édition Q&A + sauvegarde =====
 
-// ===== Configuration des thèmes =====
-const THEMES = {
-  blue: {
-    className: 'card-blue',
-    label: 'Divers / Improbable',
-    headerText: 'Tu te mets combien en...',
-    defaultIcon: 0 // poisson
-  },
-  yellow: {
-    className: 'card-yellow',
-    label: 'Personnages / Célébrités / Nous',
-    headerText: 'Tu te mets combien en...',
-    defaultIcon: 1 // silhouette
-  },
-  red: {
-    className: 'card-red',
-    label: 'Pop Culture',
-    headerText: 'Tu te mets combien en...',
-    defaultIcon: 2 // pokéball
-  }
-};
+(function() {
+  'use strict';
 
-const iconCache = {};
-let currentIconIndex = 0;
+  // État courant
+  var currentThemeId = 'blue';
+  var currentIconId = 'poisson';
+  var currentFontId = 'poppins';
+  var customLogoDataURL = null;
+  var saveTimer = null;
 
-// ===== Chargement icône =====
-async function loadIconByIndex(index) {
-  const file = ICONS[index].file;
-  if (iconCache[file]) return iconCache[file];
-  const resp = await fetch(file);
-  const svg = await resp.text();
-  iconCache[file] = svg;
-  return svg;
-}
+  // Tailles de police (en px)
+  var fontSizes = {
+    subject: 20,
+    question: 9.5,
+    answer: 9.5,
+    number: 28
+  };
 
-// ===== Preload toutes les icônes =====
-async function preloadAllIcons() {
-  await Promise.all(ICONS.map((_, i) => loadIconByIndex(i)));
-}
+  var LS_KEY = 'ttmc-card-draft';
 
-// ===== Étoile décorative SVG =====
-const SPARKLE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-  <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5Z"/>
-</svg>`;
+  // Expose les variables d'état sur window
+  window.customLogoDataURL = null;
 
-// ===== Rendu d'une carte vide =====
-async function renderCard(theme) {
-  const icon = await loadIconByIndex(currentIconIndex);
-  const config = THEMES[theme];
-  const preview = document.getElementById('card-preview');
-  preview.className = config.className;
-
-  let numbersHTML = '';
-  for (let i = 1; i <= 10; i++) {
-    numbersHTML += `
-      <div class="card-number-row">
-        <div class="card-number-val">${i}</div>
-        <div class="card-number-line"></div>
-      </div>`;
+  // ===== Génération du HTML d'icône =====
+  function iconHTML() {
+    if (window.customLogoDataURL) {
+      return '<img src="' + window.customLogoDataURL + '">';
+    }
+    var icon = window.BUILTIN_ICONS[currentIconId];
+    return icon ? icon.svg : '';
   }
 
-  let answersHTML = '';
-  for (let i = 1; i <= 10; i++) {
-    answersHTML += `
-      <div class="card-answer-row">
-        <div class="card-answer-num">${i}.</div>
-        <div class="card-answer-line"></div>
-      </div>`;
-  }
+  // ===== Render principal =====
+  window.renderCard = function(themeId, iconId, fontId) {
+    if (themeId) currentThemeId = themeId;
+    if (iconId) currentIconId = iconId;
+    if (fontId) currentFontId = fontId;
 
-  preview.innerHTML = `
-    <div class="card-left">
-      <div class="card-left-inner">
-        <div class="card-left-header">
-          <div class="card-left-header-text">${config.headerText}</div>
-          <div class="card-left-header-icon">${icon}</div>
-        </div>
-        <div class="card-subject-line"><span></span></div>
-        <div class="card-numbers">
-          ${numbersHTML}
-        </div>
-      </div>
-      <div class="card-left-deco">${icon}</div>
-    </div>
-    <div class="card-right">
-      <div class="card-right-inner">
-        <div class="card-right-title">Réponses</div>
-        <div class="card-answers">
-          ${answersHTML}
-        </div>
-        <div class="card-right-deco">${SPARKLE_SVG}</div>
-      </div>
-    </div>
-  `;
-}
+    var theme = window.getThemeById(currentThemeId);
+    var saved = window.saveCardContent();
 
-// ===== Icon Picker =====
-async function buildIconPicker() {
-  const picker = document.getElementById('icon-picker');
-  picker.innerHTML = '';
+    var p = document.getElementById('card-preview');
+    if (!p) return;
 
-  for (let i = 0; i < ICONS.length; i++) {
-    const svg = await loadIconByIndex(i);
-    const btn = document.createElement('button');
-    btn.className = 'icon-picker-btn' + (i === currentIconIndex ? ' active' : '');
-    btn.title = ICONS[i].name;
-    btn.innerHTML = svg;
-    btn.addEventListener('click', async () => {
-      currentIconIndex = i;
-      // Update active state
-      picker.querySelectorAll('.icon-picker-btn').forEach((b, j) => {
-        b.classList.toggle('active', j === i);
-      });
-      await renderCard(getCurrentTheme());
+    // Appliquer le thème via custom properties
+    window.applyTheme(p, theme);
+
+    // Appliquer la police
+    var font = window.getFontById(currentFontId);
+    if (font) {
+      window.applyFont(p, font.family);
+    }
+
+    // Appliquer les tailles de police
+    p.style.setProperty('--subject-size', fontSizes.subject + 'px');
+    p.style.setProperty('--question-size', fontSizes.question + 'px');
+    p.style.setProperty('--answer-size', fontSizes.answer + 'px');
+    p.style.setProperty('--num-size', fontSizes.number + 'px');
+    p.style.setProperty('--answer-num-size', Math.round(fontSizes.number * 0.46) + 'px');
+
+    // Construire les lignes gauche (questions) et droite (réponses)
+    var leftRows = '';
+    var rightRows = '';
+    for (var i = 1; i <= 10; i++) {
+      leftRows += '<div class="cl-row">' +
+        '<div class="cl-num">' + i + '</div>' +
+        '<div class="cl-txt" contenteditable="true" data-i="' + i + '" data-placeholder="Question ' + i + '..."></div>' +
+        '</div>';
+      rightRows += '<div class="cr-row">' +
+        '<div class="cr-num">' + i + '.</div>' +
+        '<div class="cr-txt" contenteditable="true" data-i="' + i + '" data-placeholder="R\u00e9ponse ' + i + '..."></div>' +
+        '</div>';
+    }
+
+    p.innerHTML =
+      '<div class="cl">' +
+        '<div class="cl-head">' +
+          '<div class="cl-head-txt">Tu te mets combien en...</div>' +
+          '<div class="cl-head-icon">' + iconHTML() + '</div>' +
+        '</div>' +
+        '<div class="cl-subj"><span contenteditable="true" data-placeholder="Sujet..."></span></div>' +
+        '<div class="cl-rows">' + leftRows + '</div>' +
+        '<div class="cl-deco">' + iconHTML() + '</div>' +
+      '</div>' +
+      '<div class="cr">' +
+        '<div class="cr-title">R\u00e9ponses</div>' +
+        '<div class="cr-rows">' + rightRows + '</div>' +
+        '<div class="cr-star"></div>' +
+      '</div>';
+
+    // Restaurer le contenu éditée
+    window.restoreCardContent(saved);
+
+    // Écouter les modifications pour la sauvegarde auto
+    setupAutoSave(p);
+  };
+
+  // ===== Auto-save debounced =====
+  function setupAutoSave(cardEl) {
+    cardEl.addEventListener('input', function() {
+      if (saveTimer) clearTimeout(saveTimer);
+      saveTimer = setTimeout(function() {
+        window.saveToLocalStorage();
+      }, 500);
     });
-    picker.appendChild(btn);
   }
-}
 
-// ===== Auto-scale pour tenir dans la fenêtre =====
-function updateCardScale() {
-  const main = document.querySelector('.main');
-  const availW = main.clientWidth - 80;
-  const availH = main.clientHeight - 80;
-  const scaleW = availW / 936;
-  const scaleH = availH / 735;
-  const scale = Math.min(scaleW, scaleH, 1);
-  document.getElementById('card-wrapper').style.setProperty('--card-scale', scale.toFixed(3));
-}
+  // ===== Sauvegarder le contenu éditable =====
+  window.saveCardContent = function() {
+    var s = document.querySelector('#card-preview .cl-subj [contenteditable]');
+    if (!s) return null;
+    var d = { subject: s.innerText, q: {}, a: {} };
+    var qs = document.querySelectorAll('#card-preview .cl-txt');
+    for (var i = 0; i < qs.length; i++) {
+      d.q[qs[i].dataset.i] = qs[i].innerText;
+    }
+    var as = document.querySelectorAll('#card-preview .cr-txt');
+    for (var j = 0; j < as.length; j++) {
+      d.a[as[j].dataset.i] = as[j].innerText;
+    }
+    return d;
+  };
 
-// ===== Récupérer le thème courant =====
-function getCurrentTheme() {
-  return document.getElementById('theme-select').value;
-}
+  // ===== Restaurer le contenu =====
+  window.restoreCardContent = function(d) {
+    if (!d) return;
+    var s = document.querySelector('#card-preview .cl-subj [contenteditable]');
+    if (s && d.subject) s.innerText = d.subject;
+    var qs = document.querySelectorAll('#card-preview .cl-txt');
+    for (var i = 0; i < qs.length; i++) {
+      if (d.q && d.q[qs[i].dataset.i]) qs[i].innerText = d.q[qs[i].dataset.i];
+    }
+    var as = document.querySelectorAll('#card-preview .cr-txt');
+    for (var j = 0; j < as.length; j++) {
+      if (d.a && d.a[as[j].dataset.i]) as[j].innerText = d.a[as[j].dataset.i];
+    }
+  };
 
-// ===== Event Listeners =====
-document.addEventListener('DOMContentLoaded', async () => {
-  const themeSelect = document.getElementById('theme-select');
+  // ===== Sauvegarde localStorage =====
+  window.saveToLocalStorage = function() {
+    try {
+      var content = window.saveCardContent();
+      if (!content) return;
+      var data = {
+        themeId: currentThemeId,
+        iconId: currentIconId,
+        fontId: currentFontId,
+        fontSizes: { subject: fontSizes.subject, question: fontSizes.question, answer: fontSizes.answer, number: fontSizes.number },
+        content: content,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(LS_KEY, JSON.stringify(data));
+    } catch(e) {
+      // silently fail
+    }
+  };
 
-  // Preload toutes les icônes
-  await preloadAllIcons();
+  // ===== Chargement localStorage =====
+  window.loadFromLocalStorage = function() {
+    try {
+      var raw = localStorage.getItem(LS_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch(e) {
+      return null;
+    }
+  };
 
-  // Construire le picker d'icônes
-  await buildIconPicker();
+  // ===== Effacer la carte =====
+  window.clearCard = function() {
+    try {
+      localStorage.removeItem(LS_KEY);
+    } catch(e) {}
+    window.customLogoDataURL = null;
+    currentThemeId = 'blue';
+    currentIconId = 'poisson';
+    currentFontId = 'poppins';
+    fontSizes = { subject: 20, question: 9.5, answer: 9.5, number: 28 };
+    window.renderCard('blue', 'poisson', 'poppins');
+  };
 
-  // Changement de thème → met à jour l'icône par défaut et re-render
-  themeSelect.addEventListener('change', async () => {
-    const theme = getCurrentTheme();
-    currentIconIndex = THEMES[theme].defaultIcon;
-    // Update picker active state
-    document.querySelectorAll('.icon-picker-btn').forEach((b, j) => {
-      b.classList.toggle('active', j === currentIconIndex);
-    });
-    await renderCard(theme);
-  });
+  // ===== Charger une carte d'exemple =====
+  window.loadSampleCard = function(card) {
+    if (!card) return;
+    currentThemeId = card.themeId || 'blue';
+    var theme = window.getThemeById(currentThemeId);
+    currentIconId = theme.defaultIcon || 'poisson';
+    currentFontId = 'poppins';
+    window.customLogoDataURL = null;
 
-  // Scale initial + resize
-  updateCardScale();
-  window.addEventListener('resize', updateCardScale);
+    window.renderCard(currentThemeId, currentIconId, currentFontId);
 
-  // Chargement initial
-  await renderCard('blue');
-});
+    // Remplir le sujet
+    var subj = document.querySelector('#card-preview .cl-subj [contenteditable]');
+    if (subj && card.sujet) subj.innerText = card.sujet;
+
+    // Remplir les questions (panneau gauche)
+    var qs = document.querySelectorAll('#card-preview .cl-txt');
+    for (var i = 0; i < qs.length; i++) {
+      var idx = qs[i].dataset.i;
+      if (card.questions && card.questions[idx]) {
+        qs[i].innerText = card.questions[idx];
+      }
+    }
+
+    // Sauvegarder
+    window.saveToLocalStorage();
+
+    return { themeId: currentThemeId, iconId: currentIconId, fontId: currentFontId };
+  };
+
+  // ===== Getters d'état =====
+  window.getCurrentThemeId = function() { return currentThemeId; };
+  window.getCurrentIconId = function() { return currentIconId; };
+  window.getCurrentFontId = function() { return currentFontId; };
+  window.setCurrentThemeId = function(id) { currentThemeId = id; };
+  window.setCurrentIconId = function(id) { currentIconId = id; };
+  window.setCurrentFontId = function(id) { currentFontId = id; };
+
+  // ===== Tailles de police =====
+  window.getFontSizes = function() { return { subject: fontSizes.subject, question: fontSizes.question, answer: fontSizes.answer, number: fontSizes.number }; };
+  window.setFontSize = function(key, val) {
+    if (fontSizes.hasOwnProperty(key)) {
+      fontSizes[key] = val;
+      var p = document.getElementById('card-preview');
+      if (p) {
+        p.style.setProperty('--subject-size', fontSizes.subject + 'px');
+        p.style.setProperty('--question-size', fontSizes.question + 'px');
+        p.style.setProperty('--answer-size', fontSizes.answer + 'px');
+        p.style.setProperty('--num-size', fontSizes.number + 'px');
+        p.style.setProperty('--answer-num-size', Math.round(fontSizes.number * 0.46) + 'px');
+      }
+    }
+  };
+  window.setAllFontSizes = function(sizes) {
+    if (sizes.subject != null) fontSizes.subject = sizes.subject;
+    if (sizes.question != null) fontSizes.question = sizes.question;
+    if (sizes.answer != null) fontSizes.answer = sizes.answer;
+    if (sizes.number != null) fontSizes.number = sizes.number;
+  };
+
+})();
