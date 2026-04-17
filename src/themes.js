@@ -42,10 +42,7 @@ window.getThemeById = function(id) {
   return THEMES.find(function(t) { return t.id === id; }) || THEMES[0];
 };
 
-window.getThemesForCardType = function(cardTypeId) {
-  // Standard cards can use any theme
-  if (cardTypeId === 'standard') return THEMES;
-  // Challenge cards show their own theme + all standard themes for customization
+window.getThemesForCardType = function() {
   return THEMES;
 };
 

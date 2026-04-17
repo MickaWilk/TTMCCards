@@ -88,9 +88,7 @@
     return icon ? icon.svg : '';
   }
 
-  function ttmcLogo() {
-    return '';
-  }
+  // ttmcLogo removed — was always returning ''
 
   function applyFontSizeProperties(el) {
     el.style.setProperty('--subject-size', fontSizes.subject + 'px');
@@ -254,13 +252,55 @@
       dragState = null;
       if (window.onOverlaysChanged) window.onOverlaysChanged();
     });
+
+    // Touch events for mobile
+    p.addEventListener('touchstart', function(e) {
+      var target = e.target;
+      if (!target.classList.contains('card-overlay')) return;
+      var id = parseInt(target.getAttribute('data-overlay-id'));
+      var ov = null;
+      for (var i = 0; i < overlays.length; i++) {
+        if (overlays[i].id === id) { ov = overlays[i]; break; }
+      }
+      if (!ov || ov.locked) return;
+      var touch = e.touches[0];
+      var rect = p.getBoundingClientRect();
+      var scale = rect.width / 936;
+      dragState = { id: id, startX: touch.clientX, startY: touch.clientY, origX: ov.x, origY: ov.y, scale: scale };
+      target.classList.add('overlay-dragging');
+    }, { passive: true });
+
+    document.addEventListener('touchmove', function(e) {
+      if (!dragState) return;
+      var touch = e.touches[0];
+      var dx = (touch.clientX - dragState.startX) / dragState.scale;
+      var dy = (touch.clientY - dragState.startY) / dragState.scale;
+      var ov = null;
+      for (var i = 0; i < overlays.length; i++) {
+        if (overlays[i].id === dragState.id) { ov = overlays[i]; break; }
+      }
+      if (!ov) return;
+      ov.x = Math.round(dragState.origX + dx);
+      ov.y = Math.round(dragState.origY + dy);
+      var el = document.querySelector('.card-overlay[data-overlay-id="' + dragState.id + '"]');
+      if (el) { el.style.left = ov.x + 'px'; el.style.top = ov.y + 'px'; }
+    }, { passive: true });
+
+    document.addEventListener('touchend', function() {
+      if (!dragState) return;
+      var el = document.querySelector('.card-overlay[data-overlay-id="' + dragState.id + '"]');
+      if (el) el.classList.remove('overlay-dragging');
+      dragState = null;
+      if (window.onOverlaysChanged) window.onOverlaysChanged();
+    });
   }
 
   // --- Overlay public API ---
   window.addOverlay = function(dataURL, opts) {
     opts = opts || {};
+    var id = nextOverlayId++;
     var ov = {
-      id: nextOverlayId++,
+      id: id,
       src: dataURL,
       x: opts.x != null ? opts.x : 0,
       y: opts.y != null ? opts.y : 0,
@@ -270,7 +310,7 @@
       opacity: opts.opacity != null ? opts.opacity : 1,
       visible: true,
       locked: false,
-      label: opts.label || 'Calque ' + nextOverlayId
+      label: opts.label || 'Calque ' + id
     };
     overlays.push(ov);
     renderOverlays();
@@ -360,7 +400,7 @@
       '<div class="panel-inner panel-bordered">' +
         '<div class="panel-header">' +
           '<span class="panel-header-text">R\u00e9ponses</span>' +
-          '<div class="panel-header-logo">' + ttmcLogo() + '</div>' +
+          '<div class="panel-header-logo">' + '' + '</div>' +
           '<div class="panel-header-icon">' + iconHTML() + '</div>' +
         '</div>' +
         '<div class="panel-answers">' + aRows + '</div>' +
@@ -388,7 +428,7 @@
           '<div class="debuter-title" contenteditable="true" data-placeholder="Titre du challenge (' + ph + ')..." data-field="title' + sfx + '"></div>' +
           '<div class="debuter-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici..." data-field="body' + sfx + '"></div>' +
           '<div class="debuter-footer" contenteditable="true" data-placeholder="Note de bas de page..." data-field="footer' + sfx + '"></div>' +
-          '<div class="debuter-logo">' + ttmcLogo() + '</div>' +
+          '<div class="debuter-logo">' + '' + '</div>' +
         '</div>' +
       '</div>' +
       '<div class="panel-watermark">' + iconHTML() + '</div>' +
@@ -418,7 +458,7 @@
         '<div class="gagner-divider"></div>' +
         '<div class="gagner-answer-label" contenteditable="true" data-field="answerLabel' + sfx + '">R\u00e9ponse</div>' +
         '<div class="gagner-answer" contenteditable="true" data-placeholder="Tapez la r\u00e9ponse ici..." data-field="challengeAnswer' + sfx + '"></div>' +
-        '<div class="gagner-logo">' + ttmcLogo() + '</div>' +
+        '<div class="gagner-logo">' + '' + '</div>' +
       '</div>' +
       '<div class="panel-watermark">' + iconHTML() + '</div>' +
     '</div>';
@@ -440,7 +480,7 @@
           '</div>' +
           '<div class="intrepide-title" contenteditable="true" data-placeholder="NOM DU D\u00c9FI" data-field="title"></div>' +
           '<div class="intrepide-body" contenteditable="true" data-placeholder="D\u00e9crivez le d\u00e9fi ici...\n\nExemple : Dommage, tu es tomb\u00e9 sur une tuile. Tu recules de 5 cases sauf si le plus m\u00e9lomane de ton \u00e9quipe nous chante le refrain de Quelque part de Sheryl Luna..." data-field="body"></div>' +
-          '<div class="intrepide-logo">' + ttmcLogo() + '</div>' +
+          '<div class="intrepide-logo">' + '' + '</div>' +
         '</div>' +
       '</div>';
 
@@ -452,7 +492,7 @@
             '<span class="intrepide-header-sub" contenteditable="true" data-field="intrepideSub">R\u00c9PONSES</span>' +
           '</div>' +
           '<div class="intrepide-responses" contenteditable="true" data-placeholder="Tapez les r\u00e9ponses ici...\n\n\u00c9cris-moi une autre histoire\nT\'es le seul \u00e0 me comprendre\nEmm\u00e8ne-moi quelque part\nNe me laissez pas surprendre\nInvente-moi un monde \u00e0 part\nApprends-moi une nouvelle danse\nEmm\u00e8ne-moi quelque part\nBoy, je te fais confiance" data-field="responses"></div>' +
-          '<div class="intrepide-logo">' + ttmcLogo() + '</div>' +
+          '<div class="intrepide-logo">' + '' + '</div>' +
         '</div>' +
       '</div>';
 
@@ -460,7 +500,10 @@
   }
 
   // ===== Auto-save debounced =====
+  var autoSaveBound = false;
   function setupAutoSave(cardEl) {
+    if (autoSaveBound) return;
+    autoSaveBound = true;
     cardEl.addEventListener('input', function() {
       if (saveTimer) clearTimeout(saveTimer);
       saveTimer = setTimeout(function() {
@@ -663,7 +706,10 @@
         timestamp: Date.now()
       };
       localStorage.setItem(LS_KEY, JSON.stringify(data));
-    } catch(e) {}
+    } catch(e) {
+      console.warn('Sauvegarde locale impossible :', e.message);
+      if (window.showToast) window.showToast('Sauvegarde locale impossible (stockage plein ?)');
+    }
   };
 
   window.loadFromLocalStorage = function() {
@@ -872,8 +918,5 @@
     img.src = dataURL;
   };
 
-  // Kept for export.js compatibility
-  window.getCurrentSide = function() { return 'recto'; };
-  window.switchSide = function() {};
 
 })();

@@ -66,6 +66,19 @@
     return clone;
   }
 
+  // ===== Helpers =====
+  function getThemeBg() {
+    var theme = window.getThemeById(window.getCurrentThemeId());
+    return theme ? theme.cardBg || '#ffffff' : '#ffffff';
+  }
+
+  function setExportBtnsDisabled(disabled) {
+    var btn1 = document.getElementById('btn-export');
+    var btn2 = document.getElementById('btn-export-both');
+    if (btn1) { btn1.disabled = disabled; btn1.style.opacity = disabled ? '.5' : ''; }
+    if (btn2) { btn2.disabled = disabled; btn2.style.opacity = disabled ? '.5' : ''; }
+  }
+
   // ===== Export la carte complète (recto + verso côte à côte) =====
   window.exportCard = function() {
     var exportW = 936;
@@ -78,15 +91,16 @@
     var preview = document.getElementById('card-preview');
     if (!preview) return;
 
+    setExportBtnsDisabled(true);
     var clone = cloneCardForExport(preview);
     document.body.appendChild(clone);
 
     setTimeout(function() {
-      var scale = Math.max(exportW / 936, exportH / 735, 1);
+      var scale = Math.max(exportW / 936, exportH / 735, 2);
 
       html2canvas(clone, {
         width: 936, height: 735, scale: scale,
-        useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false
+        useCORS: true, allowTaint: true, backgroundColor: getThemeBg(), logging: false
       }).then(function(canvas) {
         var out = document.createElement('canvas');
         out.width = exportW;
@@ -105,9 +119,11 @@
         link.click();
 
         document.body.removeChild(clone);
+        setExportBtnsDisabled(false);
         window.showToast('Export\u00e9 en ' + exportW + ' \u00d7 ' + exportH + ' px');
       }).catch(function(err) {
         document.body.removeChild(clone);
+        setExportBtnsDisabled(false);
         window.showToast('Erreur lors de l\'export');
         console.error(err);
       });
@@ -115,6 +131,8 @@
   };
 
   // ===== Export des 2 faces séparément =====
+  // Card layout: 14px padding, 10px gap between panels → each panel starts at known offsets
+  // Left panel: x=14 to x=(936/2 - 5) = 463. Right panel: x=473 to x=922.
   function exportHalf(side, callback) {
     var halfW = 468;
     var halfH = 735;
@@ -130,15 +148,16 @@
     document.body.appendChild(clone);
 
     setTimeout(function() {
-      var scale = Math.max(halfW / 468, halfH / 735, 1);
+      var scale = Math.max(halfW / 468, halfH / 735, 2);
 
       html2canvas(clone, {
         width: 936, height: 735, scale: scale,
-        useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false
+        useCORS: true, allowTaint: true, backgroundColor: getThemeBg(), logging: false
       }).then(function(canvas) {
-        // Découper la moitié gauche (recto) ou droite (verso)
-        var srcX = (side === 'verso') ? canvas.width / 2 : 0;
-        var srcW = canvas.width / 2;
+        // Account for 10px gap: left panel = 0 to 463px, right panel = 473px to 936px
+        var gapHalf = Math.round(5 * scale);
+        var srcX = (side === 'verso') ? Math.round(canvas.width / 2) + gapHalf : 0;
+        var srcW = Math.round(canvas.width / 2) - gapHalf;
 
         var out = document.createElement('canvas');
         out.width = halfW;
@@ -168,11 +187,13 @@
   }
 
   window.exportBothSides = function() {
+    setExportBtnsDisabled(true);
     window.showToast('Export du recto...');
     exportHalf('recto', function() {
       setTimeout(function() {
         window.showToast('Export du verso...');
         exportHalf('verso', function() {
+          setExportBtnsDisabled(false);
           window.showToast('Les 2 faces ont \u00e9t\u00e9 export\u00e9es !');
         });
       }, 500);
