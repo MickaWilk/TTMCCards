@@ -801,41 +801,75 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 }
 
 /* =============================================
-   HAMBURGER TOGGLE (hidden on desktop)
+   MOBILE SIDEBAR TOGGLE
    ============================================= */
-.sidebar-toggle {
-  display:none; position:fixed; top:12px; left:12px; z-index:3000;
-  background:var(--sidebar-bg); color:#fff; border:1px solid rgba(255,255,255,.15);
-  border-radius:8px; font-size:22px; width:40px; height:40px;
-  cursor:pointer; align-items:center; justify-content:center;
-  line-height:1;
+.sidebar-toggle-btn {
+  display:none;
+  position:fixed; top:12px; left:12px; z-index:1500;
+  width:44px; height:44px; border-radius:10px;
+  background:#1a1a2e; border:1px solid rgba(255,255,255,.15);
+  color:#fff; cursor:pointer;
+  align-items:center; justify-content:center;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  transition:background .2s;
 }
+.sidebar-toggle-btn:hover { background:#16213e; }
+
+.sidebar-backdrop {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.55); z-index:999;
+  backdrop-filter:blur(2px);
+}
+.sidebar-backdrop.visible { display:block; }
 
 /* =============================================
-   RESPONSIVE
+   RESPONSIVE — MOBILE (≤ 768px)
    ============================================= */
-@media (max-width: 900px) {
-  body { overflow:auto; }
+@media (max-width:768px) {
+  body { overflow:auto; height:auto; }
 
-  .sidebar-toggle { display:flex; }
+  .sidebar-toggle-btn { display:flex; }
 
+  .app { flex-direction:column; height:auto; min-height:100svh; }
+
+  /* Sidebar becomes a fixed left drawer */
   .sidebar {
-    position:fixed; left:0; top:0; bottom:0; z-index:2500;
-    transform:translateX(-100%); transition:transform .3s ease;
-    width:min(320px, 85vw);
+    position:fixed; top:0; left:0;
+    height:100%; width:min(300px, 88vw);
+    z-index:1000;
+    transform:translateX(-100%);
+    transition:transform .28s cubic-bezier(.4,0,.2,1);
+    box-shadow:6px 0 32px rgba(0,0,0,.55);
+    padding-top:60px;
   }
   .sidebar.open { transform:translateX(0); }
 
-  .sidebar-overlay {
-    position:fixed; inset:0; z-index:2400;
-    background:rgba(0,0,0,.5); display:none;
+  /* Main takes full viewport */
+  .main {
+    width:100vw;
+    height:100svh;
+    flex:none;
   }
-  .sidebar-overlay.visible { display:block; }
 
-  .main { width:100%; }
+  /* Bigger touch targets for num buttons */
+  .num-mini-btn { width:32px; height:32px; font-size:11px; }
 
-  #card-wrapper {
-    transform-origin:top center;
-    margin:60px auto 20px;
-  }
+  /* Toast stays readable on mobile */
+  .toast { left:12px; right:12px; bottom:16px; max-width:none; font-size:13px; }
+
+  /* Export buttons: stack properly, bigger tap area */
+  .btn { padding:12px 14px; font-size:14px; }
+
+  /* Accordion max-height more generous */
+  .sidebar-section.open .section-body { max-height:1200px; }
+
+  /* Sample modal full width */
+  .sample-modal-inner { width:96%; padding:20px 16px; }
+}
+
+/* =============================================
+   RESPONSIVE — SMALL MOBILE (≤ 480px)
+   ============================================= */
+@media (max-width:480px) {
+  .sidebar { width:92vw; }
 }

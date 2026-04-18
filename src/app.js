@@ -986,26 +986,41 @@
     }
   }
 
-  // ===== Mobile sidebar toggle =====
+  // ===== Mobile Sidebar Toggle =====
   function setupMobileSidebar() {
-    var toggle = document.getElementById('sidebar-toggle');
-    var sidebar = document.querySelector('.sidebar');
-    var overlay = document.getElementById('sidebar-overlay');
-    if (!toggle || !sidebar) return;
+    var toggleBtn = document.getElementById('sidebar-toggle');
+    var sidebar   = document.getElementById('sidebar');
+    var backdrop  = document.getElementById('sidebar-backdrop');
+    if (!toggleBtn || !sidebar || !backdrop) return;
+
+    var iconHamburger = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/></svg>';
+    var iconClose     = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/></svg>';
 
     function openSidebar() {
       sidebar.classList.add('open');
-      if (overlay) overlay.classList.add('visible');
+      backdrop.classList.add('visible');
+      toggleBtn.innerHTML = iconClose;
+      toggleBtn.setAttribute('aria-label', 'Fermer');
     }
     function closeSidebar() {
       sidebar.classList.remove('open');
-      if (overlay) overlay.classList.remove('visible');
+      backdrop.classList.remove('visible');
+      toggleBtn.innerHTML = iconHamburger;
+      toggleBtn.setAttribute('aria-label', 'Menu');
     }
 
-    toggle.addEventListener('click', function() {
+    toggleBtn.addEventListener('click', function() {
       sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
     });
-    if (overlay) overlay.addEventListener('click', closeSidebar);
+    backdrop.addEventListener('click', closeSidebar);
+
+    // Close sidebar when an action button is clicked (export/reset) on mobile
+    var actionBtns = document.querySelectorAll('#btn-export, #btn-export-both, #btn-sample, #btn-reset');
+    for (var i = 0; i < actionBtns.length; i++) {
+      actionBtns[i].addEventListener('click', function() {
+        if (window.innerWidth <= 768) closeSidebar();
+      });
+    }
   }
 
   // ===== Init =====
