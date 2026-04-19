@@ -868,6 +868,56 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 }
 
 /* =============================================
+   BONUS / MALUS — Recto blanc (coeur) + Verso noir (tête de mort)
+   ============================================= */
+.card-type-bonusmalus {
+  display:flex; flex-direction:row; gap:0; padding:0; overflow:hidden; border-radius:14px;
+}
+
+.card-type-bonusmalus .card-panel { flex:1; display:flex; flex-direction:column; position:relative; overflow:hidden; }
+
+.bonusmalus-recto { background:#ffffff; }
+.bonusmalus-verso { background:#1a1a1a; }
+
+.bonusmalus-inner {
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:28px 20px; gap:14px; position:relative; z-index:1;
+}
+
+.bonusmalus-icon {
+  width:80px; height:80px; display:flex; align-items:center; justify-content:center;
+}
+.bonusmalus-icon svg { width:80px; height:80px; }
+
+.bonusmalus-icon-heart { color:#e74c3c; }
+.bonusmalus-icon-skull { color:#ffffff; }
+
+.bonusmalus-label {
+  font-size:28px; font-weight:900; letter-spacing:2px; text-transform:uppercase;
+  text-align:center; outline:none; color:#1a1a1a; min-width:80px;
+}
+.bonusmalus-label:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.2); font-style:italic;
+  text-transform:uppercase; font-size:22px;
+}
+.bonusmalus-label-dark { color:#ffffff; }
+.bonusmalus-label-dark:empty::before { color:rgba(255,255,255,.25); }
+
+.bonusmalus-body {
+  font-size:13px; color:#333; line-height:1.6; text-align:center;
+  outline:none; white-space:pre-wrap; width:100%;
+}
+.bonusmalus-body:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.15); font-style:italic; font-size:12px;
+}
+.bonusmalus-body-dark { color:#cccccc; }
+.bonusmalus-body-dark:empty::before { color:rgba(255,255,255,.2); }
+
+.bonusmalus-watermark-light { opacity:.05; color:#000; }
+.bonusmalus-watermark-dark  { opacity:.08; color:#fff; }
+
+/* =============================================
    RESPONSIVE — SMALL MOBILE (≤ 480px)
    ============================================= */
 @media (max-width:480px) {

@@ -50,7 +50,10 @@
     intrepideHeaderR: '',
     intrepideSub: '',
     // Intrepide
-    responses: ''
+    responses: '',
+    // Bonus/Malus labels
+    bonusMalusLabelA: '',
+    bonusMalusLabelB: ''
   };
 
   // Toggles de visibilite
@@ -120,10 +123,11 @@
 
     // Dispatch to the right renderer
     switch (currentCardType) {
-      case 'debuter':   renderDebuter(p); break;
-      case 'gagner':    renderGagner(p); break;
-      case 'intrepide': renderIntrepide(p); break;
-      default:          renderStandard(p); break;
+      case 'debuter':    renderDebuter(p); break;
+      case 'gagner':     renderGagner(p); break;
+      case 'intrepide':  renderIntrepide(p); break;
+      case 'bonusmalus': renderBonusMalus(p); break;
+      default:           renderStandard(p); break;
     }
 
     restoreFromMemory();
@@ -499,6 +503,37 @@
     p.innerHTML = leftPanel + rightPanel;
   }
 
+  // =========================================================================
+  // BONUS / MALUS — Recto blanc (coeur) + Verso noir (tête de mort)
+  // Bi-face avec couleurs opposées — hardcodé, ne suit pas le thème global
+  // =========================================================================
+  function renderBonusMalus(p) {
+    var heartSvg = (window.BUILTIN_ICONS && window.BUILTIN_ICONS.coeur) ? window.BUILTIN_ICONS.coeur.svg : iconHTML();
+    var skullSvg = (window.BUILTIN_ICONS && window.BUILTIN_ICONS.tete_de_mort) ? window.BUILTIN_ICONS.tete_de_mort.svg : iconHTML();
+
+    var leftPanel =
+      '<div class="card-panel bonusmalus-panel bonusmalus-recto">' +
+        '<div class="bonusmalus-inner">' +
+          '<div class="bonusmalus-icon bonusmalus-icon-heart">' + heartSvg + '</div>' +
+          '<div class="bonusmalus-label" contenteditable="true" data-field="bonusMalusLabelA" data-placeholder="TROP FORT"></div>' +
+          '<div class="bonusmalus-body" contenteditable="true" data-placeholder="D\u00e9crivez le bonus ici..." data-field="body"></div>' +
+        '</div>' +
+        '<div class="panel-watermark bonusmalus-watermark-light">' + heartSvg + '</div>' +
+      '</div>';
+
+    var rightPanel =
+      '<div class="card-panel bonusmalus-panel bonusmalus-verso">' +
+        '<div class="bonusmalus-inner">' +
+          '<div class="bonusmalus-icon bonusmalus-icon-skull">' + skullSvg + '</div>' +
+          '<div class="bonusmalus-label bonusmalus-label-dark" contenteditable="true" data-field="bonusMalusLabelB" data-placeholder="C\'EST NUL"></div>' +
+          '<div class="bonusmalus-body bonusmalus-body-dark" contenteditable="true" data-placeholder="D\u00e9crivez le malus ici..." data-field="bodyB"></div>' +
+        '</div>' +
+        '<div class="panel-watermark bonusmalus-watermark-dark">' + skullSvg + '</div>' +
+      '</div>';
+
+    p.innerHTML = leftPanel + rightPanel;
+  }
+
   // ===== Auto-save debounced =====
   var autoSaveBound = false;
   function setupAutoSave(cardEl) {
@@ -646,6 +681,9 @@
     if (d.intrepideSub != null) cardData.intrepideSub = d.intrepideSub;
     // Intrepide
     if (d.responses != null) cardData.responses = d.responses;
+    // Bonus/Malus labels
+    if (d.bonusMalusLabelA != null) cardData.bonusMalusLabelA = d.bonusMalusLabelA;
+    if (d.bonusMalusLabelB != null) cardData.bonusMalusLabelB = d.bonusMalusLabelB;
 
     // Legacy format support
     if (d.recto) {
@@ -703,6 +741,9 @@
         intrepideSub: cardData.intrepideSub,
         // Intrepide
         responses: cardData.responses,
+        // Bonus/Malus
+        bonusMalusLabelA: cardData.bonusMalusLabelA,
+        bonusMalusLabelB: cardData.bonusMalusLabelB,
         timestamp: Date.now()
       };
       localStorage.setItem(LS_KEY, JSON.stringify(data));
@@ -731,7 +772,7 @@
     currentIconId = 'feuille';
     currentFontId = 'poppins';
     fontSizes = { subject: 22, question: 10, answer: 10, number: 28 };
-    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '' };
+    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
     overlays = [];
     nextOverlayId = 1;
     window.renderCard('green', 'feuille', 'poppins');
@@ -747,7 +788,7 @@
     currentFontId = 'poppins';
     window.customLogoDataURL = null;
 
-    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '' };
+    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
 
     // Standard Q&A
     if (card.sujet) cardData.subject = card.sujet;
@@ -847,7 +888,9 @@
       intrepideHeaderL: cardData.intrepideHeaderL,
       intrepideHeaderR: cardData.intrepideHeaderR,
       intrepideSub: cardData.intrepideSub,
-      responses: cardData.responses
+      responses: cardData.responses,
+      bonusMalusLabelA: cardData.bonusMalusLabelA,
+      bonusMalusLabelB: cardData.bonusMalusLabelB
     };
   };
 

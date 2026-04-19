@@ -13,7 +13,8 @@
       standard: '#3B9B3A',
       debuter: '#6D4C2A',
       gagner: '#C8960C',
-      intrepide: '#B71C1C'
+      intrepide: '#B71C1C',
+      bonusmalus: '#1a1a1a'
     };
 
     for (var i = 0; i < CARD_TYPES.length; i++) {
@@ -191,6 +192,14 @@
       if (label2) label2.textContent = 'Reponses';
       if (area2) area2.placeholder = 'Collez les reponses ici...';
       if (hint) hint.textContent = 'Le texte remplit les deux panneaux de la carte.';
+      if (area2) area2.style.display = '';
+      if (label2) label2.style.display = '';
+    } else if (ct === 'bonusmalus') {
+      if (label1) label1.textContent = 'Texte TROP FORT (recto blanc)';
+      if (area1) area1.placeholder = 'Decrivez le bonus...';
+      if (label2) label2.textContent = 'Texte C\'EST NUL (verso noir)';
+      if (area2) area2.placeholder = 'Decrivez le malus...';
+      if (hint) hint.textContent = 'Recto blanc avec coeur, verso noir avec tete de mort.';
       if (area2) area2.style.display = '';
       if (label2) label2.style.display = '';
     }

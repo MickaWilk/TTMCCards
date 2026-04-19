@@ -81,11 +81,24 @@ window.BUILTIN_ICONS = {
   atome: {
     name: 'Atome',
     svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><circle cx="40" cy="40" r="7"/><ellipse cx="40" cy="40" rx="34" ry="12" fill="none" stroke="currentColor" stroke-width="3" opacity=".7"/><ellipse cx="40" cy="40" rx="34" ry="12" fill="none" stroke="currentColor" stroke-width="3" opacity=".7" transform="rotate(60 40 40)"/><ellipse cx="40" cy="40" rx="34" ry="12" fill="none" stroke="currentColor" stroke-width="3" opacity=".7" transform="rotate(120 40 40)"/><circle cx="74" cy="40" r="4" opacity=".6"/><circle cx="23" cy="59" r="4" opacity=".6"/><circle cx="57" cy="21" r="4" opacity=".6"/></svg>'
+  },
+  play: {
+    name: 'Play',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><circle cx="40" cy="40" r="36" opacity=".2"/><polygon points="28,18 28,62 66,40"/><polygon points="28,18 28,26 54,40 28,54 28,62 66,40" fill="white" opacity=".15"/></svg>'
+  },
+  tete_de_mort: {
+    name: 'Tête de mort',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><ellipse cx="40" cy="32" rx="26" ry="28"/><rect x="22" y="54" width="36" height="18" rx="3"/><rect x="28" y="60" width="7" height="12" rx="1" fill="white" opacity=".9"/><rect x="37" y="60" width="6" height="12" rx="1" fill="white" opacity=".9"/><rect x="45" y="60" width="7" height="12" rx="1" fill="white" opacity=".9"/><circle cx="30" cy="30" r="8" fill="white" opacity=".9"/><circle cx="50" cy="30" r="8" fill="white" opacity=".9"/><circle cx="30" cy="30" r="5"/><circle cx="50" cy="30" r="5"/><ellipse cx="40" cy="46" rx="5" ry="3" fill="white" opacity=".3"/></svg>'
+  },
+  drapeau_arrivee: {
+    name: 'Drapeau arrivée',
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><rect x="14" y="8" width="6" height="64" rx="2"/><rect x="20" y="8" width="46" height="36" rx="2"/><rect x="20" y="8" width="11" height="9" fill="white"/><rect x="42" y="8" width="12" height="9" fill="white"/><rect x="31" y="17" width="11" height="9" fill="white"/><rect x="54" y="17" width="12" height="9" fill="white"/><rect x="20" y="26" width="11" height="9" fill="white"/><rect x="42" y="26" width="12" height="9" fill="white"/><rect x="31" y="35" width="11" height="9" fill="white"/><rect x="54" y="35" width="12" height="9" fill="white"/></svg>'
   }
 };
 
 window.ICON_ORDER = [
   'poisson','silhouette','pokeball','dragonball','epee','manette','etoile',
   'feuille','loupe','trophee','coeur','globe','fusee','livre','couronne',
-  'musique','eclair','camera','ballon','atome'
+  'musique','eclair','camera','ballon','atome',
+  'play','tete_de_mort','drapeau_arrivee'
 ];
