@@ -20,26 +20,26 @@ window.getCardTypeById = function(id) {
 // + 8 themes bonus pour personnalisation
 window.THEMES = [
   // --- 4 themes Standard Q&A (cartes 4-7 officielles) ---
-  { id:'green',   label:'Verte — Nature / Scolaire',     headerBg:'#3B9B3A', headerText:'#ffffff', border:'#2D7A2C', numColor:'#C0392B', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'play',            cardType:'standard' },
-  { id:'purple',  label:'Violette — Terminer',              headerBg:'#6B2D8E', headerText:'#ffffff', border:'#522070', numColor:'#6B2D8E', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'drapeau_arrivee', cardType:'terminer' },
-  { id:'blue',    label:'Bleue — Improbable / Divers',    headerBg:'#2979B1', headerText:'#ffffff', border:'#1E5F8C', numColor:'#1E5F8C', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'poisson',         cardType:'standard' },
-  { id:'orange',  label:'Orange — Challenge',             headerBg:'#F18A00', headerText:'#ffffff', border:'#C97200', numColor:'#D35400', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'eclair',          cardType:'challenge' },
-  { id:'rouge_vif', label:'Rouge vif — Pop Culture',      headerBg:'#C00000', headerText:'#ffffff', border:'#980000', numColor:'#C00000', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'globe',           cardType:'standard' },
+  { id:'green',   label:'Verte — Nature / Scolaire',     headerBg:'#3B9B3A', headerText:'#ffffff', border:'#2D7A2C', numColor:'#C0392B', cardBg:'#3B9B3A', iconBgAlpha:'0.15', defaultIcon:'play',            cardType:'standard' },
+  { id:'purple',  label:'Violette — Terminer',              headerBg:'#6B2D8E', headerText:'#ffffff', border:'#522070', numColor:'#6B2D8E', cardBg:'#6B2D8E', iconBgAlpha:'0.15', defaultIcon:'drapeau_arrivee', cardType:'terminer' },
+  { id:'blue',    label:'Bleue — Improbable / Divers',    headerBg:'#2979B1', headerText:'#ffffff', border:'#1E5F8C', numColor:'#1E5F8C', cardBg:'#2979B1', iconBgAlpha:'0.12', defaultIcon:'poisson',         cardType:'standard' },
+  { id:'orange',  label:'Orange — Challenge',             headerBg:'#F18A00', headerText:'#ffffff', border:'#C97200', numColor:'#D35400', cardBg:'#F18A00', iconBgAlpha:'0.12', defaultIcon:'eclair',          cardType:'challenge' },
+  { id:'rouge_vif', label:'Rouge vif — Pop Culture',      headerBg:'#C00000', headerText:'#ffffff', border:'#980000', numColor:'#C00000', cardBg:'#C00000', iconBgAlpha:'0.12', defaultIcon:'globe',           cardType:'standard' },
 
   // --- 3 themes Challenge (cartes 1-3 officielles) ---
-  { id:'brown',   label:'Marron — Debuter',              headerBg:'#6D4C2A', headerText:'#8B1A1A', border:'#5D3A1A', numColor:'#4E342E', cardBg:'#D4B896', iconBgAlpha:'0.12', defaultIcon:'livre',     cardType:'debuter' },
-  { id:'gold',    label:'Or — Gagner',                    headerBg:'#C8960C', headerText:'#ffffff', border:'#A07A08', numColor:'#8B6914', cardBg:'#E8C84A', iconBgAlpha:'0.20', defaultIcon:'couronne',  cardType:'gagner' },
-  { id:'darkred', label:'Rouge — Intrepide',              headerBg:'#B71C1C', headerText:'#ffffff', border:'#8B1515', numColor:'#B71C1C', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'epee',      cardType:'intrepide' },
+  { id:'brown',   label:'Marron — Debuter',              headerBg:'#6D4C2A', headerText:'#8B1A1A', border:'#5D3A1A', numColor:'#4E342E', cardBg:'#6D4C2A', iconBgAlpha:'0.12', defaultIcon:'livre',     cardType:'debuter' },
+  { id:'gold',    label:'Or — Gagner',                    headerBg:'#C8960C', headerText:'#ffffff', border:'#A07A08', numColor:'#8B6914', cardBg:'#C8960C', iconBgAlpha:'0.20', defaultIcon:'couronne',  cardType:'gagner' },
+  { id:'darkred', label:'Rouge — Intrepide',              headerBg:'#B71C1C', headerText:'#ffffff', border:'#8B1515', numColor:'#B71C1C', cardBg:'#B71C1C', iconBgAlpha:'0.12', defaultIcon:'epee',      cardType:'intrepide' },
 
   // --- 8 themes bonus (personnalisation) ---
-  { id:'yellow',  label:'Jaune — Celebrites',             headerBg:'#F5D442', headerText:'#1a5276', border:'#C9AD2E', numColor:'#1a5276', cardBg:'#ffffff', iconBgAlpha:'0.25', defaultIcon:'silhouette', cardType:'standard' },
-  { id:'pink',    label:'Rose — Amour',                   headerBg:'#D63384', headerText:'#ffffff', border:'#B02A6F', numColor:'#B02A6F', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'coeur',     cardType:'standard' },
-  { id:'teal',    label:'Turquoise — Voyages',            headerBg:'#0097A7', headerText:'#ffffff', border:'#007B8A', numColor:'#007B8A', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'globe',     cardType:'standard' },
-  { id:'indigo',  label:'Indigo — Espace',                headerBg:'#303F9F', headerText:'#E8EAF6', border:'#283593', numColor:'#283593', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'fusee',     cardType:'standard' },
-  { id:'lime',    label:'Citron vert — Gastronomie',      headerBg:'#7CB342', headerText:'#1B3A00', border:'#689F38', numColor:'#558B2F', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'trophee',   cardType:'standard' },
-  { id:'black',   label:'Noire — Expert',                 headerBg:'#212121', headerText:'#FFD740', border:'#000000', numColor:'#212121', cardBg:'#E0E0E0', iconBgAlpha:'0.10', defaultIcon:'eclair',    cardType:'standard' },
-  { id:'cyan',    label:'Cyan — Technologie',             headerBg:'#00ACC1', headerText:'#ffffff', border:'#00838F', numColor:'#00838F', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'manette',   cardType:'standard' },
-  { id:'coral',   label:'Corail — Musique',               headerBg:'#FF6F61', headerText:'#ffffff', border:'#E55A4F', numColor:'#D84A3A', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'musique',   cardType:'standard' }
+  { id:'yellow',  label:'Jaune — Celebrites',             headerBg:'#F5D442', headerText:'#1a5276', border:'#C9AD2E', numColor:'#1a5276', cardBg:'#F5D442', iconBgAlpha:'0.25', defaultIcon:'silhouette', cardType:'standard' },
+  { id:'pink',    label:'Rose — Amour',                   headerBg:'#D63384', headerText:'#ffffff', border:'#B02A6F', numColor:'#B02A6F', cardBg:'#D63384', iconBgAlpha:'0.12', defaultIcon:'coeur',     cardType:'standard' },
+  { id:'teal',    label:'Turquoise — Voyages',            headerBg:'#0097A7', headerText:'#ffffff', border:'#007B8A', numColor:'#007B8A', cardBg:'#0097A7', iconBgAlpha:'0.12', defaultIcon:'globe',     cardType:'standard' },
+  { id:'indigo',  label:'Indigo — Espace',                headerBg:'#303F9F', headerText:'#E8EAF6', border:'#283593', numColor:'#283593', cardBg:'#303F9F', iconBgAlpha:'0.15', defaultIcon:'fusee',     cardType:'standard' },
+  { id:'lime',    label:'Citron vert — Gastronomie',      headerBg:'#7CB342', headerText:'#1B3A00', border:'#689F38', numColor:'#558B2F', cardBg:'#7CB342', iconBgAlpha:'0.15', defaultIcon:'trophee',   cardType:'standard' },
+  { id:'black',   label:'Noire — Expert',                 headerBg:'#212121', headerText:'#FFD740', border:'#000000', numColor:'#212121', cardBg:'#212121', iconBgAlpha:'0.10', defaultIcon:'eclair',    cardType:'standard' },
+  { id:'cyan',    label:'Cyan — Technologie',             headerBg:'#00ACC1', headerText:'#ffffff', border:'#00838F', numColor:'#00838F', cardBg:'#00ACC1', iconBgAlpha:'0.12', defaultIcon:'manette',   cardType:'standard' },
+  { id:'coral',   label:'Corail — Musique',               headerBg:'#FF6F61', headerText:'#ffffff', border:'#E55A4F', numColor:'#D84A3A', cardBg:'#FF6F61', iconBgAlpha:'0.12', defaultIcon:'musique',   cardType:'standard' }
 ];
 
 window.getThemeById = function(id) {

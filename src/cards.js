@@ -85,11 +85,11 @@
     nums: {}        // { '1': dataURL, ... '10': dataURL }
   };
 
-  var cardGap = 1;
-  var padTop = 14;
-  var padRight = 14;
-  var padBottom = 14;
-  var padLeft = 14;
+  var cardGap = 10;
+  var padTop = 20;
+  var padRight = 20;
+  var padBottom = 20;
+  var padLeft = 20;
   var bdrTop = 3;
   var bdrRight = 3;
   var bdrBottom = 3;
