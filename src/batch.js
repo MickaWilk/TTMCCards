@@ -170,7 +170,8 @@ for (var i = 0; i < total; i++) {
   await sleep(600);
   
   // Forcer l'écriture du sujet dans le DOM (au cas où)
-  if (card.sujet && currentCardType === 'standard') {
+  // ✅ Utiliser window.getCurrentCardType() au lieu de currentCardType
+  if (card.sujet && window.getCurrentCardType() === 'standard') {
     var p = document.getElementById('card-preview');
     if (p) {
       var subjEl = p.querySelector('.panel-subject [contenteditable]');
