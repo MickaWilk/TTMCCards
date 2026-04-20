@@ -273,6 +273,37 @@
           </div>
         </div>
 
+        <!-- Création en masse -->
+        <div class="sidebar-section">
+          <div class="section-header">Création en masse</div>
+          <div class="section-body">
+            <div class="batch-section">
+              <div class="batch-drop" id="batch-drop">
+                <input type="file" id="batch-file-input" accept=".json,application/json" style="display:none">
+                <p>Glisser un fichier JSON ou coller ci-dessous</p>
+              </div>
+              <textarea id="batch-json-paste" class="batch-json-paste" placeholder='{ "cards": [ ... ] }'></textarea>
+              <button id="btn-batch-load" class="btn btn-secondary" style="width:100%;margin-top:6px">Charger les cartes</button>
+              <div id="batch-status" class="batch-status" style="display:none">
+                <span id="batch-count"></span>
+                <div id="batch-card-list" class="batch-card-list"></div>
+                <div class="batch-mode-row">
+                  <label class="batch-mode-label"><input type="radio" name="batch-mode" id="batch-mode-full" value="full" checked> Fusionné (1 PNG/carte)</label>
+                  <label class="batch-mode-label"><input type="radio" name="batch-mode" id="batch-mode-split" value="split"> 2 faces (2 PNG/carte)</label>
+                </div>
+                <div class="batch-actions">
+                  <button id="btn-batch-generate" class="btn btn-primary" style="flex:1">Générer tout</button>
+                  <button id="btn-batch-cancel" class="btn btn-secondary" style="display:none">Annuler</button>
+                </div>
+                <div id="batch-progress-wrap" class="batch-progress-wrap" style="display:none">
+                  <div class="batch-progress-bar"><div class="batch-progress-fill" id="batch-progress-fill"></div></div>
+                  <span class="batch-progress-text" id="batch-progress-text"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Export -->
         <div class="sidebar-section">
           <div class="section-header">Taille d'export</div>
@@ -318,6 +349,7 @@
   <script src="src/cards.js"></script>
   <script src="src/export.js"></script>
   <script src="src/ocr.js"></script>
+  <script src="src/batch.js"></script>
   <script src="src/app.js"></script>
 </body>
 </html>

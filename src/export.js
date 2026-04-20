@@ -217,4 +217,62 @@
     });
   };
 
+  // ===== Capture carte en dataURL sans download =====
+  // side : 'full' | 'recto' | 'verso'
+  // callback(dataURL) — null en cas d'erreur
+  window.captureCardToDataURL = function(side, exportW, exportH, callback) {
+    var preview = document.getElementById('card-preview');
+    if (!preview) { callback(null); return; }
+
+    var clone = cloneCardForExport(preview);
+    document.body.appendChild(clone);
+
+    setTimeout(function() {
+      if (side === 'full') {
+        var scale = Math.max(exportW / 936, exportH / 735, 2);
+
+        html2canvas(clone, {
+          width: 936, height: 735, scale: scale,
+          useCORS: true, allowTaint: true, backgroundColor: getThemeBg(), logging: false
+        }).then(function(canvas) {
+          var out = document.createElement('canvas');
+          out.width = exportW;
+          out.height = exportH;
+          out.getContext('2d').drawImage(canvas, 0, 0, exportW, exportH);
+          document.body.removeChild(clone);
+          callback(out.toDataURL('image/png'));
+        }).catch(function(err) {
+          document.body.removeChild(clone);
+          console.error(err);
+          callback(null);
+        });
+
+      } else {
+        // recto or verso
+        var halfW = Math.round(exportW / 2);
+        var scale2 = Math.max(halfW / 468, exportH / 735, 2);
+
+        html2canvas(clone, {
+          width: 936, height: 735, scale: scale2,
+          useCORS: true, allowTaint: true, backgroundColor: getThemeBg(), logging: false
+        }).then(function(canvas) {
+          var gapHalf = Math.round(5 * scale2);
+          var srcX = (side === 'verso') ? Math.round(canvas.width / 2) + gapHalf : 0;
+          var srcW = Math.round(canvas.width / 2) - gapHalf;
+
+          var out = document.createElement('canvas');
+          out.width = halfW;
+          out.height = exportH;
+          out.getContext('2d').drawImage(canvas, srcX, 0, srcW, canvas.height, 0, 0, halfW, exportH);
+          document.body.removeChild(clone);
+          callback(out.toDataURL('image/png'));
+        }).catch(function(err) {
+          document.body.removeChild(clone);
+          console.error(err);
+          callback(null);
+        });
+      }
+    }, 100);
+  };
+
 })();

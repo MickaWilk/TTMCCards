@@ -1301,3 +1301,114 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 @media (max-width:480px) {
   .sidebar { width:92vw; }
 }
+
+/* ===== Batch Section ===== */
+.batch-drop {
+  border: 2px dashed rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s;
+  margin-bottom: 6px;
+}
+.batch-drop:hover, .batch-drop.drop-active {
+  border-color: rgba(102,126,234,.6);
+}
+.batch-drop p {
+  color: rgba(255,255,255,0.45);
+  font-size: 11px;
+  margin: 0;
+}
+.batch-json-paste {
+  width: 100%;
+  min-height: 70px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 10px;
+  font-family: monospace;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  resize: vertical;
+}
+.batch-status {
+  margin-top: 10px;
+}
+#batch-count {
+  display: block;
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 6px;
+}
+.batch-card-list {
+  max-height: 150px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.batch-card-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 5px;
+  padding: 4px 7px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.8);
+  overflow: hidden;
+}
+.batch-card-badge {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.batch-card-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.batch-mode-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.batch-mode-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+}
+.batch-actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.batch-progress-wrap {
+  margin-top: 6px;
+}
+.batch-progress-bar {
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.batch-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 3px;
+  transition: width .3s ease;
+  width: 0%;
+}
+.batch-progress-text {
+  font-size: 10px;
+  color: rgba(255,255,255,0.55);
+}
