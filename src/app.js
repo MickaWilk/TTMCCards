@@ -515,6 +515,31 @@
     if (val) val.textContent = p + 'px';
   }
 
+  // ===== 7d. Border Width Control =====
+  function setupBorderWidthControl() {
+    var range = document.getElementById('border-width-range');
+    var val = document.getElementById('border-width-val');
+    if (!range) return;
+
+    range.value = window.getInnerBorderWidth();
+    if (val) val.textContent = range.value + 'px';
+
+    range.addEventListener('input', function() {
+      if (val) val.textContent = parseFloat(range.value) + 'px';
+      window.setInnerBorderWidth(parseFloat(range.value));
+      window.saveToLocalStorage();
+    });
+  }
+
+  function updateBorderWidthControl() {
+    var range = document.getElementById('border-width-range');
+    var val = document.getElementById('border-width-val');
+    if (!range) return;
+    var b = window.getInnerBorderWidth();
+    range.value = b;
+    if (val) val.textContent = b + 'px';
+  }
+
   // ===== 8. Image Uploads =====
   function setupImageUploads() {
     // --- Card background ---
@@ -668,31 +693,32 @@
   }
 
   // ===== 10. Overlay / Calques =====
+  function addOverlayFromFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    var label = file.name.replace(/\.[^.]+$/, '');
+    var r = new FileReader();
+    r.onload = function(ev) {
+      var img = new Image();
+      img.onload = function() {
+        var w = img.width;
+        var h = img.height;
+        if (w > 936 || h > 735) {
+          var ratio = Math.min(936 / w, 735 / h);
+          w = Math.round(w * ratio);
+          h = Math.round(h * ratio);
+        }
+        window.addOverlay(ev.target.result, { w: w, h: h, label: label });
+      };
+      img.src = ev.target.result;
+    };
+    r.readAsDataURL(file);
+  }
+
   function setupOverlays() {
     var addInput = document.getElementById('overlay-add');
     if (addInput) {
       addInput.addEventListener('change', function(e) {
-        var f = e.target.files[0];
-        if (!f) return;
-        var label = f.name.replace(/\.[^.]+$/, '');
-        var r = new FileReader();
-        r.onload = function(ev) {
-          // Detect image dimensions to set default size
-          var img = new Image();
-          img.onload = function() {
-            var w = img.width;
-            var h = img.height;
-            // Scale to fit card if larger
-            if (w > 936 || h > 735) {
-              var ratio = Math.min(936 / w, 735 / h);
-              w = Math.round(w * ratio);
-              h = Math.round(h * ratio);
-            }
-            window.addOverlay(ev.target.result, { w: w, h: h, label: label });
-          };
-          img.src = ev.target.result;
-        };
-        r.readAsDataURL(f);
+        addOverlayFromFile(e.target.files[0]);
         addInput.value = '';
       });
     }
@@ -702,6 +728,36 @@
 
     // Callback when overlays change — rebuild sidebar list
     window.onOverlaysChanged = buildOverlayList;
+  }
+
+  // ===== 10b. Drop image on card preview =====
+  function setupCardDropZone() {
+    var dropZone = document.getElementById('card-wrapper');
+    if (!dropZone) return;
+
+    dropZone.addEventListener('dragover', function(e) {
+      if (!e.dataTransfer || !e.dataTransfer.types || e.dataTransfer.types.indexOf('Files') === -1) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      dropZone.classList.add('drop-hover');
+    });
+
+    dropZone.addEventListener('dragleave', function(e) {
+      if (!dropZone.contains(e.relatedTarget)) {
+        dropZone.classList.remove('drop-hover');
+      }
+    });
+
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dropZone.classList.remove('drop-hover');
+      var files = e.dataTransfer && e.dataTransfer.files;
+      if (!files || files.length === 0) return;
+      for (var i = 0; i < files.length; i++) {
+        addOverlayFromFile(files[i]);
+      }
+      window.showToast(files.length > 1 ? files.length + ' calques ajout\u00e9s' : 'Calque ajout\u00e9');
+    });
   }
 
   function buildOverlayList() {
@@ -849,15 +905,69 @@
     }
   }
 
-  // ===== 11. Sections accordeon =====
+  // ===== 11. Sections — drag reorder =====
   function setupSections() {
-    var headers = document.querySelectorAll('.section-header');
-    for (var i = 0; i < headers.length; i++) {
-      (function(header) {
-        header.addEventListener('click', function() {
-          header.parentElement.classList.toggle('open');
+    var container = document.querySelector('.sidebar-sections');
+    if (!container) return;
+    var sections = container.querySelectorAll('.sidebar-section');
+    var draggedSection = null;
+
+    for (var i = 0; i < sections.length; i++) {
+      (function(section) {
+        var header = section.querySelector('.section-header');
+        if (!header) return;
+
+        // Insert drag handle
+        var handle = document.createElement('span');
+        handle.className = 'section-drag-handle';
+        handle.textContent = '\u2630';
+        handle.title = 'Glisser pour r\u00e9ordonner';
+        header.insertBefore(handle, header.firstChild);
+
+        // Only allow drag from handle
+        handle.addEventListener('mousedown', function() {
+          section.setAttribute('draggable', 'true');
         });
-      })(headers[i]);
+        section.addEventListener('dragend', function() {
+          section.removeAttribute('draggable');
+          section.classList.remove('dragging');
+          draggedSection = null;
+          var all = container.querySelectorAll('.sidebar-section');
+          for (var j = 0; j < all.length; j++) all[j].classList.remove('drag-over');
+        });
+
+        section.addEventListener('dragstart', function(e) {
+          draggedSection = section;
+          section.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+
+        section.addEventListener('dragover', function(e) {
+          if (!draggedSection || draggedSection === section) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          var all = container.querySelectorAll('.sidebar-section');
+          for (var j = 0; j < all.length; j++) all[j].classList.remove('drag-over');
+          section.classList.add('drag-over');
+        });
+
+        section.addEventListener('dragleave', function() {
+          section.classList.remove('drag-over');
+        });
+
+        section.addEventListener('drop', function(e) {
+          e.preventDefault();
+          if (!draggedSection || draggedSection === section) return;
+          var rect = section.getBoundingClientRect();
+          var mid = rect.top + rect.height / 2;
+          if (e.clientY < mid) {
+            container.insertBefore(draggedSection, section);
+          } else {
+            container.insertBefore(draggedSection, section.nextSibling);
+          }
+          section.classList.remove('drag-over');
+        });
+      })(sections[i]);
     }
   }
 
@@ -1034,6 +1144,7 @@
         updateFontSizeControls();
         updateGapControl();
         updatePaddingControl();
+        updateBorderWidthControl();
         var sel = document.getElementById('font-select');
         if (sel) sel.value = fontId;
       });
@@ -1119,10 +1230,12 @@
 
     setupGapControl();
     setupPaddingControl();
+    setupBorderWidthControl();
     setupBulkPaste();
     setupLogoUpload();
     setupImageUploads();
     setupOverlays();
+    setupCardDropZone();
     setupSections();
     setupSampleCards();
     setupMobileSidebar();
@@ -1151,6 +1264,7 @@
         updateFontSizeControls();
         updateGapControl();
         updatePaddingControl();
+        updateBorderWidthControl();
         updateToggleGrid();
         resetNumButtons();
         clearLogoPreview();

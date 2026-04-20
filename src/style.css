@@ -20,46 +20,41 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .sidebar-title span { font-weight:400; font-size:15px; color:rgba(255,255,255,.5); }
 .sidebar-sub { font-size:11px; color:rgba(255,255,255,.6); margin:2px 0 16px; }
 
-/* ===== Sidebar Sections (Accordeon) ===== */
-.sidebar-sections { display:flex; flex-direction:column; gap:4px; flex:1; }
+/* ===== Sidebar Sections ===== */
+.sidebar-sections { display:flex; flex-direction:column; gap:8px; flex:1; }
 
 .sidebar-section {
   border-radius:8px;
-  overflow:hidden;
 }
 
 .section-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:10px 12px; cursor:pointer;
+  display:flex; align-items:center; gap:6px;
+  padding:10px 12px;
   font-size:10px; text-transform:uppercase; letter-spacing:1.5px;
   color:rgba(255,255,255,.55); font-weight:600;
   background:rgba(255,255,255,.03);
   border-radius:8px;
-  transition:background .2s;
   user-select:none;
-}
-.section-header:hover { background:rgba(255,255,255,.06); }
-
-.section-header::after {
-  content:'\25B8';
-  font-size:12px;
-  transition:transform .2s;
-  color:rgba(255,255,255,.3);
-}
-.sidebar-section.open .section-header::after {
-  transform:rotate(90deg);
 }
 
 .section-body {
-  max-height:0;
-  overflow:hidden;
-  transition:max-height .3s ease;
-  padding:0 4px;
-}
-.sidebar-section.open .section-body {
-  max-height:600px;
   padding:8px 4px;
 }
+
+/* Drag handle */
+.section-drag-handle {
+  cursor:grab; color:rgba(255,255,255,.2); font-size:12px;
+  line-height:1; padding:0 2px 0 0; flex-shrink:0;
+}
+.section-drag-handle:hover { color:rgba(255,255,255,.5); }
+.section-drag-handle:active { cursor:grabbing; }
+
+/* Drag feedback */
+.sidebar-section.dragging { opacity:.35; }
+.sidebar-section.drag-over { box-shadow:0 -2px 0 0 rgba(102,126,234,.7); }
+
+/* Card preview drop zone */
+#card-wrapper.drop-hover { outline:2px dashed rgba(102,126,234,.6); outline-offset:6px; border-radius:4px; }
 
 /* ===== Card Type Selector ===== */
 .card-type-selector {
@@ -252,7 +247,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   flex:1; border-radius:14px; background:#fff;
   display:flex; flex-direction:column; overflow:hidden; position:relative;
 }
-.panel-bordered { border:3.5px solid var(--border, #1e6e2c); }
+.panel-bordered { border:var(--inner-border-width, 3.5px) solid var(--border, #1e6e2c); }
 
 /* ===== En-tete panneau ===== */
 .panel-header {
@@ -355,14 +350,14 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
     repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(139,109,63,.06) 28px, rgba(139,109,63,.06) 29px),
     linear-gradient(180deg, #F5E6C8 0%, #EAD5A8 100%);
   border-radius:12px;
-  border:3px solid var(--border, #5D3A1A);
+  border:var(--inner-border-width, 3px) solid var(--border, #5D3A1A);
   display:flex; flex-direction:column;
   position:relative;
 }
 
 .debuter-border {
   flex:1; margin:8px;
-  border:2px dashed rgba(109,76,42,.3);
+  border:calc(var(--inner-border-width, 3px) * 0.66) dashed rgba(109,76,42,.3);
   border-radius:8px;
   padding:20px 28px;
   display:flex; flex-direction:column;
@@ -435,7 +430,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   flex:1;
   background:linear-gradient(180deg, #F5E6C8 0%, #EDD9A6 50%, #E5CC8A 100%);
   border-radius:12px;
-  border:3.5px solid var(--border, #A07A08);
+  border:var(--inner-border-width, 3.5px) solid var(--border, #A07A08);
   padding:20px 28px;
   display:flex; flex-direction:column;
   position:relative;
@@ -571,7 +566,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   flex:1;
   background:linear-gradient(180deg, #FFF3E0 0%, #FFE0B2 100%);
   border-radius:12px;
-  border:3px solid var(--border, #C97200);
+  border:var(--inner-border-width, 3px) solid var(--border, #C97200);
   padding:20px 24px;
   display:flex; flex-direction:column;
   position:relative;
@@ -639,14 +634,14 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   flex:1;
   background:linear-gradient(180deg, #F3E5F5 0%, #E1BEE7 100%);
   border-radius:12px;
-  border:3px solid var(--border, #522070);
+  border:var(--inner-border-width, 3px) solid var(--border, #522070);
   display:flex; flex-direction:column;
   position:relative;
 }
 
 .terminer-border {
   flex:1; margin:8px;
-  border:2px dashed rgba(107,45,142,.25);
+  border:calc(var(--inner-border-width, 3px) * 0.66) dashed rgba(107,45,142,.25);
   border-radius:8px;
   padding:20px 28px;
   display:flex; flex-direction:column;
@@ -1036,9 +1031,6 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 
   /* Export buttons: stack properly, bigger tap area */
   .btn { padding:12px 14px; font-size:14px; }
-
-  /* Accordion max-height more generous */
-  .sidebar-section.open .section-body { max-height:1200px; }
 
   /* Sample modal full width */
   .sample-modal-inner { width:96%; padding:20px 16px; }

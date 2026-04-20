@@ -40,7 +40,7 @@
   var CSS_PROPS = [
     '--header-bg','--header-text','--border','--num-color','--card-bg',
     '--icon-bg-alpha','--subject-size','--question-size','--answer-size',
-    '--num-size','--answer-num-size','--card-gap','--card-padding'
+    '--num-size','--answer-num-size','--card-gap','--card-padding','--inner-border-width'
   ];
 
   // ===== Clone la carte pour l'export =====

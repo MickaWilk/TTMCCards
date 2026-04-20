@@ -86,6 +86,7 @@
 
   var cardGap = 10;
   var cardPadding = 14;
+  var innerBorderWidth = 3;
 
   var LS_KEY = 'ttmc-card-draft';
   window.customLogoDataURL = null;
@@ -127,6 +128,7 @@
     applyFontSizeProperties(p);
     p.style.setProperty('--card-gap', cardGap + 'px');
     p.style.setProperty('--card-padding', cardPadding + 'px');
+    p.style.setProperty('--inner-border-width', innerBorderWidth + 'px');
 
     // Remove old card type classes, add current
     p.className = 'ttmc-card card-type-' + currentCardType;
@@ -748,6 +750,11 @@
       var p2 = document.getElementById('card-preview');
       if (p2) p2.style.setProperty('--card-padding', cardPadding + 'px');
     }
+    if (d.innerBorderWidth != null) {
+      innerBorderWidth = d.innerBorderWidth;
+      var p3 = document.getElementById('card-preview');
+      if (p3) p3.style.setProperty('--inner-border-width', innerBorderWidth + 'px');
+    }
 
     // Standard Q&A fields
     if (d.subject != null) cardData.subject = d.subject;
@@ -812,6 +819,7 @@
         fontSizes: { subject: fontSizes.subject, question: fontSizes.question, answer: fontSizes.answer, number: fontSizes.number },
         cardGap: cardGap,
         cardPadding: cardPadding,
+        innerBorderWidth: innerBorderWidth,
         // Standard
         subject: cardData.subject,
         questions: Object.assign({}, cardData.questions),
@@ -877,6 +885,7 @@
     fontSizes = { subject: 22, question: 10, answer: 10, number: 28 };
     cardGap = 10;
     cardPadding = 14;
+    innerBorderWidth = 3;
     cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
     overlays = [];
     nextOverlayId = 1;
@@ -960,6 +969,13 @@
     cardPadding = val;
     var p = document.getElementById('card-preview');
     if (p) p.style.setProperty('--card-padding', cardPadding + 'px');
+  };
+
+  window.getInnerBorderWidth = function() { return innerBorderWidth; };
+  window.setInnerBorderWidth = function(val) {
+    innerBorderWidth = val;
+    var p = document.getElementById('card-preview');
+    if (p) p.style.setProperty('--inner-border-width', innerBorderWidth + 'px');
   };
 
   window.getFontSizes = function() {

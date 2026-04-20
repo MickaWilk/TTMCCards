@@ -27,7 +27,7 @@
       <div class="sidebar-sections">
 
         <!-- Type de carte — toujours ouvert -->
-        <div class="sidebar-section open">
+        <div class="sidebar-section">
           <div class="section-header">Type de carte</div>
           <div class="section-body">
             <div id="card-type-picker" class="card-type-selector"></div>
@@ -35,7 +35,7 @@
         </div>
 
         <!-- Couleur — toujours ouvert -->
-        <div class="sidebar-section open">
+        <div class="sidebar-section">
           <div class="section-header">Couleur</div>
           <div class="section-body">
             <div id="color-picker"></div>
@@ -43,7 +43,7 @@
         </div>
 
         <!-- Affichage (toggles) — toujours ouvert -->
-        <div class="sidebar-section open">
+        <div class="sidebar-section">
           <div class="section-header">Affichage</div>
           <div class="section-body">
             <div class="toggle-grid" id="toggle-grid">
@@ -58,6 +58,11 @@
               <span class="size-control-label">Marge</span>
               <input type="range" class="size-control-range" id="padding-range" min="0" max="30" step="1" value="14">
               <span class="size-control-val" id="padding-val">14px</span>
+            </div>
+            <div class="size-control-row">
+              <span class="size-control-label">Bordure</span>
+              <input type="range" class="size-control-range" id="border-width-range" min="0" max="10" step="0.5" value="3">
+              <span class="size-control-val" id="border-width-val">3px</span>
             </div>
           </div>
         </div>
