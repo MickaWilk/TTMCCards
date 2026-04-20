@@ -1482,6 +1482,7 @@
     setupSections();
     setupSampleCards();
     setupMobileSidebar();
+    if (window.setupOCR) window.setupOCR();
 
     var btnExport = document.getElementById('btn-export');
     if (btnExport) btnExport.addEventListener('click', window.exportCard);

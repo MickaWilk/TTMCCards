@@ -236,6 +236,42 @@
           </div>
         </div>
 
+        <!-- Extraire du texte (OCR) -->
+        <div class="sidebar-section">
+          <div class="section-header">Extraire du texte</div>
+          <div class="section-body">
+            <div class="ocr-section">
+              <div class="ocr-drop" id="ocr-drop">
+                <input type="file" id="ocr-input" accept="image/*" multiple>
+                <p>Glisser des images ou cliquer</p>
+              </div>
+              <div id="ocr-file-list" class="ocr-file-list"></div>
+              <div class="ocr-lang-row">
+                <span class="ocr-lang-label">Langue</span>
+                <select id="ocr-lang" class="ocr-lang-select">
+                  <option value="fra" selected>Francais</option>
+                  <option value="eng">English</option>
+                  <option value="fra+eng">FR + EN</option>
+                  <option value="deu">Deutsch</option>
+                  <option value="spa">Espanol</option>
+                  <option value="ita">Italiano</option>
+                </select>
+              </div>
+              <button id="btn-ocr-extract" class="btn btn-primary ocr-extract-btn" disabled>Extraire le texte</button>
+              <div id="ocr-progress" class="ocr-progress" style="display:none">
+                <div class="ocr-progress-bar"><div class="ocr-progress-fill" id="ocr-progress-fill"></div></div>
+                <span class="ocr-progress-text" id="ocr-progress-text">0%</span>
+              </div>
+              <textarea id="ocr-output" class="ocr-output" placeholder="Le texte extrait apparaitra ici..." style="display:none" readonly></textarea>
+              <div id="ocr-actions" class="ocr-actions" style="display:none">
+                <button id="btn-ocr-copy" class="btn btn-secondary ocr-action-btn">Copier</button>
+                <button id="btn-ocr-download" class="btn btn-secondary ocr-action-btn">Telecharger .txt</button>
+                <button id="btn-ocr-clear" class="btn btn-secondary ocr-action-btn" style="color:#e74c3c">Effacer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Export -->
         <div class="sidebar-section">
           <div class="section-header">Taille d'export</div>
@@ -273,12 +309,14 @@
 
   <!-- Scripts : ordre de chargement obligatoire -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <script src="src/icons.js"></script>
   <script src="src/themes.js"></script>
   <script src="src/fonts.js"></script>
   <script src="src/sample-cards.js"></script>
   <script src="src/cards.js"></script>
   <script src="src/export.js"></script>
+  <script src="src/ocr.js"></script>
   <script src="src/app.js"></script>
 </body>
 </html>

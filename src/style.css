@@ -936,6 +936,84 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .overlay-drop p { font-size:11px; color:rgba(255,255,255,.4); pointer-events:none; }
 
 /* =============================================
+   OCR — Extraire du texte
+   ============================================= */
+.ocr-section { display:flex; flex-direction:column; gap:8px; }
+.ocr-drop {
+  border:2px dashed rgba(255,255,255,.15); border-radius:10px; padding:12px 10px;
+  text-align:center; cursor:pointer; transition:border-color .2s; position:relative;
+}
+.ocr-drop:hover { border-color:rgba(255,255,255,.35); }
+.ocr-drop.drop-active { border-color:rgba(102,126,234,.6); background:rgba(102,126,234,.06); }
+.ocr-drop input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.ocr-drop p { font-size:11px; color:rgba(255,255,255,.4); pointer-events:none; }
+
+.ocr-file-list { display:flex; flex-direction:column; gap:3px; }
+.ocr-file-item {
+  display:flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,.06); border-radius:6px; padding:4px 8px;
+}
+.ocr-file-thumb {
+  width:32px; height:24px; object-fit:cover; border-radius:3px;
+  border:1px solid rgba(255,255,255,.15); flex-shrink:0;
+}
+.ocr-file-name {
+  flex:1; font-size:.7rem; color:#ccc; white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis;
+}
+.ocr-file-status {
+  font-size:.65rem; color:rgba(255,255,255,.35); flex-shrink:0;
+}
+.ocr-file-status.done { color:#27ae60; }
+.ocr-file-status.processing { color:#f39c12; }
+.ocr-file-status.error { color:#e74c3c; }
+.ocr-file-remove {
+  background:none; border:none; color:#e74c3c; cursor:pointer;
+  font-size:12px; padding:0 2px; line-height:1; flex-shrink:0;
+}
+
+.ocr-lang-row {
+  display:flex; align-items:center; gap:8px;
+}
+.ocr-lang-label {
+  font-size:10px; color:rgba(255,255,255,.5); flex-shrink:0;
+}
+.ocr-lang-select {
+  flex:1; padding:6px 8px; border:1px solid rgba(255,255,255,.1); border-radius:6px;
+  background:rgba(255,255,255,.05); color:#fff; font-family:'Poppins',sans-serif;
+  font-size:11px; outline:none;
+}
+.ocr-lang-select option { background:#1a1a2e; }
+
+.ocr-extract-btn { margin-top:2px; }
+
+.ocr-progress {
+  display:flex; align-items:center; gap:8px;
+}
+.ocr-progress-bar {
+  flex:1; height:6px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden;
+}
+.ocr-progress-fill {
+  height:100%; background:linear-gradient(90deg,#667eea,#764ba2);
+  border-radius:3px; width:0; transition:width .2s;
+}
+.ocr-progress-text {
+  font-size:10px; color:rgba(255,255,255,.5); min-width:30px; text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+
+.ocr-output {
+  width:100%; min-height:120px; max-height:300px; resize:vertical;
+  padding:8px 10px; border:1px solid rgba(255,255,255,.1); border-radius:8px;
+  background:rgba(255,255,255,.05); color:#fff; font-family:'Poppins',sans-serif;
+  font-size:11px; line-height:1.5; outline:none;
+}
+.ocr-output:focus { border-color:rgba(102,126,234,.5); }
+
+.ocr-actions { display:flex; gap:4px; }
+.ocr-action-btn { flex:1; padding:6px 8px !important; font-size:11px !important; text-align:center; }
+
+/* =============================================
    TOGGLE SWITCHES (sidebar)
    ============================================= */
 .toggle-grid {
