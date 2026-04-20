@@ -433,6 +433,7 @@
       { key: 'subject',    label: 'Sujet' },
       { key: 'header',     label: 'En-t\u00eate' },
       { key: 'icons',      label: 'Ic\u00f4nes' },
+      { key: 'rowlines',   label: 'Lignes' },
       { key: 'watermark',  label: 'Watermark' }
     ];
 
@@ -1389,7 +1390,7 @@
       btnReset.addEventListener('click', function() {
         if (!confirm('Reinitialiser la carte ? Toutes les modifications seront perdues.')) return;
         window.clearCard();
-        window.setAllToggles({ numbers:true, questions:true, answers:true, subject:true, header:true, icons:true, watermark:true, background:true, template:true, recto:true, verso:true, separator:true });
+        window.setAllToggles({ numbers:true, questions:true, answers:true, subject:true, header:true, icons:true, watermark:true, background:true, template:true, recto:true, verso:true, separator:true, rowlines:true });
         window.setCardBg(null);
         window.setNumBg(null);
         window.clearNumImages();

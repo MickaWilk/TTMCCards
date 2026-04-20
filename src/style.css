@@ -784,6 +784,20 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 }
 .hide-separator .card-separator { display:none; }
 
+/* ===== Lignes entre questions/reponses ===== */
+.hide-rowlines .pq-row,
+.hide-rowlines .pa-row { border-bottom-color:transparent !important; }
+.hide-rowlines .panel-subject { border-bottom-color:transparent !important; }
+.hide-rowlines .gagner-divider { background:transparent !important; }
+.hide-rowlines .debuter-header,
+.hide-rowlines .terminer-header { border-bottom-color:transparent !important; }
+.hide-rowlines .debuter-footer,
+.hide-rowlines .terminer-footer { border-top-color:transparent !important; }
+.hide-rowlines .challenge-header { border-bottom-color:transparent !important; }
+.hide-rowlines .challenge-answer-label { border-top-color:transparent !important; }
+.hide-rowlines .gagner-header { border-bottom-color:transparent !important; }
+.hide-rowlines .intrepide-title { border-bottom-color:transparent !important; }
+
 /* =============================================
    CUSTOM NUMBER IMAGES
    ============================================= */

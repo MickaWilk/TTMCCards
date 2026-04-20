@@ -69,7 +69,8 @@
     template: true,
     recto: true,
     verso: true,
-    separator: true
+    separator: true,
+    rowlines: true
   };
 
   // Calques (image overlays)
@@ -179,6 +180,7 @@
     p.classList.toggle('hide-recto', !toggles.recto);
     p.classList.toggle('hide-verso', !toggles.verso);
     p.classList.toggle('hide-separator', !toggles.separator);
+    p.classList.toggle('hide-rowlines', !toggles.rowlines);
   }
 
   // ===== Images personnalisees =====
