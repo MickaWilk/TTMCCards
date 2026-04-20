@@ -1151,7 +1151,31 @@
     // Intrepide
     if (card.responses) cardData.responses = card.responses;
 
+    // Snapshot avant renderCard : saveToMemory() s'exécute en premier dans renderCard
+    // et écrase cardData en lisant le DOM courant (vide si même type de carte).
+    var snapshot = {
+      subject: cardData.subject,
+      questions: Object.assign({}, cardData.questions),
+      answers: Object.assign({}, cardData.answers),
+      title: cardData.title, body: cardData.body, footer: cardData.footer,
+      subtitle: cardData.subtitle, challengeAnswer: cardData.challengeAnswer,
+      titleB: cardData.titleB, bodyB: cardData.bodyB, footerB: cardData.footerB,
+      subtitleB: cardData.subtitleB, challengeAnswerB: cardData.challengeAnswerB,
+      debuterHeader: cardData.debuterHeader, debuterLabel: cardData.debuterLabel,
+      debuterHeaderB: cardData.debuterHeaderB, debuterLabelB: cardData.debuterLabelB,
+      gagnerHeader: cardData.gagnerHeader, gagnerHeaderB: cardData.gagnerHeaderB,
+      answerLabel: cardData.answerLabel, answerLabelB: cardData.answerLabelB,
+      intrepideHeaderL: cardData.intrepideHeaderL, intrepideHeaderR: cardData.intrepideHeaderR,
+      intrepideSub: cardData.intrepideSub, responses: cardData.responses,
+      bonusMalusLabelA: cardData.bonusMalusLabelA, bonusMalusLabelB: cardData.bonusMalusLabelB
+    };
+
     window.renderCard(currentThemeId, currentIconId, currentFontId);
+
+    // Re-apply le snapshot et redessine (renderCard a pu écraser cardData via saveToMemory)
+    Object.assign(cardData, snapshot);
+    restoreFromMemory();
+
     window.saveToLocalStorage();
     return { cardType: currentCardType, themeId: currentThemeId, iconId: currentIconId, fontId: currentFontId };
   };
