@@ -210,36 +210,58 @@
   }
 
   // ===== Claude prompt =====
-  var CLAUDE_PROMPT = 'Tu es un assistant specialise dans la structuration de donnees pour le jeu "Tu te mets combien ?" (TTMC).\n\n' +
-    'Je vais te fournir du texte brut extrait par OCR depuis des photos/scans de cartes TTMC. Le texte est souvent bruite (erreurs OCR, sauts de ligne parasites, caracteres mal reconnus).\n\n' +
-    'Ton travail :\n' +
-    '1. Identifier chaque carte dans le texte (une carte = 1 theme/sujet + 10 questions numerotees 1-10 + 10 reponses numerotees 1-10)\n' +
-    '2. Pour chaque carte, extraire : le THEME/SUJET, les 10 QUESTIONS (difficulte croissante), les 10 REPONSES correspondantes\n' +
-    '3. Corriger les erreurs OCR evidentes (lettres confondues, mots coupes, accents manquants)\n' +
-    '4. Produire un JSON propre et exploitable\n\n' +
-    '### Format de sortie\n\n' +
-    '```json\n' +
-    '{\n' +
-    '  "cards": [\n' +
-    '    {\n' +
-    '      "cardType": "standard",\n' +
-    '      "themeId": "green",\n' +
-    '      "sujet": "Le theme de la carte",\n' +
-    '      "questions": { "1": "...", "2": "...", "3": "...", "4": "...", "5": "...", "6": "...", "7": "...", "8": "...", "9": "...", "10": "..." },\n' +
-    '      "answers": { "1": "...", "2": "...", "3": "...", "4": "...", "5": "...", "6": "...", "7": "...", "8": "...", "9": "...", "10": "..." }\n' +
-    '    }\n' +
-    '  ]\n' +
-    '}\n' +
-    '```\n\n' +
-    '### themeId selon la couleur detectee\n' +
-    '- "green" (defaut), "blue" (Divers), "yellow" (Personnages), "red" (Pop Culture), "brown" (kraft), "gold" (Gagner), "orange" (Challenge), "darkred" (Intrepide), "purple" (Terminer)\n\n' +
-    '### Regles\n' +
-    '- Corrige les confusions OCR classiques (l/1, O/0, rn/m, cl/d, accents manquants)\n' +
-    '- Si illisible, mets "[illisible]" — n\'invente rien\n' +
-    '- "Tu te mets combien en..." est le header, pas le sujet\n' +
-    '- Si recto + verso sur la meme image = UNE seule carte\n' +
-    '- Pour cartes non-standard (debuter, gagner, challenge, intrepide, terminer, bonusmalus), adapte cardType et utilise les champs title/body/footer/titleB/bodyB/footerB\n' +
-    '- Renvoie UNIQUEMENT le JSON valide, rien d\'autre\n\n' +
+  var CLAUDE_PROMPT =
+    'Tu es un assistant specialise dans la structuration de donnees pour le jeu "Tu te mets combien ?" (TTMC).\n\n' +
+    'Je vais te fournir du texte brut extrait par OCR depuis des photos/scans de cartes TTMC. Le texte est souvent bruite.\n\n' +
+    '## Les 7 types de cartes TTMC\n\n' +
+    'Chaque carte = 4201x3300px, recto (gauche) + verso (droite) separes par 1px noir.\n\n' +
+    '### 1. STANDARD Q&A (4 couleurs)\n' +
+    'Header "Tu te mets combien en..." + sujet en gras + 10 questions numerotees (recto) + 10 reponses numerotees (verso)\n' +
+    '- Verte → cardType:"standard", themeId:"green"\n' +
+    '- Bleue (Divers/Improbable) → cardType:"standard", themeId:"blue"\n' +
+    '- Jaune (Personnages/Celebrites) → cardType:"standard", themeId:"yellow"\n' +
+    '- Rouge (Pop Culture) → cardType:"standard", themeId:"red"\n' +
+    'JSON: { cardType, themeId, sujet, questions:{"1".."10"}, answers:{"1".."10"} }\n\n' +
+    '### 2. DEBUTER (verte/kraft)\n' +
+    'Header "HESITE PAS A DEBUTER", titre + texte libre, recto + verso independants. PAS de Q&A numerotees.\n' +
+    '→ cardType:"debuter", themeId:"green"\n' +
+    'JSON: { cardType, themeId, title, body, footer, titleB, bodyB, footerB }\n\n' +
+    '### 3. GAGNER (doree)\n' +
+    'Header "HESITE PAS A GAGNER" avec etoiles, sous-titre + corps + reponse, recto + verso\n' +
+    '→ cardType:"gagner", themeId:"gold"\n' +
+    'JSON: { cardType, themeId, subtitle, body, challengeAnswer, subtitleB, bodyB, challengeAnswerB }\n\n' +
+    '### 4. CHALLENGE (orange)\n' +
+    '2 panneaux separes par eclair, defi gauche + reponse droite\n' +
+    '→ cardType:"challenge", themeId:"orange"\n' +
+    'JSON: { cardType, themeId, title:"CHALLENGE", subtitle, body, titleB:"REPONSE", bodyB, challengeAnswer }\n\n' +
+    '### 5. INTREPIDE (rouge fonce)\n' +
+    'Header "Intrepide", defi gauche + reponses droite (texte libre, pas numerote)\n' +
+    '→ cardType:"intrepide", themeId:"darkred"\n' +
+    'JSON: { cardType, themeId, title, body, responses }\n\n' +
+    '### 6. TERMINER (violette)\n' +
+    'Header "HESITE PAS A TERMINER", meme layout que debuter (titre + texte libre), recto + verso\n' +
+    '→ cardType:"terminer", themeId:"purple"\n' +
+    'JSON: { cardType, themeId, title, body, footer, titleB, bodyB, footerB }\n\n' +
+    '### 7. BONUS/MALUS (blanc + noir)\n' +
+    'Recto BLANC = bonus "TROP FORT" avec coeur. Verso NOIR = malus "C\'EST NUL" avec tete de mort. PAS de Q&A, juste label + texte.\n' +
+    '→ cardType:"bonusmalus", themeId:"black"\n' +
+    'JSON: { cardType, themeId, bonusMalusLabelA:"TROP FORT", body, bonusMalusLabelB:"C\'EST NUL", bodyB }\n\n' +
+    '## Detection du type\n' +
+    '- Numeros 1-10 avec questions/reponses → standard\n' +
+    '- "hesite pas a debuter" → debuter\n' +
+    '- "hesite pas a gagner" → gagner\n' +
+    '- "challenge" / defi+reponse sans numeros → challenge\n' +
+    '- "intrepide" → intrepide\n' +
+    '- "hesite pas a terminer" → terminer\n' +
+    '- "trop fort"/"c\'est nul" ou blanc/noir → bonusmalus\n' +
+    '- Si pas d\'indice clair et Q&A numerotees → standard, themeId:"green"\n\n' +
+    '## Regles OCR\n' +
+    '- Corrige confusions : l/1, O/0, rn/m, cl/d, ii/u, accents manquants\n' +
+    '- "Tu te mets combien en..." = HEADER, pas le sujet. Le sujet = gros texte en dessous\n' +
+    '- "Reponses" = header du verso, pas une reponse\n' +
+    '- Si illisible → "[illisible]", n\'invente rien\n' +
+    '- Recto + verso sur meme image = UNE carte\n' +
+    '- Renvoie UNIQUEMENT le JSON { "cards": [...] }, valide, parsable, sans explication\n\n' +
     '---\n\nVoici le texte OCR a structurer :\n\n';
 
   function copyPromptWithText() {
