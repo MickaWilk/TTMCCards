@@ -209,6 +209,62 @@
     }
   }
 
+  // ===== Claude prompt =====
+  var CLAUDE_PROMPT = 'Tu es un assistant specialise dans la structuration de donnees pour le jeu "Tu te mets combien ?" (TTMC).\n\n' +
+    'Je vais te fournir du texte brut extrait par OCR depuis des photos/scans de cartes TTMC. Le texte est souvent bruite (erreurs OCR, sauts de ligne parasites, caracteres mal reconnus).\n\n' +
+    'Ton travail :\n' +
+    '1. Identifier chaque carte dans le texte (une carte = 1 theme/sujet + 10 questions numerotees 1-10 + 10 reponses numerotees 1-10)\n' +
+    '2. Pour chaque carte, extraire : le THEME/SUJET, les 10 QUESTIONS (difficulte croissante), les 10 REPONSES correspondantes\n' +
+    '3. Corriger les erreurs OCR evidentes (lettres confondues, mots coupes, accents manquants)\n' +
+    '4. Produire un JSON propre et exploitable\n\n' +
+    '### Format de sortie\n\n' +
+    '```json\n' +
+    '{\n' +
+    '  "cards": [\n' +
+    '    {\n' +
+    '      "cardType": "standard",\n' +
+    '      "themeId": "green",\n' +
+    '      "sujet": "Le theme de la carte",\n' +
+    '      "questions": { "1": "...", "2": "...", "3": "...", "4": "...", "5": "...", "6": "...", "7": "...", "8": "...", "9": "...", "10": "..." },\n' +
+    '      "answers": { "1": "...", "2": "...", "3": "...", "4": "...", "5": "...", "6": "...", "7": "...", "8": "...", "9": "...", "10": "..." }\n' +
+    '    }\n' +
+    '  ]\n' +
+    '}\n' +
+    '```\n\n' +
+    '### themeId selon la couleur detectee\n' +
+    '- "green" (defaut), "blue" (Divers), "yellow" (Personnages), "red" (Pop Culture), "brown" (kraft), "gold" (Gagner), "orange" (Challenge), "darkred" (Intrepide), "purple" (Terminer)\n\n' +
+    '### Regles\n' +
+    '- Corrige les confusions OCR classiques (l/1, O/0, rn/m, cl/d, accents manquants)\n' +
+    '- Si illisible, mets "[illisible]" — n\'invente rien\n' +
+    '- "Tu te mets combien en..." est le header, pas le sujet\n' +
+    '- Si recto + verso sur la meme image = UNE seule carte\n' +
+    '- Pour cartes non-standard (debuter, gagner, challenge, intrepide, terminer, bonusmalus), adapte cardType et utilise les champs title/body/footer/titleB/bodyB/footerB\n' +
+    '- Renvoie UNIQUEMENT le JSON valide, rien d\'autre\n\n' +
+    '---\n\nVoici le texte OCR a structurer :\n\n';
+
+  function copyPromptWithText() {
+    var els = getEls();
+    if (!els.output || !els.output.value) return;
+
+    var full = CLAUDE_PROMPT + els.output.value;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(full).then(function() {
+        if (window.showToast) window.showToast('Prompt + texte copie ! Collez dans Claude.');
+      });
+    } else {
+      // Fallback
+      var ta = document.createElement('textarea');
+      ta.value = full;
+      ta.style.cssText = 'position:fixed;left:-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (window.showToast) window.showToast('Prompt + texte copie ! Collez dans Claude.');
+    }
+  }
+
   // ===== Copy / Download / Clear =====
   function copyOutput() {
     var els = getEls();
@@ -290,6 +346,9 @@
     if (els.btnCopy)    els.btnCopy.addEventListener('click', copyOutput);
     if (els.btnDownload) els.btnDownload.addEventListener('click', downloadOutput);
     if (els.btnClear)   els.btnClear.addEventListener('click', clearAll);
+
+    var btnPrompt = document.getElementById('btn-ocr-prompt');
+    if (btnPrompt) btnPrompt.addEventListener('click', copyPromptWithText);
   };
 
 })();
