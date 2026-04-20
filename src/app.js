@@ -57,10 +57,12 @@
           window.setCurrentThemeId(cardType.defaultTheme);
           window.setCurrentIconId(newTheme.defaultIcon);
 
+          window.resetCustomColors();
           updateColorPickerActive();
           updateIconPickerActive();
           updateBulkPasteLabels();
           updateExportBothVisibility();
+          updateCustomColors();
           window.renderCard(cardType.defaultTheme, newTheme.defaultIcon, window.getCurrentFontId());
           window.saveToLocalStorage();
         });
@@ -100,8 +102,10 @@
           var newIcon = theme.defaultIcon;
           window.setCurrentThemeId(theme.id);
           window.setCurrentIconId(newIcon);
+          window.resetCustomColors();
           window.renderCard(theme.id, newIcon, window.getCurrentFontId());
           updateIconPickerActive();
+          updateCustomColors();
           window.saveToLocalStorage();
         });
         container.appendChild(swatch);
@@ -413,6 +417,80 @@
     var input = document.getElementById('logo-input');
     if (wrap) wrap.style.display = 'none';
     if (input) input.value = '';
+  }
+
+  // ===== 6b. Custom Color Pickers =====
+  var COLOR_FIELDS = [
+    { key: 'headerBg',   label: 'En-tete (fond)',     cssProp: '--header-bg' },
+    { key: 'headerText', label: 'En-tete (texte)',     cssProp: '--header-text' },
+    { key: 'border',     label: 'Bordure',             cssProp: '--border' },
+    { key: 'panelBg',    label: 'Fond contenu',        cssProp: '--panel-bg' },
+    { key: 'numColor',   label: 'Numeros',             cssProp: '--num-color' },
+    { key: 'cardBg',     label: 'Fond carte',          cssProp: '--card-bg' }
+  ];
+
+  function getThemeColorForField(field) {
+    var theme = window.getThemeById(window.getCurrentThemeId());
+    var map = { headerBg:'headerBg', headerText:'headerText', border:'border', numColor:'numColor', cardBg:'cardBg' };
+    if (map[field.key] && theme) return theme[map[field.key]];
+    if (field.key === 'panelBg') return '#ffffff';
+    return '#ffffff';
+  }
+
+  function buildCustomColors() {
+    var container = document.getElementById('custom-colors');
+    if (!container) return;
+    container.innerHTML = '';
+
+    var current = window.getCustomColors();
+
+    for (var i = 0; i < COLOR_FIELDS.length; i++) {
+      (function(field) {
+        var row = document.createElement('div');
+        row.className = 'custom-color-row';
+
+        var label = document.createElement('span');
+        label.className = 'custom-color-label';
+        label.textContent = field.label;
+
+        var input = document.createElement('input');
+        input.type = 'color';
+        input.className = 'custom-color-input';
+        input.setAttribute('data-color-key', field.key);
+        input.value = current[field.key] || getThemeColorForField(field);
+
+        input.addEventListener('input', function() {
+          window.setCustomColor(field.key, input.value);
+          window.saveToLocalStorage();
+        });
+
+        row.appendChild(label);
+        row.appendChild(input);
+        container.appendChild(row);
+      })(COLOR_FIELDS[i]);
+    }
+  }
+
+  function updateCustomColors() {
+    var current = window.getCustomColors();
+    for (var i = 0; i < COLOR_FIELDS.length; i++) {
+      var input = document.querySelector('.custom-color-input[data-color-key="' + COLOR_FIELDS[i].key + '"]');
+      if (input) {
+        input.value = current[COLOR_FIELDS[i].key] || getThemeColorForField(COLOR_FIELDS[i]);
+      }
+    }
+  }
+
+  function setupResetColors() {
+    var btn = document.getElementById('btn-reset-colors');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      window.resetCustomColors();
+      updateCustomColors();
+      window.renderCard(window.getCurrentThemeId(), window.getCurrentIconId(), window.getCurrentFontId());
+      window.saveToLocalStorage();
+      window.showToast('Couleurs reinitialisees');
+    });
   }
 
   // ===== 7. Toggle Grid (visibility toggles) =====
@@ -1165,11 +1243,13 @@
           item.addEventListener('click', function() {
             var result = window.loadSampleCard(card);
             if (result) {
+              window.resetCustomColors();
               updateCardTypePickerActive();
               updateColorPickerActive();
               updateIconPickerActive();
               updateBulkPasteLabels();
               updateExportBothVisibility();
+              updateCustomColors();
               var sel = document.getElementById('font-select');
               if (sel) sel.value = result.fontId;
             }
@@ -1260,6 +1340,7 @@
         updateGapControl();
         updatePaddingControl();
         updateBorderWidthControl();
+        updateCustomColors();
         var sel = document.getElementById('font-select');
         if (sel) sel.value = fontId;
       });
@@ -1366,6 +1447,8 @@
     buildFontSizeControls();
     buildNumButtons();
 
+    buildCustomColors();
+    setupResetColors();
     setupGapControl();
     setupPaddingControl();
     setupBorderWidthControl();
@@ -1404,6 +1487,7 @@
         updateGapControl();
         updatePaddingControl();
         updateBorderWidthControl();
+        updateCustomColors();
         updateToggleGrid();
         resetNumButtons();
         clearLogoPreview();

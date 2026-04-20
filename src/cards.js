@@ -95,6 +95,16 @@
   var bdrBottom = 3;
   var bdrLeft = 3;
 
+  // Custom color overrides (null = use theme default)
+  var customColors = {
+    headerBg: null,
+    headerText: null,
+    border: null,
+    panelBg: null,
+    numColor: null,
+    cardBg: null
+  };
+
   var LS_KEY = 'ttmc-card-draft';
   window.customLogoDataURL = null;
 
@@ -129,6 +139,14 @@
 
     saveToMemory();
     window.applyTheme(p, theme);
+
+    // Apply custom color overrides on top of theme
+    if (customColors.headerBg)   p.style.setProperty('--header-bg', customColors.headerBg);
+    if (customColors.headerText) p.style.setProperty('--header-text', customColors.headerText);
+    if (customColors.border)     p.style.setProperty('--border', customColors.border);
+    if (customColors.panelBg)    p.style.setProperty('--panel-bg', customColors.panelBg);
+    if (customColors.numColor)   p.style.setProperty('--num-color', customColors.numColor);
+    if (customColors.cardBg)     p.style.setProperty('--card-bg', customColors.cardBg);
 
     var font = window.getFontById(currentFontId);
     if (font) window.applyFont(p, font.family);
@@ -932,6 +950,13 @@
       bdrTop = bdrRight = bdrBottom = bdrLeft = d.innerBorderWidth;
     }
 
+    // Custom colors
+    if (d.customColors) {
+      for (var cc in d.customColors) {
+        if (customColors.hasOwnProperty(cc)) customColors[cc] = d.customColors[cc] || null;
+      }
+    }
+
     // Standard Q&A fields
     if (d.subject != null) cardData.subject = d.subject;
     if (d.questions) cardData.questions = d.questions;
@@ -1002,6 +1027,7 @@
         bdrRight: bdrRight,
         bdrBottom: bdrBottom,
         bdrLeft: bdrLeft,
+        customColors: Object.assign({}, customColors),
         // Standard
         subject: cardData.subject,
         questions: Object.assign({}, cardData.questions),
@@ -1068,6 +1094,7 @@
     cardGap = 1;
     padTop = 14; padRight = 14; padBottom = 14; padLeft = 14;
     bdrTop = 3; bdrRight = 3; bdrBottom = 3; bdrLeft = 3;
+    customColors = { headerBg:null, headerText:null, border:null, panelBg:null, numColor:null, cardBg:null };
     cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
     overlays = [];
     nextOverlayId = 1;
@@ -1186,6 +1213,41 @@
       p.style.setProperty('--bdr-bottom', bdrBottom + 'px');
       p.style.setProperty('--bdr-left', bdrLeft + 'px');
       p.style.setProperty('--inner-border-width', bdrTop + 'px ' + bdrRight + 'px ' + bdrBottom + 'px ' + bdrLeft + 'px');
+    }
+  };
+
+  // ===== Custom colors getters/setters =====
+  window.getCustomColors = function() { return Object.assign({}, customColors); };
+  window.setCustomColor = function(key, val) {
+    if (customColors.hasOwnProperty(key)) {
+      customColors[key] = val || null;
+      var p = document.getElementById('card-preview');
+      if (p) {
+        if (val) {
+          var cssMap = { headerBg:'--header-bg', headerText:'--header-text', border:'--border', panelBg:'--panel-bg', numColor:'--num-color', cardBg:'--card-bg' };
+          p.style.setProperty(cssMap[key], val);
+        } else {
+          // Re-apply theme to reset
+          var theme = window.getThemeById(currentThemeId);
+          window.applyTheme(p, theme);
+          // Re-apply remaining custom overrides
+          for (var k in customColors) {
+            if (customColors[k]) {
+              var cssMap2 = { headerBg:'--header-bg', headerText:'--header-text', border:'--border', panelBg:'--panel-bg', numColor:'--num-color', cardBg:'--card-bg' };
+              p.style.setProperty(cssMap2[k], customColors[k]);
+            }
+          }
+        }
+      }
+    }
+  };
+  window.resetCustomColors = function() {
+    customColors = { headerBg:null, headerText:null, border:null, panelBg:null, numColor:null, cardBg:null };
+    var p = document.getElementById('card-preview');
+    if (p) {
+      var theme = window.getThemeById(currentThemeId);
+      window.applyTheme(p, theme);
+      p.style.removeProperty('--panel-bg');
     }
   };
 
