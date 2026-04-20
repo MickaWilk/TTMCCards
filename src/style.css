@@ -583,6 +583,32 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .hide-watermark .gagner-logo,
 .hide-watermark .intrepide-logo { visibility:hidden; }
 
+/* ===== Fond transparent ===== */
+.hide-background { background:transparent !important; }
+.hide-background .panel-inner,
+.hide-background .debuter-inner,
+.hide-background .gagner-inner,
+.hide-background .intrepide-inner,
+.hide-background .bonusmalus-recto,
+.hide-background .bonusmalus-verso { background:transparent !important; }
+.hide-background .card-type-debuter,
+.hide-background .card-type-gagner { background:transparent !important; }
+.hide-background .panel-bordered,
+.hide-background .debuter-inner,
+.hide-background .debuter-border,
+.hide-background .gagner-inner { border-color:transparent !important; }
+.hide-background .panel-header { background:transparent !important; }
+.hide-background .intrepide-header { background:transparent !important; }
+.hide-background .panel-subject { border-bottom-color:transparent !important; }
+.hide-background .pq-row,
+.hide-background .pa-row { border-bottom-color:transparent !important; }
+.hide-background .gagner-divider,
+.hide-background .debuter-header,
+.hide-background .debuter-footer { border-color:transparent !important; }
+
+/* ===== Masquer le template (tout sauf les calques) ===== */
+.hide-template > *:not(.card-overlay) { visibility:hidden !important; }
+
 /* =============================================
    CUSTOM NUMBER IMAGES
    ============================================= */

@@ -64,7 +64,9 @@
     subject: true,
     header: true,
     icons: true,
-    watermark: true
+    watermark: true,
+    background: true,
+    template: true
   };
 
   // Calques (image overlays)
@@ -146,6 +148,8 @@
     p.classList.toggle('hide-header', !toggles.header);
     p.classList.toggle('hide-icons', !toggles.icons);
     p.classList.toggle('hide-watermark', !toggles.watermark);
+    p.classList.toggle('hide-background', !toggles.background);
+    p.classList.toggle('hide-template', !toggles.template);
   }
 
   // ===== Images personnalisees =====

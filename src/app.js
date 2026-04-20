@@ -394,13 +394,15 @@
     container.innerHTML = '';
 
     var items = [
-      { key: 'numbers',   label: 'Num\u00e9ros' },
-      { key: 'questions', label: 'Questions' },
-      { key: 'answers',   label: 'R\u00e9ponses' },
-      { key: 'subject',   label: 'Sujet' },
-      { key: 'header',    label: 'En-t\u00eate' },
-      { key: 'icons',     label: 'Ic\u00f4nes' },
-      { key: 'watermark', label: 'Watermark' }
+      { key: 'template',   label: 'Template' },
+      { key: 'background', label: 'Fond' },
+      { key: 'numbers',    label: 'Num\u00e9ros' },
+      { key: 'questions',  label: 'Questions' },
+      { key: 'answers',    label: 'R\u00e9ponses' },
+      { key: 'subject',    label: 'Sujet' },
+      { key: 'header',     label: 'En-t\u00eate' },
+      { key: 'icons',      label: 'Ic\u00f4nes' },
+      { key: 'watermark',  label: 'Watermark' }
     ];
 
     var current = window.getToggles();
@@ -1061,7 +1063,7 @@
       btnReset.addEventListener('click', function() {
         if (!confirm('Reinitialiser la carte ? Toutes les modifications seront perdues.')) return;
         window.clearCard();
-        window.setAllToggles({ numbers:true, questions:true, answers:true, subject:true, header:true, icons:true, watermark:true });
+        window.setAllToggles({ numbers:true, questions:true, answers:true, subject:true, header:true, icons:true, watermark:true, background:true, template:true });
         window.setCardBg(null);
         window.setNumBg(null);
         window.clearNumImages();

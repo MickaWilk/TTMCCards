@@ -50,6 +50,9 @@
     // Export: rectangle plein, pas de coins arrondis visibles
     clone.style.cssText = 'position:fixed;left:-9999px;top:0;width:936px;height:735px;box-shadow:none;border-radius:0;overflow:hidden;z-index:-1;';
 
+    // Preserve toggle classes (hide-background, hide-template, etc.)
+    clone.className = preview.className;
+
     var computedStyle = getComputedStyle(preview);
     for (var p = 0; p < CSS_PROPS.length; p++) {
       var val = computedStyle.getPropertyValue(CSS_PROPS[p]);
@@ -68,6 +71,8 @@
 
   // ===== Helpers =====
   function getThemeBg() {
+    var toggles = window.getToggles ? window.getToggles() : {};
+    if (toggles.background === false) return null;
     var theme = window.getThemeById(window.getCurrentThemeId());
     return theme ? theme.cardBg || '#ffffff' : '#ffffff';
   }
