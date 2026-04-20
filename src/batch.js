@@ -100,7 +100,10 @@
     }
 
     var status = document.getElementById('batch-status');
-    if (status) status.style.display = '';
+    if (status) {
+      status.style.display = 'block';
+      setTimeout(function() { status.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 50);
+    }
   }
 
   // ===== Génération séquentielle =====
@@ -260,12 +263,12 @@
       btnLoad.addEventListener('click', function() {
         var raw = textarea ? textarea.value.trim() : '';
         if (!raw) {
-          alert('Collez un JSON ou chargez un fichier.');
+          window.showToast('Collez un JSON ou chargez un fichier.');
           return;
         }
         var cards = parseJSON(raw);
         if (!cards || cards.length === 0) {
-          alert('JSON invalide ou aucune carte trouv\u00e9e.');
+          window.showToast('JSON invalide ou aucune carte trouv\u00e9e.');
           return;
         }
         batchCards = cards.map(normalizeCard);
@@ -277,7 +280,7 @@
     if (btnGenerate) {
       btnGenerate.addEventListener('click', function() {
         if (batchCards.length === 0) {
-          alert('Aucune carte charg\u00e9e.');
+          window.showToast('Aucune carte charg\u00e9e.');
           return;
         }
         runBatch();
