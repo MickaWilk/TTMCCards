@@ -1,0 +1,17 @@
+4201 pixel horizontal
+2100 pixel le verso
+2100 pixel le recto
+le pixel en + c'est la ligne noire pour délimiter le recto du verso
+
+3300 pixel vertical
+la forme arrondie dans les coins n'est pas mandatory, je trouve ça plus beau mais si c'est trop galère à faire imprimer/découper/coller on fera des cartes rectangles tant pis
+
+J'ai besoin de 7 cartes recto/verso au total
+Ajouter un icone en haut à droite de chaque recto, et au dos de chaque verso, pour chaque type de carte (et peut-être rendre la couleur plus stylée en y ajoutant de la texture ou d'autres détails) :
+cartes vertes : n'hésite pas à débuter, ajouter un icone "start" ou "power" ou "lecture/play"
+cartes jaunes : personnage/personnalité, ajouter un icone "ombre dessinée de cyril féraud"
+cartes rouges : pop culture, ajouter un icone "logo du tct"
+cartes bleues : divers/improbable, ajouter un icone "poisson" (l'animal)
+cartes oranges : challenge, ajouter un icone "éclair" maybe, ou ptêtre séparer la carte en deux au milieu avec un éclair justement, sauf si t'as une meilleure idée
+cartes blanche recto, noire verso : trop fort/c'est nul, ajouter un icône "cœur" comme zelda au recto, un icône "tête de mort" au verso
+cartes violettes : n'hésite pas à terminer, ajouter un icone "ligne d'arrivée" comme dans mario kart, sauf si t'as une meilleure idée 

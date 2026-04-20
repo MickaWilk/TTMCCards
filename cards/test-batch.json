@@ -1,0 +1,91 @@
+{
+  "cards": [
+    {
+      "cardType": "standard",
+      "themeId": "yellow",
+      "sujet": "Les personnages de Disney",
+      "questions": {
+        "1": "Quel est le vrai prénom du Prince charmant dans Cendrillon ?",
+        "2": "Dans quel film apparaît Maui, le demi-dieu polynésien ?",
+        "3": "Comment s'appelle le poisson rouge de Nemo ?",
+        "4": "Quel personnage dit 'Hakuna Matata' ?",
+        "5": "Dans quel pays se déroule Mulan ?",
+        "6": "Comment s'appelle la sorcière dans Blanche-Neige ?",
+        "7": "Quel est le prénom de la Petite Sirène ?",
+        "8": "Dans quel film Elsa et Anna sont-elles sœurs ?",
+        "9": "Comment s'appelle le cheval de Raiponce ?",
+        "10": "Quel animal est Simba au début du Roi Lion ?"
+      },
+      "answers": {
+        "1": "Henry (jamais dit dans le film)",
+        "2": "Vaiana",
+        "3": "Il s'appelle Nemo (c'est le titre)",
+        "4": "Timon et Pumbaa (Le Roi Lion)",
+        "5": "Chine",
+        "6": "La Reine (son nom n'est jamais dit)",
+        "7": "Ariel",
+        "8": "La Reine des Neiges",
+        "9": "Maximus",
+        "10": "Un lionceau"
+      }
+    },
+    {
+      "cardType": "standard",
+      "themeId": "blue",
+      "sujet": "La géographie absurde",
+      "questions": {
+        "1": "Quel pays a la plus longue frontière terrestre du monde ?",
+        "2": "Combien de pays n'ont pas accès à la mer ?",
+        "3": "Quel est le pays le plus plat du monde ?",
+        "4": "Dans quel pays se trouve le point le plus éloigné de tout océan ?",
+        "5": "Quel est le seul continent sans pays officiellement reconnu ?",
+        "6": "Combien d'États américains ne partagent de frontière avec aucun autre État ?",
+        "7": "Quel pays possède le plus grand nombre d'îles au monde ?",
+        "8": "Quelle ville est à la fois la plus grande et la moins peuplée au monde (par densité) ?",
+        "9": "Quel pays est entièrement enclavé dans l'Italie ?",
+        "10": "Combien de pays partagent une frontière avec l'Allemagne ?"
+      },
+      "answers": {
+        "1": "La Chine (avec 14 pays voisins)",
+        "2": "44 pays",
+        "3": "Les Maldives (altitude max 2,4m)",
+        "4": "La Chine (désert de Dzoosotoyn Elisen)",
+        "5": "L'Antarctique",
+        "6": "2 (Alaska et Hawaï)",
+        "7": "La Suède (221 800 îles)",
+        "8": "Hulunbuir (Mongolie intérieure, Chine)",
+        "9": "Saint-Marin",
+        "10": "9 pays"
+      }
+    },
+    {
+      "cardType": "standard",
+      "themeId": "green",
+      "sujet": "Les records sportifs improbables",
+      "questions": {
+        "1": "Quel est le record du 100m masculin et qui le détient ?",
+        "2": "Combien de médailles d'or Michael Phelps a-t-il remportées aux JO ?",
+        "3": "Quel joueur de tennis a remporté le plus de tournois du Grand Chelem ?",
+        "4": "Dans quel sport peut-on obtenir un score parfait de 147 ?",
+        "5": "Quel pays a remporté le plus de Coupes du Monde de football ?",
+        "6": "Qui détient le record du marathon masculin (en 2024) ?",
+        "7": "Dans quel sport un 'strike' parfait = 300 points ?",
+        "8": "Combien de fois Usain Bolt a-t-il été champion olympique du 100m ?",
+        "9": "Quel est le seul sport à avoir été retiré puis réintégré aux JO ?",
+        "10": "En quelle année les femmes ont-elles été autorisées à courir le marathon olympique ?"
+      },
+      "answers": {
+        "1": "9.58s — Usain Bolt (2009, Berlin)",
+        "2": "23 médailles d'or",
+        "3": "Novak Djokovic (24 titres en 2024)",
+        "4": "Le snooker",
+        "5": "Le Brésil (5 titres)",
+        "6": "Kelvin Kiptum — 2h00'35\" (Chicago 2023)",
+        "7": "Le bowling",
+        "8": "3 fois (2008, 2012, 2016)",
+        "9": "Le golf (absent 1904-2016)",
+        "10": "1984 (Los Angeles)"
+      }
+    }
+  ]
+}

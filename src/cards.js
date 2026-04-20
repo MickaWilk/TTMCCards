@@ -1197,7 +1197,7 @@
         var fieldEls = p.querySelectorAll('[data-field]');
         for (var fi = 0; fi < fieldEls.length; fi++) {
           var fKey = fieldEls[fi].dataset.field;
-          if (snapshot[fKey] != null) fieldEls[fi].innerText = snapshot[fKey];
+          if (snapshot[fKey]) fieldEls[fi].innerText = snapshot[fKey];
         }
       }
     }

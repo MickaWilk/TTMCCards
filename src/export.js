@@ -38,11 +38,12 @@
   };
 
   var CSS_PROPS = [
-    '--header-bg','--header-text','--border','--num-color','--card-bg','--panel-bg',
-    '--icon-bg-alpha','--subject-size','--question-size','--answer-size',
-    '--num-size','--answer-num-size','--card-gap','--card-padding',
-    '--pad-top','--pad-right','--pad-bottom','--pad-left','--inner-border-width'
-  ];
+  '--header-bg','--header-text','--border','--num-color','--card-bg','--panel-bg',
+  '--icon-bg-alpha','--subject-size','--question-size','--answer-size',
+  '--num-size','--answer-num-size','--card-gap','--card-padding',
+  '--pad-top','--pad-right','--pad-bottom','--pad-left','--inner-border-width',
+  '--panel-inner-bg','--header-display'   // ← ajouter ces deux
+];
 
   // ===== Clone la carte pour l'export =====
   function cloneCardForExport(preview) {
