@@ -781,10 +781,19 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 
 /* Sidebar overlay list */
 .overlay-list { display:flex; flex-direction:column; gap:4px; }
+.overlay-wrap { border-radius:6px; }
+.overlay-wrap.dragging { opacity:.35; }
+.overlay-wrap.drag-over { box-shadow:0 -2px 0 0 rgba(102,126,234,.7); }
 .overlay-item {
   display:flex; align-items:center; gap:6px;
   background:rgba(255,255,255,.06); border-radius:6px; padding:4px 6px;
 }
+.overlay-drag-handle {
+  cursor:grab; color:rgba(255,255,255,.2); font-size:11px;
+  line-height:1; flex-shrink:0; padding:0 2px;
+}
+.overlay-drag-handle:hover { color:rgba(255,255,255,.5); }
+.overlay-drag-handle:active { cursor:grabbing; }
 .overlay-item-thumb {
   width:40px; height:30px; object-fit:cover; border-radius:3px;
   border:1px solid rgba(255,255,255,.15); flex-shrink:0;

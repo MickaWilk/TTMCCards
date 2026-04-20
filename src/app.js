@@ -760,6 +760,8 @@
     });
   }
 
+  var draggedOverlayWrap = null;
+
   function buildOverlayList() {
     var container = document.getElementById('overlay-list');
     if (!container) return;
@@ -774,10 +776,20 @@
       return;
     }
 
+    // Sort highest z first (top of stack = top of list)
+    list.sort(function(a, b) { return b.z - a.z; });
+
     for (var i = 0; i < list.length; i++) {
       (function(ov, idx) {
         var item = document.createElement('div');
         item.className = 'overlay-item';
+
+        // Drag handle
+        var handle = document.createElement('span');
+        handle.className = 'overlay-drag-handle';
+        handle.textContent = '\u2630';
+        handle.title = 'Glisser pour r\u00e9ordonner';
+        item.appendChild(handle);
 
         // Thumbnail
         var thumb = document.createElement('img');
@@ -814,26 +826,6 @@
           window.setOverlayProp(ov.id, 'locked', !ov.locked);
         });
         actions.appendChild(btnLock);
-
-        // Z-order up
-        var btnUp = document.createElement('button');
-        btnUp.className = 'overlay-item-btn';
-        btnUp.textContent = '\u25B2';
-        btnUp.title = 'Monter';
-        btnUp.addEventListener('click', function() {
-          window.moveOverlayZ(ov.id, 1);
-        });
-        actions.appendChild(btnUp);
-
-        // Z-order down
-        var btnDown = document.createElement('button');
-        btnDown.className = 'overlay-item-btn';
-        btnDown.textContent = '\u25BC';
-        btnDown.title = 'Descendre';
-        btnDown.addEventListener('click', function() {
-          window.moveOverlayZ(ov.id, -1);
-        });
-        actions.appendChild(btnDown);
 
         // Delete
         var btnDel = document.createElement('button');
@@ -896,10 +888,54 @@
         sizeRow.appendChild(opLabel);
         sizeRow.appendChild(opRange);
 
-        // Wrap item + size row
+        // Wrap item + size row — draggable
         var wrap = document.createElement('div');
+        wrap.className = 'overlay-wrap';
+        wrap.setAttribute('data-overlay-id', ov.id);
         wrap.appendChild(item);
         wrap.appendChild(sizeRow);
+
+        // Drag reorder — only from handle
+        handle.addEventListener('mousedown', function() {
+          wrap.setAttribute('draggable', 'true');
+        });
+        wrap.addEventListener('dragend', function() {
+          wrap.removeAttribute('draggable');
+          wrap.classList.remove('dragging');
+          draggedOverlayWrap = null;
+          var all = container.querySelectorAll('.overlay-wrap');
+          for (var j = 0; j < all.length; j++) all[j].classList.remove('drag-over');
+        });
+        wrap.addEventListener('dragstart', function(e) {
+          draggedOverlayWrap = wrap;
+          wrap.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        wrap.addEventListener('dragover', function(e) {
+          if (!draggedOverlayWrap || draggedOverlayWrap === wrap) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          var all = container.querySelectorAll('.overlay-wrap');
+          for (var j = 0; j < all.length; j++) all[j].classList.remove('drag-over');
+          wrap.classList.add('drag-over');
+        });
+        wrap.addEventListener('dragleave', function() {
+          wrap.classList.remove('drag-over');
+        });
+        wrap.addEventListener('drop', function(e) {
+          e.preventDefault();
+          if (!draggedOverlayWrap || draggedOverlayWrap === wrap) return;
+          var movedId = parseInt(draggedOverlayWrap.getAttribute('data-overlay-id'));
+          var targetId = ov.id;
+          // In the list, top = highest z. Dropping above = higher z (before in DOM = before=true means higher z)
+          var rect = wrap.getBoundingClientRect();
+          var above = e.clientY < rect.top + rect.height / 2;
+          // "before" in DOM order (highest z first) means the moved item gets HIGHER z than target
+          // reorderOverlayZ works on the array (low z first), so before=false means insert after target in array = higher z
+          window.reorderOverlayZ(movedId, targetId, !above);
+          wrap.classList.remove('drag-over');
+        });
+
         container.appendChild(wrap);
       })(list[i], i);
     }

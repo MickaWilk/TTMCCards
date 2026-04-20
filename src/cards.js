@@ -377,6 +377,26 @@
     if (window.onOverlaysChanged) window.onOverlaysChanged();
   };
 
+  window.reorderOverlayZ = function(movedId, targetId, before) {
+    // Remove movedId from array, insert before/after targetId, then reassign z values
+    var moved = null, movIdx = -1;
+    for (var i = 0; i < overlays.length; i++) {
+      if (overlays[i].id === movedId) { moved = overlays[i]; movIdx = i; break; }
+    }
+    if (!moved) return;
+    overlays.splice(movIdx, 1);
+    var targetIdx = -1;
+    for (var j = 0; j < overlays.length; j++) {
+      if (overlays[j].id === targetId) { targetIdx = j; break; }
+    }
+    if (targetIdx === -1) { overlays.push(moved); }
+    else { overlays.splice(before ? targetIdx : targetIdx + 1, 0, moved); }
+    // Reassign z values sequentially
+    for (var k = 0; k < overlays.length; k++) overlays[k].z = k;
+    renderOverlays();
+    if (window.onOverlaysChanged) window.onOverlaysChanged();
+  };
+
   window.clearOverlays = function() {
     overlays = [];
     nextOverlayId = 1;
