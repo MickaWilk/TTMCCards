@@ -66,7 +66,10 @@
     icons: true,
     watermark: true,
     background: true,
-    template: true
+    template: true,
+    recto: true,
+    verso: true,
+    separator: true
   };
 
   // Calques (image overlays)
@@ -82,6 +85,7 @@
   };
 
   var cardGap = 10;
+  var cardPadding = 14;
 
   var LS_KEY = 'ttmc-card-draft';
   window.customLogoDataURL = null;
@@ -122,6 +126,7 @@
     if (font) window.applyFont(p, font.family);
     applyFontSizeProperties(p);
     p.style.setProperty('--card-gap', cardGap + 'px');
+    p.style.setProperty('--card-padding', cardPadding + 'px');
 
     // Remove old card type classes, add current
     p.className = 'ttmc-card card-type-' + currentCardType;
@@ -130,7 +135,9 @@
     switch (currentCardType) {
       case 'debuter':    renderDebuter(p); break;
       case 'gagner':     renderGagner(p); break;
+      case 'challenge':  renderChallenge(p); break;
       case 'intrepide':  renderIntrepide(p); break;
+      case 'terminer':   renderTerminer(p); break;
       case 'bonusmalus': renderBonusMalus(p); break;
       default:           renderStandard(p); break;
     }
@@ -153,6 +160,9 @@
     p.classList.toggle('hide-watermark', !toggles.watermark);
     p.classList.toggle('hide-background', !toggles.background);
     p.classList.toggle('hide-template', !toggles.template);
+    p.classList.toggle('hide-recto', !toggles.recto);
+    p.classList.toggle('hide-verso', !toggles.verso);
+    p.classList.toggle('hide-separator', !toggles.separator);
   }
 
   // ===== Images personnalisees =====
@@ -419,7 +429,7 @@
       '</div>' +
     '</div>';
 
-    p.innerHTML = leftPanel + rightPanel;
+    p.innerHTML = leftPanel + separatorHTML() + rightPanel;
   }
 
   // =========================================================================
@@ -447,7 +457,7 @@
   }
 
   function renderDebuter(p) {
-    p.innerHTML = renderDebuterPanel('A') + renderDebuterPanel('B');
+    p.innerHTML = renderDebuterPanel('A') + separatorHTML() + renderDebuterPanel('B');
   }
 
   // =========================================================================
@@ -476,7 +486,7 @@
   }
 
   function renderGagner(p) {
-    p.innerHTML = renderGagnerPanel('A') + renderGagnerPanel('B');
+    p.innerHTML = renderGagnerPanel('A') + separatorHTML() + renderGagnerPanel('B');
   }
 
   // =========================================================================
@@ -507,7 +517,81 @@
         '</div>' +
       '</div>';
 
-    p.innerHTML = leftPanel + rightPanel;
+    p.innerHTML = leftPanel + separatorHTML() + rightPanel;
+  }
+
+  // =========================================================================
+  // CHALLENGE — Orange, eclair central entre 2 panneaux
+  // =========================================================================
+  function renderChallenge(p) {
+    var boltSvg = '<svg viewBox="0 0 36 100" fill="#F18A00" xmlns="http://www.w3.org/2000/svg">' +
+      '<polygon points="22,0 6,45 18,45 10,100 30,50 18,50"/>' +
+      '<polygon points="22,0 6,45 18,45 16,55 26,35 18,50 30,50 22,15" fill="#FFD54F" opacity=".5"/>' +
+      '</svg>';
+
+    var leftPanel =
+      '<div class="card-panel">' +
+        '<div class="challenge-inner">' +
+          '<div class="challenge-header">' +
+            '<span class="challenge-header-text" contenteditable="true" data-field="title">CHALLENGE</span>' +
+          '</div>' +
+          '<div class="challenge-title" contenteditable="true" data-placeholder="NOM DU CHALLENGE" data-field="subtitle"></div>' +
+          '<div class="challenge-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici..." data-field="body"></div>' +
+          '<div class="panel-watermark">' + iconHTML() + '</div>' +
+        '</div>' +
+      '</div>';
+
+    var bolt = '<div class="challenge-bolt">' + boltSvg + '</div>';
+
+    var rightPanel =
+      '<div class="card-panel">' +
+        '<div class="challenge-inner">' +
+          '<div class="challenge-header">' +
+            '<span class="challenge-header-text" contenteditable="true" data-field="titleB">R\u00c9PONSE</span>' +
+          '</div>' +
+          '<div class="challenge-body" contenteditable="true" data-placeholder="D\u00e9crivez la r\u00e9ponse ou le r\u00e9sultat ici..." data-field="bodyB"></div>' +
+          '<div class="challenge-answer-label" contenteditable="true" data-field="answerLabel">R\u00e9ponse</div>' +
+          '<div class="challenge-answer" contenteditable="true" data-placeholder="Tapez la r\u00e9ponse ici..." data-field="challengeAnswer"></div>' +
+          '<div class="panel-watermark">' + iconHTML() + '</div>' +
+        '</div>' +
+      '</div>';
+
+    p.innerHTML = leftPanel + bolt + rightPanel;
+  }
+
+  // =========================================================================
+  // TERMINER — Violet, "Hesite pas a Terminer"
+  // Meme structure que debuter, style violet/celebration
+  // =========================================================================
+  function renderTerminerPanel(side) {
+    var sfx = (side === 'B') ? 'B' : '';
+    var ph = (side === 'B') ? 'Face verso' : 'Face recto';
+    return '<div class="card-panel">' +
+      '<div class="terminer-inner">' +
+        '<div class="terminer-border">' +
+          '<div class="terminer-header">' +
+            '<div class="terminer-header-text" contenteditable="true" data-field="debuterHeader' + sfx + '">H\u00c9SITE PAS \u00c0</div>' +
+            '<div class="terminer-header-title" contenteditable="true" data-field="debuterLabel' + sfx + '">TERMINER</div>' +
+          '</div>' +
+          '<div class="terminer-title" contenteditable="true" data-placeholder="Titre du challenge (' + ph + ')..." data-field="title' + sfx + '"></div>' +
+          '<div class="terminer-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici..." data-field="body' + sfx + '"></div>' +
+          '<div class="terminer-footer" contenteditable="true" data-placeholder="Note de bas de page..." data-field="footer' + sfx + '"></div>' +
+          '<div class="terminer-logo"></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="panel-watermark">' + iconHTML() + '</div>' +
+    '</div>';
+  }
+
+  function renderTerminer(p) {
+    p.innerHTML = renderTerminerPanel('A') + separatorHTML() + renderTerminerPanel('B');
+  }
+
+  // =========================================================================
+  // Separator helper — inserts 1px black line between panels
+  // =========================================================================
+  function separatorHTML() {
+    return '<div class="card-separator"></div>';
   }
 
   // =========================================================================
@@ -538,7 +622,7 @@
         '<div class="panel-watermark bonusmalus-watermark-dark">' + skullSvg + '</div>' +
       '</div>';
 
-    p.innerHTML = leftPanel + rightPanel;
+    p.innerHTML = leftPanel + separatorHTML() + rightPanel;
   }
 
   // ===== Auto-save debounced =====
@@ -659,6 +743,11 @@
       var p = document.getElementById('card-preview');
       if (p) p.style.setProperty('--card-gap', cardGap + 'px');
     }
+    if (d.cardPadding != null) {
+      cardPadding = d.cardPadding;
+      var p2 = document.getElementById('card-preview');
+      if (p2) p2.style.setProperty('--card-padding', cardPadding + 'px');
+    }
 
     // Standard Q&A fields
     if (d.subject != null) cardData.subject = d.subject;
@@ -722,6 +811,7 @@
         fontId: currentFontId,
         fontSizes: { subject: fontSizes.subject, question: fontSizes.question, answer: fontSizes.answer, number: fontSizes.number },
         cardGap: cardGap,
+        cardPadding: cardPadding,
         // Standard
         subject: cardData.subject,
         questions: Object.assign({}, cardData.questions),
@@ -786,6 +876,7 @@
     currentFontId = 'poppins';
     fontSizes = { subject: 22, question: 10, answer: 10, number: 28 };
     cardGap = 10;
+    cardPadding = 14;
     cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
     overlays = [];
     nextOverlayId = 1;
@@ -862,6 +953,13 @@
     cardGap = val;
     var p = document.getElementById('card-preview');
     if (p) p.style.setProperty('--card-gap', cardGap + 'px');
+  };
+
+  window.getCardPadding = function() { return cardPadding; };
+  window.setCardPadding = function(val) {
+    cardPadding = val;
+    var p = document.getElementById('card-preview');
+    if (p) p.style.setProperty('--card-padding', cardPadding + 'px');
   };
 
   window.getFontSizes = function() {

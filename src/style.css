@@ -242,7 +242,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    Dual panel: questions + responses
    ============================================= */
 .card-type-standard {
-  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:14px;
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:var(--card-padding, 14px);
 }
 
 /* ===== Panneaux cote a cote ===== */
@@ -339,7 +339,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    Dual panel recto/verso, kraft/ticket style
    ============================================= */
 .card-type-debuter {
-  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:14px;
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:var(--card-padding, 14px);
   background:
     repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(139,109,63,.08) 28px, rgba(139,109,63,.08) 29px),
     linear-gradient(135deg, #C4A265 0%, #D4B896 30%, #C9A96A 60%, #D4B896 100%);
@@ -423,7 +423,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    Dual panel recto/verso, gold/amber style
    ============================================= */
 .card-type-gagner {
-  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:14px;
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:var(--card-padding, 14px);
   background:linear-gradient(135deg, #DAA520 0%, #E8C84A 30%, #D4A017 60%, #E8C84A 100%);
 }
 
@@ -503,7 +503,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    Challenge (left) + Responses (right)
    ============================================= */
 .card-type-intrepide {
-  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:14px;
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:var(--card-padding, 14px);
 }
 
 .card-type-intrepide .card-panel { flex:1; display:flex; flex-direction:column; }
@@ -559,6 +559,147 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .intrepide-logo .ttmc-logo { color:var(--header-bg, #B71C1C); opacity:.3; }
 
 /* =============================================
+   CHALLENGE — Orange, eclair central
+   ============================================= */
+.card-type-challenge {
+  display:flex; flex-direction:row; gap:0; padding:var(--card-padding, 14px);
+  background:linear-gradient(135deg, #F18A00 0%, #F5A623 40%, #E8850A 70%, #F5A623 100%);
+}
+.card-type-challenge .card-panel { flex:1; display:flex; flex-direction:column; position:relative; }
+
+.challenge-inner {
+  flex:1;
+  background:linear-gradient(180deg, #FFF3E0 0%, #FFE0B2 100%);
+  border-radius:12px;
+  border:3px solid var(--border, #C97200);
+  padding:20px 24px;
+  display:flex; flex-direction:column;
+  position:relative;
+}
+
+.challenge-header {
+  text-align:center; margin-bottom:14px;
+  border-bottom:2.5px solid rgba(200,114,0,.2);
+  padding-bottom:10px;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.challenge-header-text {
+  font-size:16px; font-weight:900; letter-spacing:2px;
+  color:#8B4513; text-transform:uppercase;
+}
+
+.challenge-title {
+  font-size:20px; font-weight:800; color:#1a1a2e;
+  text-align:center; margin-bottom:12px;
+  text-transform:uppercase; outline:none; min-height:28px;
+}
+.challenge-title:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.2); font-style:italic;
+  text-transform:none; font-weight:600; font-size:14px;
+}
+
+.challenge-body {
+  flex:1; font-size:13px; color:#333; line-height:1.6;
+  outline:none; white-space:pre-wrap; padding:4px 0;
+}
+.challenge-body:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.15); font-style:italic; font-size:12px;
+}
+
+.challenge-answer-label {
+  font-size:11px; font-weight:700; text-transform:uppercase;
+  letter-spacing:1.5px; color:#8B4513; margin-bottom:4px;
+  border-top:2px solid rgba(200,114,0,.15); padding-top:8px; margin-top:auto;
+}
+
+.challenge-answer {
+  font-size:13px; color:#333; line-height:1.5;
+  outline:none; min-height:30px; white-space:pre-wrap;
+}
+.challenge-answer:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.15); font-style:italic; font-size:12px;
+}
+
+.challenge-bolt {
+  width:40px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  position:relative; z-index:2;
+}
+.challenge-bolt svg { width:36px; height:100px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.25)); }
+
+/* =============================================
+   TERMINER — Violet, style celebration
+   ============================================= */
+.card-type-terminer {
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:var(--card-padding, 14px);
+  background:linear-gradient(135deg, #6B2D8E 0%, #9B59B6 30%, #6B2D8E 60%, #9B59B6 100%);
+}
+.card-type-terminer .card-panel { flex:1; display:flex; flex-direction:column; position:relative; }
+
+.terminer-inner {
+  flex:1;
+  background:linear-gradient(180deg, #F3E5F5 0%, #E1BEE7 100%);
+  border-radius:12px;
+  border:3px solid var(--border, #522070);
+  display:flex; flex-direction:column;
+  position:relative;
+}
+
+.terminer-border {
+  flex:1; margin:8px;
+  border:2px dashed rgba(107,45,142,.25);
+  border-radius:8px;
+  padding:20px 28px;
+  display:flex; flex-direction:column;
+  position:relative;
+}
+
+.terminer-header {
+  text-align:center; margin-bottom:16px;
+  border-bottom:2px solid rgba(107,45,142,.2);
+  padding-bottom:12px;
+}
+.terminer-header-text {
+  font-size:14px; font-weight:700; letter-spacing:2px;
+  color:#6B2D8E; text-transform:uppercase;
+}
+.terminer-header-title {
+  font-size:36px; font-weight:900; letter-spacing:3px;
+  color:#4A148C; text-transform:uppercase; line-height:1.1;
+}
+
+.terminer-title {
+  font-size:18px; font-weight:800; color:#1a1a2e;
+  text-align:center; margin-bottom:12px;
+  text-transform:uppercase; outline:none; min-height:28px;
+}
+.terminer-title:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.2); font-style:italic;
+  text-transform:none; font-weight:600; font-size:14px;
+}
+
+.terminer-body {
+  flex:1; font-size:13px; color:#333; line-height:1.6;
+  outline:none; white-space:pre-wrap; padding:8px 0;
+}
+.terminer-body:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.15); font-style:italic; font-size:12px;
+}
+
+.terminer-footer {
+  font-size:10px; color:#666; font-style:italic;
+  border-top:1px solid rgba(107,45,142,.15);
+  padding-top:8px; margin-top:auto;
+  outline:none; min-height:20px;
+}
+.terminer-footer:empty::before {
+  content:attr(data-placeholder); color:rgba(0,0,0,.12); font-size:10px;
+}
+
+.terminer-logo {
+  position:absolute; bottom:8px; right:12px;
+}
+
+/* =============================================
    TOGGLES DE VISIBILITE
    ============================================= */
 .hide-numbers .pq-num,
@@ -608,6 +749,16 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 
 /* ===== Masquer le template (tout sauf les calques) ===== */
 .hide-template > *:not(.card-overlay) { visibility:hidden !important; }
+
+/* ===== Recto / Verso independants ===== */
+.hide-recto > .card-panel:first-child { visibility:hidden !important; }
+.hide-verso > .card-panel:last-child { visibility:hidden !important; }
+
+/* ===== Separateur noir ===== */
+.card-separator {
+  width:1px; background:#000; flex-shrink:0; align-self:stretch;
+}
+.hide-separator .card-separator { display:none; }
 
 /* =============================================
    CUSTOM NUMBER IMAGES
@@ -897,7 +1048,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    BONUS / MALUS — Recto blanc (coeur) + Verso noir (tête de mort)
    ============================================= */
 .card-type-bonusmalus {
-  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:0; overflow:hidden; border-radius:14px;
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:var(--card-padding, 0); overflow:hidden; border-radius:14px;
 }
 
 .card-type-bonusmalus .card-panel { flex:1; display:flex; flex-direction:column; position:relative; overflow:hidden; }

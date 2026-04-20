@@ -40,7 +40,7 @@
   var CSS_PROPS = [
     '--header-bg','--header-text','--border','--num-color','--card-bg',
     '--icon-bg-alpha','--subject-size','--question-size','--answer-size',
-    '--num-size','--answer-num-size','--card-gap'
+    '--num-size','--answer-num-size','--card-gap','--card-padding'
   ];
 
   // ===== Clone la carte pour l'export =====
@@ -59,6 +59,9 @@
       if (val) clone.style.setProperty(CSS_PROPS[p], val);
     }
     clone.style.fontFamily = preview.style.fontFamily || computedStyle.fontFamily;
+
+    // Force zero padding on export
+    clone.style.setProperty('--card-padding', '0px');
 
     var editables = clone.querySelectorAll('[contenteditable]');
     for (var e = 0; e < editables.length; e++) {

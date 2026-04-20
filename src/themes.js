@@ -3,9 +3,11 @@
 // ===== 4 types de cartes TTMC =====
 window.CARD_TYPES = [
   { id: 'standard',   label: 'Questions / Reponses',   description: 'Carte classique "Tu te mets combien en..."', defaultTheme: 'green' },
-  { id: 'debuter',    label: 'Hesite pas a Debuter',   description: 'Carte challenge pour demarrer la partie',    defaultTheme: 'brown' },
+  { id: 'debuter',    label: 'Hesite pas a Debuter',   description: 'Carte challenge pour demarrer la partie',    defaultTheme: 'green' },
   { id: 'gagner',     label: 'Hesite pas a Gagner',     description: 'Carte bonus / challenge',                    defaultTheme: 'gold' },
+  { id: 'challenge',  label: 'Challenge',               description: 'Carte challenge avec eclair central',        defaultTheme: 'orange' },
   { id: 'intrepide',  label: 'Intrepide',               description: 'Carte defi / dare',                         defaultTheme: 'darkred' },
+  { id: 'terminer',   label: 'Hesite pas a Terminer',   description: 'Carte challenge pour terminer la partie',    defaultTheme: 'purple' },
   { id: 'bonusmalus', label: 'Trop Fort / C\'est Nul',  description: 'Recto blanc (coeur) + Verso noir (tete de mort)', defaultTheme: 'black' }
 ];
 
@@ -19,9 +21,9 @@ window.getCardTypeById = function(id) {
 window.THEMES = [
   // --- 4 themes Standard Q&A (cartes 4-7 officielles) ---
   { id:'green',   label:'Verte — Nature / Scolaire',     headerBg:'#3B9B3A', headerText:'#ffffff', border:'#2D7A2C', numColor:'#C0392B', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'play',            cardType:'standard' },
-  { id:'purple',  label:'Violette — Savoir / Mature',     headerBg:'#6B2D8E', headerText:'#ffffff', border:'#522070', numColor:'#6B2D8E', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'drapeau_arrivee', cardType:'standard' },
+  { id:'purple',  label:'Violette — Terminer',              headerBg:'#6B2D8E', headerText:'#ffffff', border:'#522070', numColor:'#6B2D8E', cardBg:'#ffffff', iconBgAlpha:'0.15', defaultIcon:'drapeau_arrivee', cardType:'terminer' },
   { id:'blue',    label:'Bleue — Improbable / Divers',    headerBg:'#2979B1', headerText:'#ffffff', border:'#1E5F8C', numColor:'#1E5F8C', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'poisson',         cardType:'standard' },
-  { id:'orange',  label:'Orange — Challenge',             headerBg:'#F18A00', headerText:'#ffffff', border:'#C97200', numColor:'#D35400', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'eclair',          cardType:'standard' },
+  { id:'orange',  label:'Orange — Challenge',             headerBg:'#F18A00', headerText:'#ffffff', border:'#C97200', numColor:'#D35400', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'eclair',          cardType:'challenge' },
   { id:'rouge_vif', label:'Rouge vif — Pop Culture',      headerBg:'#C00000', headerText:'#ffffff', border:'#980000', numColor:'#C00000', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'globe',           cardType:'standard' },
 
   // --- 3 themes Challenge (cartes 1-3 officielles) ---

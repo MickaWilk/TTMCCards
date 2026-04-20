@@ -11,9 +11,11 @@
 
     var defaultColors = {
       standard: '#3B9B3A',
-      debuter: '#6D4C2A',
+      debuter: '#3B9B3A',
       gagner: '#C8960C',
+      challenge: '#F18A00',
       intrepide: '#B71C1C',
+      terminer: '#6B2D8E',
       bonusmalus: '#1a1a1a'
     };
 
@@ -186,12 +188,28 @@
       if (hint) hint.textContent = 'Chaque face a son propre challenge. Editez aussi directement sur la carte.';
       if (area2) area2.style.display = '';
       if (label2) label2.style.display = '';
+    } else if (ct === 'challenge') {
+      if (label1) label1.textContent = 'Defi (face gauche)';
+      if (area1) area1.placeholder = 'Collez le texte du defi...';
+      if (label2) label2.textContent = 'Reponse (face droite)';
+      if (area2) area2.placeholder = 'Collez la reponse du challenge...';
+      if (hint) hint.textContent = 'Carte challenge avec eclair central. Editez directement sur la carte.';
+      if (area2) area2.style.display = '';
+      if (label2) label2.style.display = '';
     } else if (ct === 'intrepide') {
       if (label1) label1.textContent = 'Description du defi';
       if (area1) area1.placeholder = 'Collez la description du defi...';
       if (label2) label2.textContent = 'Reponses';
       if (area2) area2.placeholder = 'Collez les reponses ici...';
       if (hint) hint.textContent = 'Le texte remplit les deux panneaux de la carte.';
+      if (area2) area2.style.display = '';
+      if (label2) label2.style.display = '';
+    } else if (ct === 'terminer') {
+      if (label1) label1.textContent = 'Texte recto (face gauche)';
+      if (area1) area1.placeholder = 'Collez le texte du challenge recto...';
+      if (label2) label2.textContent = 'Texte verso (face droite)';
+      if (area2) area2.placeholder = 'Collez le texte du challenge verso...';
+      if (hint) hint.textContent = 'Carte "Hesite pas a Terminer". Editez directement sur la carte.';
       if (area2) area2.style.display = '';
       if (label2) label2.style.display = '';
     } else if (ct === 'bonusmalus') {
@@ -396,6 +414,9 @@
     var items = [
       { key: 'template',   label: 'Template' },
       { key: 'background', label: 'Fond' },
+      { key: 'recto',      label: 'Recto (G)' },
+      { key: 'verso',      label: 'Verso (D)' },
+      { key: 'separator',  label: 'S\u00e9parateur' },
       { key: 'numbers',    label: 'Num\u00e9ros' },
       { key: 'questions',  label: 'Questions' },
       { key: 'answers',    label: 'R\u00e9ponses' },
@@ -467,6 +488,31 @@
     var g = window.getCardGap();
     range.value = g;
     if (val) val.textContent = g + 'px';
+  }
+
+  // ===== 7c. Padding Control =====
+  function setupPaddingControl() {
+    var range = document.getElementById('padding-range');
+    var val = document.getElementById('padding-val');
+    if (!range) return;
+
+    range.value = window.getCardPadding();
+    if (val) val.textContent = range.value + 'px';
+
+    range.addEventListener('input', function() {
+      if (val) val.textContent = range.value + 'px';
+      window.setCardPadding(parseInt(range.value));
+      window.saveToLocalStorage();
+    });
+  }
+
+  function updatePaddingControl() {
+    var range = document.getElementById('padding-range');
+    var val = document.getElementById('padding-val');
+    if (!range) return;
+    var p = window.getCardPadding();
+    range.value = p;
+    if (val) val.textContent = p + 'px';
   }
 
   // ===== 8. Image Uploads =====
@@ -987,6 +1033,7 @@
         updateExportBothVisibility();
         updateFontSizeControls();
         updateGapControl();
+        updatePaddingControl();
         var sel = document.getElementById('font-select');
         if (sel) sel.value = fontId;
       });
@@ -1071,6 +1118,7 @@
     buildNumButtons();
 
     setupGapControl();
+    setupPaddingControl();
     setupBulkPaste();
     setupLogoUpload();
     setupImageUploads();
@@ -1090,7 +1138,7 @@
       btnReset.addEventListener('click', function() {
         if (!confirm('Reinitialiser la carte ? Toutes les modifications seront perdues.')) return;
         window.clearCard();
-        window.setAllToggles({ numbers:true, questions:true, answers:true, subject:true, header:true, icons:true, watermark:true, background:true, template:true });
+        window.setAllToggles({ numbers:true, questions:true, answers:true, subject:true, header:true, icons:true, watermark:true, background:true, template:true, recto:true, verso:true, separator:true });
         window.setCardBg(null);
         window.setNumBg(null);
         window.clearNumImages();
@@ -1102,6 +1150,7 @@
         updateExportBothVisibility();
         updateFontSizeControls();
         updateGapControl();
+        updatePaddingControl();
         updateToggleGrid();
         resetNumButtons();
         clearLogoPreview();
