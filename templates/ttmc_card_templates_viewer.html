@@ -1,0 +1,195 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.nav-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; padding: 1rem 0 0; }
+.tab-btn { padding: 6px 14px; border-radius: 20px; border: 1.5px solid transparent; font-size: 12px; font-weight: 500; cursor: pointer; color: white; transition: opacity 0.15s; }
+.tab-btn:hover { opacity: 0.8; }
+.tab-btn.active { outline: 3px solid rgba(0,0,0,0.2); outline-offset: 2px; }
+.card-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 680px; margin: 0 auto; }
+.card-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.face-label { font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; }
+.card { width: 100%; aspect-ratio: 5/8; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; position: relative; }
+.card-back { align-items: center; justify-content: center; }
+.card-back-inner { background: white; border-radius: 12px; width: 82%; height: 82%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 6px; }
+.back-logo { font-size: 22px; font-weight: 700; letter-spacing: -1px; }
+.back-sub { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.6; }
+.card-front { flex-direction: column; gap: 0; }
+.card-header-block { background: rgba(255,255,255,0.18); border-radius: 10px; padding: 8px 10px; margin-bottom: 8px; }
+.card-cat-label { font-size: 9px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.75); margin-bottom: 2px; }
+.card-theme-name { font-size: 15px; font-weight: 600; color: white; line-height: 1.2; }
+.card-questions-block { background: white; border-radius: 10px; flex: 1; padding: 8px 10px; display: flex; flex-direction: column; gap: 1px; }
+.card-q-row { display: flex; gap: 7px; align-items: baseline; padding: 3px 0; border-bottom: 0.5px solid rgba(0,0,0,0.06); }
+.card-q-row:last-child { border-bottom: none; }
+.q-num { font-size: 10px; font-weight: 600; min-width: 14px; opacity: 0.45; }
+.q-text { font-size: 9.5px; color: #222; line-height: 1.35; flex: 1; }
+.card-special-body { background: white; border-radius: 10px; flex: 1; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.sp-title { font-size: 13px; font-weight: 600; color: #111; }
+.sp-desc { font-size: 9.5px; color: #444; line-height: 1.4; }
+.sp-rule { border-radius: 7px; padding: 7px 9px; font-size: 9px; line-height: 1.4; }
+.sp-rule-label { font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px; opacity: 0.6; }
+</style>
+
+<h2 class="sr-only">Aperçu des templates de cartes TTMC par catégorie</h2>
+
+<div class="nav-tabs" id="nav"></div>
+<div id="content"></div>
+
+<script>
+const types = [
+  {
+    id: 'divers', label: 'Divers', color: '#0000FF',
+    cat: 'Divers', theme: 'Les monuments du monde',
+    qs: [
+      {n:1, q:'Quelle est la plus haute tour du monde ?'},
+      {n:2, q:'Dans quel pays se trouve le Colisée ?'},
+      {n:3, q:'En quelle année fut construite la Grande Muraille ?'},
+      {n:4, q:'Combien de marches compte la Tour Eiffel ?'},
+      {n:5, q:'Quel monument se trouve à Agra en Inde ?'},
+      {n:6, q:'Quelle est la hauteur de la Statue de la Liberté ?'},
+      {n:7, q:'Dans quel désert se trouvent les pyramides de Gizeh ?'},
+      {n:8, q:'Qui a conçu le Guggenheim de Bilbao ?'},
+      {n:9, q:'De quel matériau est fait le Parthénon d\'Athènes ?'},
+      {n:10, q:'En quelle année a été inauguré le Burj Khalifa ?'},
+    ],
+    backColor: '#0000FF', backText: '#0000CC'
+  },
+  {
+    id: 'pop', label: 'Pop', color: '#AA0000',
+    cat: 'Pop culture', theme: 'Les super-héros Marvel',
+    qs: [
+      {n:1, q:'Quel super-héros porte un costume rouge et bleu ?'},
+      {n:2, q:'Comment s\'appelle le marteau de Thor ?'},
+      {n:3, q:'Quelle est la vraie identité d\'Iron Man ?'},
+      {n:4, q:'Dans quelle ville vit Batman ?'},
+      {n:5, q:'Quel métal compose le squelette de Wolverine ?'},
+      {n:6, q:'Qui est le frère de Thor dans les comics ?'},
+      {n:7, q:'Quel est le vrai nom de Captain America ?'},
+      {n:8, q:'En quelle année est sorti le premier film Avengers ?'},
+      {n:9, q:'Quel acteur incarne Black Panther au cinéma ?'},
+      {n:10, q:'Nommez 5 membres fondateurs des Avengers originaux.'},
+    ],
+    backColor: '#AA0000', backText: '#880000'
+  },
+  {
+    id: 'perso', label: 'Perso', color: '#FFBB00',
+    cat: 'Perso', theme: 'Les habitudes du quotidien',
+    qs: [
+      {n:1, q:'Combien d\'heures de sommeil recommande-t-on par nuit ?'},
+      {n:2, q:'Quelle boisson chauffe réveille le plus vite le matin ?'},
+      {n:3, q:'Combien de litres d\'eau faut-il boire par jour ?'},
+      {n:4, q:'Quelle durée minimale d\'exercice est recommandée ?'},
+      {n:5, q:'Quel repas est considéré comme le plus important ?'},
+      {n:6, q:'Combien de minutes faut-il pour créer une nouvelle habitude ?'},
+      {n:7, q:'Quel organe est le plus sollicité lors du stress ?'},
+      {n:8, q:'Quelle heure est conseillée pour arrêter les écrans ?'},
+      {n:9, q:'Combien de pas par jour recommande l\'OMS ?'},
+      {n:10, q:'Quelle technique aide à s\'endormir en 4-7-8 minutes ?'},
+    ],
+    backColor: '#FFBB00', backText: '#CC8800'
+  },
+  {
+    id: 'challenge', label: 'Challenge', color: '#FF6600',
+    special: true,
+    spTitle: 'Carte Challenge',
+    spDesc: 'Toutes les équipes jouent en même temps ! La première à répondre correctement gagne les cases. En cas d\'erreur, une case est retirée.',
+    spRule: 'Citez le maximum de capitales européennes en 30 secondes. 1 case par capitale correcte !',
+    spRuleBg: '#FFE0C8', spRuleText: '#993300',
+    backColor: '#FF6600', backText: '#CC4400'
+  },
+  {
+    id: 'debuter', label: 'Débuter', color: '#226600',
+    special: true,
+    spTitle: 'Hésite pas à débuter',
+    spDesc: 'Carte de début de partie. La lire à voix haute. L\'équipe dont la réponse est la plus proche sans dépasser joue en premier.',
+    spRule: 'Combien de cartes contient la boîte TTMC 2 en tout ? L\'équipe la plus proche (sans dépasser) commence !',
+    spRuleBg: '#C8F0C8', spRuleText: '#1A5200',
+    backColor: '#226600', backText: '#1A5200'
+  },
+  {
+    id: 'terminer', label: 'Terminer', color: '#4400FF',
+    special: true,
+    spTitle: 'Hésite pas à terminer',
+    spDesc: 'Tirée quand une équipe atteint la dernière case. Si elle répond correctement, elle remporte la partie. Sinon, la partie continue.',
+    spRule: 'Citez 5 pays dont le nom commence par la lettre M. Bonne réponse = victoire !',
+    spRuleBg: '#DDD8FF', spRuleText: '#330088',
+    backColor: '#4400FF', backText: '#3300CC'
+  },
+  {
+    id: 'bonusmalus', label: 'Bonus / Malus', color: '#555555',
+    special: true,
+    spTitle: 'Carte Bonus / Malus',
+    spDesc: 'Une carte surprise ! Peut avantager votre équipe ou compliquer la partie. La lire à voix haute et appliquer immédiatement l\'effet indiqué.',
+    spRule: 'Bonus : avancez de 3 cases gratuitement ! — OU — Malus : reculez d\'1 case.',
+    spRuleBg: '#E0E0E0', spRuleText: '#333333',
+    backColor: '#555555', backText: '#333333'
+  },
+];
+
+let active = 'divers';
+
+function renderBack(t) {
+  return `<div class="card card-back" style="background:${t.backColor};">
+    <div class="card-back-inner">
+      <div class="back-logo" style="color:${t.backColor};">TTMC</div>
+      <div class="back-sub" style="color:${t.backColor};">Tu te mets combien ?</div>
+    </div>
+  </div>`;
+}
+
+function renderFront(t) {
+  if (t.special) {
+    return `<div class="card card-front" style="background:${t.color};">
+      <div class="card-header-block">
+        <div class="card-cat-label">${t.label}</div>
+      </div>
+      <div class="card-special-body">
+        <div class="sp-title">${t.spTitle}</div>
+        <div class="sp-desc">${t.spDesc}</div>
+        <div class="sp-rule" style="background:${t.spRuleBg}; color:${t.spRuleText};">
+          <div class="sp-rule-label">Exemple</div>
+          ${t.spRule}
+        </div>
+      </div>
+    </div>`;
+  }
+  return `<div class="card card-front" style="background:${t.color};">
+    <div class="card-header-block">
+      <div class="card-cat-label">${t.cat}</div>
+      <div class="card-theme-name">${t.theme}</div>
+    </div>
+    <div class="card-questions-block">
+      ${t.qs.map(q=>`<div class="card-q-row"><span class="q-num">${q.n}</span><span class="q-text">${q.q}</span></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function render() {
+  const t = types.find(x => x.id === active);
+  document.getElementById('content').innerHTML = `
+    <div class="card-pair">
+      <div class="card-wrap">
+        <span class="face-label">Recto</span>
+        ${renderFront(t)}
+      </div>
+      <div class="card-wrap">
+        <span class="face-label">Verso</span>
+        ${renderBack(t)}
+      </div>
+    </div>`;
+}
+
+function buildNav() {
+  document.getElementById('nav').innerHTML = types.map(t =>
+    `<button class="tab-btn${t.id===active?' active':''}" style="background:${t.color};border-color:${t.color};" onclick="setActive('${t.id}')">${t.label}</button>`
+  ).join('');
+}
+
+function setActive(id) {
+  active = id;
+  buildNav();
+  render();
+}
+
+buildNav();
+render();
+</script>
