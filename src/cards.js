@@ -81,6 +81,8 @@
     nums: {}        // { '1': dataURL, ... '10': dataURL }
   };
 
+  var cardGap = 10;
+
   var LS_KEY = 'ttmc-card-draft';
   window.customLogoDataURL = null;
 
@@ -119,6 +121,7 @@
     var font = window.getFontById(currentFontId);
     if (font) window.applyFont(p, font.family);
     applyFontSizeProperties(p);
+    p.style.setProperty('--card-gap', cardGap + 'px');
 
     // Remove old card type classes, add current
     p.className = 'ttmc-card card-type-' + currentCardType;
@@ -651,6 +654,11 @@
     if (!d) return;
 
     if (d.cardType) currentCardType = d.cardType;
+    if (d.cardGap != null) {
+      cardGap = d.cardGap;
+      var p = document.getElementById('card-preview');
+      if (p) p.style.setProperty('--card-gap', cardGap + 'px');
+    }
 
     // Standard Q&A fields
     if (d.subject != null) cardData.subject = d.subject;
@@ -713,6 +721,7 @@
         iconId: currentIconId,
         fontId: currentFontId,
         fontSizes: { subject: fontSizes.subject, question: fontSizes.question, answer: fontSizes.answer, number: fontSizes.number },
+        cardGap: cardGap,
         // Standard
         subject: cardData.subject,
         questions: Object.assign({}, cardData.questions),
@@ -776,6 +785,7 @@
     currentIconId = 'feuille';
     currentFontId = 'poppins';
     fontSizes = { subject: 22, question: 10, answer: 10, number: 28 };
+    cardGap = 10;
     cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
     overlays = [];
     nextOverlayId = 1;
@@ -846,6 +856,13 @@
   window.setCurrentThemeId = function(id) { currentThemeId = id; };
   window.setCurrentIconId = function(id) { currentIconId = id; };
   window.setCurrentFontId = function(id) { currentFontId = id; };
+
+  window.getCardGap = function() { return cardGap; };
+  window.setCardGap = function(val) {
+    cardGap = val;
+    var p = document.getElementById('card-preview');
+    if (p) p.style.setProperty('--card-gap', cardGap + 'px');
+  };
 
   window.getFontSizes = function() {
     return { subject: fontSizes.subject, question: fontSizes.question, answer: fontSizes.answer, number: fontSizes.number };

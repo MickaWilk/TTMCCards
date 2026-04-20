@@ -444,6 +444,31 @@
     }
   }
 
+  // ===== 7b. Gap Control =====
+  function setupGapControl() {
+    var range = document.getElementById('gap-range');
+    var val = document.getElementById('gap-val');
+    if (!range) return;
+
+    range.value = window.getCardGap();
+    if (val) val.textContent = range.value + 'px';
+
+    range.addEventListener('input', function() {
+      if (val) val.textContent = range.value + 'px';
+      window.setCardGap(parseInt(range.value));
+      window.saveToLocalStorage();
+    });
+  }
+
+  function updateGapControl() {
+    var range = document.getElementById('gap-range');
+    var val = document.getElementById('gap-val');
+    if (!range) return;
+    var g = window.getCardGap();
+    range.value = g;
+    if (val) val.textContent = g + 'px';
+  }
+
   // ===== 8. Image Uploads =====
   function setupImageUploads() {
     // --- Card background ---
@@ -961,6 +986,7 @@
         updateBulkPasteLabels();
         updateExportBothVisibility();
         updateFontSizeControls();
+        updateGapControl();
         var sel = document.getElementById('font-select');
         if (sel) sel.value = fontId;
       });
@@ -1044,6 +1070,7 @@
     buildFontSizeControls();
     buildNumButtons();
 
+    setupGapControl();
     setupBulkPaste();
     setupLogoUpload();
     setupImageUploads();
@@ -1074,6 +1101,7 @@
         updateBulkPasteLabels();
         updateExportBothVisibility();
         updateFontSizeControls();
+        updateGapControl();
         updateToggleGrid();
         resetNumButtons();
         clearLogoPreview();

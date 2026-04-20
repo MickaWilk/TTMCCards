@@ -242,7 +242,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    Dual panel: questions + responses
    ============================================= */
 .card-type-standard {
-  display:flex; flex-direction:row; gap:10px; padding:14px;
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:14px;
 }
 
 /* ===== Panneaux cote a cote ===== */
@@ -339,7 +339,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    Dual panel recto/verso, kraft/ticket style
    ============================================= */
 .card-type-debuter {
-  display:flex; flex-direction:row; gap:10px; padding:14px;
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:14px;
   background:
     repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(139,109,63,.08) 28px, rgba(139,109,63,.08) 29px),
     linear-gradient(135deg, #C4A265 0%, #D4B896 30%, #C9A96A 60%, #D4B896 100%);
@@ -423,7 +423,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    Dual panel recto/verso, gold/amber style
    ============================================= */
 .card-type-gagner {
-  display:flex; flex-direction:row; gap:10px; padding:14px;
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:14px;
   background:linear-gradient(135deg, #DAA520 0%, #E8C84A 30%, #D4A017 60%, #E8C84A 100%);
 }
 
@@ -503,7 +503,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    Challenge (left) + Responses (right)
    ============================================= */
 .card-type-intrepide {
-  display:flex; flex-direction:row; gap:10px; padding:14px;
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:14px;
 }
 
 .card-type-intrepide .card-panel { flex:1; display:flex; flex-direction:column; }
@@ -897,7 +897,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    BONUS / MALUS — Recto blanc (coeur) + Verso noir (tête de mort)
    ============================================= */
 .card-type-bonusmalus {
-  display:flex; flex-direction:row; gap:0; padding:0; overflow:hidden; border-radius:14px;
+  display:flex; flex-direction:row; gap:var(--card-gap, 10px); padding:0; overflow:hidden; border-radius:14px;
 }
 
 .card-type-bonusmalus .card-panel { flex:1; display:flex; flex-direction:column; position:relative; overflow:hidden; }
