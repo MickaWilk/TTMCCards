@@ -1,4 +1,5 @@
 // ===== cards.js — Rendu multi-types de cartes TTMC =====
+var skipSaveToMemory = false;
 
 (function() {
   'use strict';
@@ -128,16 +129,19 @@
   }
 
   // ===== Main Render =====
-  window.renderCard = function(themeId, iconId, fontId) {
+  window.renderCard = function(themeId, iconId, fontId, skipSave) {
     if (themeId) currentThemeId = themeId;
     if (iconId) currentIconId = iconId;
     if (fontId) currentFontId = fontId;
+
+    skipSaveToMemory = !!skipSave
 
     var theme = window.getThemeById(currentThemeId);
     var p = document.getElementById('card-preview');
     if (!p) return;
 
-    saveToMemory();
+if (!skipSaveToMemory) saveToMemory();
+
     window.applyTheme(p, theme);
 
     // Apply custom color overrides on top of theme
@@ -182,6 +186,7 @@
     applyCustomImages(p);
     renderOverlays(p);
     setupAutoSave(p);
+    skipSaveToMemory = false;
   };
 
   // ===== Toggles de visibilite =====

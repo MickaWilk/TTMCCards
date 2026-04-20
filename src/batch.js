@@ -166,7 +166,7 @@
       window.setInnerBorderWidth('right', 3);
       window.setInnerBorderWidth('bottom', 3);
       window.setInnerBorderWidth('left', 3);
-      await sleep(350); 
+      await sleep(600); 
       await new Promise(resolve => {
   const check = () => {
     const el = document.querySelector('.panel-subject [contenteditable]');
@@ -179,7 +179,8 @@ var p = document.getElementById('card-preview');
 if (p && card.sujet) {
     var subjEl = p.querySelector('.panel-subject [contenteditable]');
     if (subjEl) {
-        subjEl.innerText = card.sujet;  // Force l'écriture
+        subjEl.innerText = card.sujet;
+        await sleep(100)
     }
 }
 
