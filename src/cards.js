@@ -84,12 +84,15 @@
     nums: {}        // { '1': dataURL, ... '10': dataURL }
   };
 
-  var cardGap = 10;
+  var cardGap = 1;
   var padTop = 14;
   var padRight = 14;
   var padBottom = 14;
   var padLeft = 14;
-  var innerBorderWidth = 3;
+  var bdrTop = 3;
+  var bdrRight = 3;
+  var bdrBottom = 3;
+  var bdrLeft = 3;
 
   var LS_KEY = 'ttmc-card-draft';
   window.customLogoDataURL = null;
@@ -135,7 +138,11 @@
     p.style.setProperty('--pad-bottom', padBottom + 'px');
     p.style.setProperty('--pad-left', padLeft + 'px');
     p.style.setProperty('--card-padding', padTop + 'px ' + padRight + 'px ' + padBottom + 'px ' + padLeft + 'px');
-    p.style.setProperty('--inner-border-width', innerBorderWidth + 'px');
+    p.style.setProperty('--bdr-top', bdrTop + 'px');
+    p.style.setProperty('--bdr-right', bdrRight + 'px');
+    p.style.setProperty('--bdr-bottom', bdrBottom + 'px');
+    p.style.setProperty('--bdr-left', bdrLeft + 'px');
+    p.style.setProperty('--inner-border-width', bdrTop + 'px ' + bdrRight + 'px ' + bdrBottom + 'px ' + bdrLeft + 'px');
 
     // Remove old card type classes, add current
     p.className = 'ttmc-card card-type-' + currentCardType;
@@ -211,118 +218,230 @@
   }
 
   // ===== Calques (overlays) =====
+  var resizeState = null;
+
   function renderOverlays(p) {
     if (!p) p = document.getElementById('card-preview');
     if (!p) return;
 
-    // Remove existing overlay elements
     var old = p.querySelectorAll('.card-overlay');
     for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]);
 
-    // Render sorted by z
     var sorted = overlays.slice().sort(function(a, b) { return a.z - b.z; });
     for (var j = 0; j < sorted.length; j++) {
       var o = sorted[j];
       if (!o.visible) continue;
-      var img = document.createElement('img');
-      img.className = 'card-overlay' + (o.locked ? ' overlay-locked' : '');
-      img.src = o.src;
-      img.draggable = false;
-      img.setAttribute('data-overlay-id', o.id);
-      img.style.cssText = 'position:absolute;left:' + o.x + 'px;top:' + o.y + 'px;' +
+
+      var wrap = document.createElement('div');
+      wrap.className = 'card-overlay' + (o.locked ? ' overlay-locked' : '');
+      wrap.setAttribute('data-overlay-id', o.id);
+      wrap.style.cssText = 'position:absolute;left:' + o.x + 'px;top:' + o.y + 'px;' +
         'width:' + o.w + 'px;height:' + o.h + 'px;z-index:' + (50 + o.z) + ';' +
         'opacity:' + (o.opacity != null ? o.opacity : 1) + ';' +
         'pointer-events:' + (o.locked ? 'none' : 'auto') + ';';
-      p.appendChild(img);
+
+      var img = document.createElement('img');
+      img.className = 'card-overlay-img';
+      img.src = o.src;
+      img.draggable = false;
+      wrap.appendChild(img);
+
+      if (!o.locked) {
+        var corners = ['nw','ne','sw','se'];
+        for (var c = 0; c < corners.length; c++) {
+          var h = document.createElement('div');
+          h.className = 'overlay-handle overlay-handle-' + corners[c];
+          h.setAttribute('data-corner', corners[c]);
+          wrap.appendChild(h);
+        }
+      }
+
+      p.appendChild(wrap);
     }
+  }
+
+  function findOverlay(id) {
+    for (var i = 0; i < overlays.length; i++) {
+      if (overlays[i].id === id) return overlays[i];
+    }
+    return null;
+  }
+
+  function updateOverlayEl(id, ov) {
+    var el = document.querySelector('.card-overlay[data-overlay-id="' + id + '"]');
+    if (!el) return;
+    el.style.left = ov.x + 'px';
+    el.style.top = ov.y + 'px';
+    el.style.width = ov.w + 'px';
+    el.style.height = ov.h + 'px';
   }
 
   function setupOverlayDrag() {
     var p = document.getElementById('card-preview');
     if (!p) return;
 
+    // --- Mouse events ---
     p.addEventListener('mousedown', function(e) {
       var target = e.target;
-      if (!target.classList.contains('card-overlay')) return;
-      var id = parseInt(target.getAttribute('data-overlay-id'));
-      var ov = null;
-      for (var i = 0; i < overlays.length; i++) {
-        if (overlays[i].id === id) { ov = overlays[i]; break; }
-      }
-      if (!ov || ov.locked) return;
 
+      // Resize handle?
+      if (target.classList.contains('overlay-handle')) {
+        var wrap = target.parentElement;
+        var id = parseInt(wrap.getAttribute('data-overlay-id'));
+        var ov = findOverlay(id);
+        if (!ov || ov.locked) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var rect = p.getBoundingClientRect();
+        resizeState = {
+          id: id, corner: target.getAttribute('data-corner'),
+          startX: e.clientX, startY: e.clientY,
+          origX: ov.x, origY: ov.y, origW: ov.w, origH: ov.h,
+          scale: rect.width / 936
+        };
+        wrap.classList.add('overlay-resizing');
+        return;
+      }
+
+      // Move overlay?
+      if (!target.classList.contains('card-overlay')) return;
+      var id2 = parseInt(target.getAttribute('data-overlay-id'));
+      var ov2 = findOverlay(id2);
+      if (!ov2 || ov2.locked) return;
       e.preventDefault();
       e.stopPropagation();
-      var rect = p.getBoundingClientRect();
-      var scale = rect.width / 936;
-
-      dragState = { id: id, startX: e.clientX, startY: e.clientY, origX: ov.x, origY: ov.y, scale: scale };
+      var rect2 = p.getBoundingClientRect();
+      dragState = { id: id2, startX: e.clientX, startY: e.clientY, origX: ov2.x, origY: ov2.y, scale: rect2.width / 936 };
       target.classList.add('overlay-dragging');
     });
 
     document.addEventListener('mousemove', function(e) {
-      if (!dragState) return;
-      var dx = (e.clientX - dragState.startX) / dragState.scale;
-      var dy = (e.clientY - dragState.startY) / dragState.scale;
-      var ov = null;
-      for (var i = 0; i < overlays.length; i++) {
-        if (overlays[i].id === dragState.id) { ov = overlays[i]; break; }
+      if (resizeState) {
+        var dx = (e.clientX - resizeState.startX) / resizeState.scale;
+        var dy = (e.clientY - resizeState.startY) / resizeState.scale;
+        var ov = findOverlay(resizeState.id);
+        if (!ov) return;
+        applyResize(ov, resizeState, dx, dy);
+        updateOverlayEl(resizeState.id, ov);
+        return;
       }
-      if (!ov) return;
-      ov.x = Math.round(dragState.origX + dx);
-      ov.y = Math.round(dragState.origY + dy);
-      var el = document.querySelector('.card-overlay[data-overlay-id="' + dragState.id + '"]');
-      if (el) { el.style.left = ov.x + 'px'; el.style.top = ov.y + 'px'; }
+      if (!dragState) return;
+      var dx2 = (e.clientX - dragState.startX) / dragState.scale;
+      var dy2 = (e.clientY - dragState.startY) / dragState.scale;
+      var ov2 = findOverlay(dragState.id);
+      if (!ov2) return;
+      ov2.x = Math.round(dragState.origX + dx2);
+      ov2.y = Math.round(dragState.origY + dy2);
+      updateOverlayEl(dragState.id, ov2);
     });
 
     document.addEventListener('mouseup', function() {
+      if (resizeState) {
+        var el = document.querySelector('.card-overlay[data-overlay-id="' + resizeState.id + '"]');
+        if (el) el.classList.remove('overlay-resizing');
+        resizeState = null;
+        if (window.onOverlaysChanged) window.onOverlaysChanged();
+        return;
+      }
       if (!dragState) return;
-      var el = document.querySelector('.card-overlay[data-overlay-id="' + dragState.id + '"]');
-      if (el) el.classList.remove('overlay-dragging');
+      var el2 = document.querySelector('.card-overlay[data-overlay-id="' + dragState.id + '"]');
+      if (el2) el2.classList.remove('overlay-dragging');
       dragState = null;
       if (window.onOverlaysChanged) window.onOverlaysChanged();
     });
 
-    // Touch events for mobile
+    // --- Touch events ---
     p.addEventListener('touchstart', function(e) {
       var target = e.target;
-      if (!target.classList.contains('card-overlay')) return;
-      var id = parseInt(target.getAttribute('data-overlay-id'));
-      var ov = null;
-      for (var i = 0; i < overlays.length; i++) {
-        if (overlays[i].id === id) { ov = overlays[i]; break; }
-      }
-      if (!ov || ov.locked) return;
       var touch = e.touches[0];
-      var rect = p.getBoundingClientRect();
-      var scale = rect.width / 936;
-      dragState = { id: id, startX: touch.clientX, startY: touch.clientY, origX: ov.x, origY: ov.y, scale: scale };
+
+      if (target.classList.contains('overlay-handle')) {
+        var wrap = target.parentElement;
+        var id = parseInt(wrap.getAttribute('data-overlay-id'));
+        var ov = findOverlay(id);
+        if (!ov || ov.locked) return;
+        var rect = p.getBoundingClientRect();
+        resizeState = {
+          id: id, corner: target.getAttribute('data-corner'),
+          startX: touch.clientX, startY: touch.clientY,
+          origX: ov.x, origY: ov.y, origW: ov.w, origH: ov.h,
+          scale: rect.width / 936
+        };
+        wrap.classList.add('overlay-resizing');
+        return;
+      }
+
+      if (!target.classList.contains('card-overlay')) return;
+      var id2 = parseInt(target.getAttribute('data-overlay-id'));
+      var ov2 = findOverlay(id2);
+      if (!ov2 || ov2.locked) return;
+      var rect2 = p.getBoundingClientRect();
+      dragState = { id: id2, startX: touch.clientX, startY: touch.clientY, origX: ov2.x, origY: ov2.y, scale: rect2.width / 936 };
       target.classList.add('overlay-dragging');
     }, { passive: true });
 
     document.addEventListener('touchmove', function(e) {
-      if (!dragState) return;
       var touch = e.touches[0];
-      var dx = (touch.clientX - dragState.startX) / dragState.scale;
-      var dy = (touch.clientY - dragState.startY) / dragState.scale;
-      var ov = null;
-      for (var i = 0; i < overlays.length; i++) {
-        if (overlays[i].id === dragState.id) { ov = overlays[i]; break; }
+      if (resizeState) {
+        var dx = (touch.clientX - resizeState.startX) / resizeState.scale;
+        var dy = (touch.clientY - resizeState.startY) / resizeState.scale;
+        var ov = findOverlay(resizeState.id);
+        if (!ov) return;
+        applyResize(ov, resizeState, dx, dy);
+        updateOverlayEl(resizeState.id, ov);
+        return;
       }
-      if (!ov) return;
-      ov.x = Math.round(dragState.origX + dx);
-      ov.y = Math.round(dragState.origY + dy);
-      var el = document.querySelector('.card-overlay[data-overlay-id="' + dragState.id + '"]');
-      if (el) { el.style.left = ov.x + 'px'; el.style.top = ov.y + 'px'; }
+      if (!dragState) return;
+      var dx2 = (touch.clientX - dragState.startX) / dragState.scale;
+      var dy2 = (touch.clientY - dragState.startY) / dragState.scale;
+      var ov2 = findOverlay(dragState.id);
+      if (!ov2) return;
+      ov2.x = Math.round(dragState.origX + dx2);
+      ov2.y = Math.round(dragState.origY + dy2);
+      updateOverlayEl(dragState.id, ov2);
     }, { passive: true });
 
     document.addEventListener('touchend', function() {
+      if (resizeState) {
+        var el = document.querySelector('.card-overlay[data-overlay-id="' + resizeState.id + '"]');
+        if (el) el.classList.remove('overlay-resizing');
+        resizeState = null;
+        if (window.onOverlaysChanged) window.onOverlaysChanged();
+        return;
+      }
       if (!dragState) return;
-      var el = document.querySelector('.card-overlay[data-overlay-id="' + dragState.id + '"]');
-      if (el) el.classList.remove('overlay-dragging');
+      var el2 = document.querySelector('.card-overlay[data-overlay-id="' + dragState.id + '"]');
+      if (el2) el2.classList.remove('overlay-dragging');
       dragState = null;
       if (window.onOverlaysChanged) window.onOverlaysChanged();
     });
+  }
+
+  // Apply resize delta based on corner
+  function applyResize(ov, st, dx, dy) {
+    var c = st.corner;
+    var minW = 10, minH = 10;
+    if (c === 'se') {
+      ov.w = Math.max(minW, Math.round(st.origW + dx));
+      ov.h = Math.max(minH, Math.round(st.origH + dy));
+    } else if (c === 'sw') {
+      var newW = Math.max(minW, Math.round(st.origW - dx));
+      ov.x = Math.round(st.origX + (st.origW - newW));
+      ov.w = newW;
+      ov.h = Math.max(minH, Math.round(st.origH + dy));
+    } else if (c === 'ne') {
+      ov.w = Math.max(minW, Math.round(st.origW + dx));
+      var newH = Math.max(minH, Math.round(st.origH - dy));
+      ov.y = Math.round(st.origY + (st.origH - newH));
+      ov.h = newH;
+    } else if (c === 'nw') {
+      var nwW = Math.max(minW, Math.round(st.origW - dx));
+      var nwH = Math.max(minH, Math.round(st.origH - dy));
+      ov.x = Math.round(st.origX + (st.origW - nwW));
+      ov.y = Math.round(st.origY + (st.origH - nwH));
+      ov.w = nwW;
+      ov.h = nwH;
+    }
   }
 
   // --- Overlay public API ---
@@ -479,6 +598,7 @@
           '<div class="debuter-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici..." data-field="body' + sfx + '"></div>' +
           '<div class="debuter-footer" contenteditable="true" data-placeholder="Note de bas de page..." data-field="footer' + sfx + '"></div>' +
           '<div class="debuter-logo">' + '' + '</div>' +
+          '<div class="card-panel-icon">' + iconHTML() + '</div>' +
         '</div>' +
       '</div>' +
       '<div class="panel-watermark">' + iconHTML() + '</div>' +
@@ -509,6 +629,7 @@
         '<div class="gagner-answer-label" contenteditable="true" data-field="answerLabel' + sfx + '">R\u00e9ponse</div>' +
         '<div class="gagner-answer" contenteditable="true" data-placeholder="Tapez la r\u00e9ponse ici..." data-field="challengeAnswer' + sfx + '"></div>' +
         '<div class="gagner-logo">' + '' + '</div>' +
+        '<div class="card-panel-icon">' + iconHTML() + '</div>' +
       '</div>' +
       '<div class="panel-watermark">' + iconHTML() + '</div>' +
     '</div>';
@@ -531,6 +652,7 @@
           '<div class="intrepide-title" contenteditable="true" data-placeholder="NOM DU D\u00c9FI" data-field="title"></div>' +
           '<div class="intrepide-body" contenteditable="true" data-placeholder="D\u00e9crivez le d\u00e9fi ici...\n\nExemple : Dommage, tu es tomb\u00e9 sur une tuile. Tu recules de 5 cases sauf si le plus m\u00e9lomane de ton \u00e9quipe nous chante le refrain de Quelque part de Sheryl Luna..." data-field="body"></div>' +
           '<div class="intrepide-logo">' + '' + '</div>' +
+          '<div class="card-panel-icon">' + iconHTML() + '</div>' +
         '</div>' +
       '</div>';
 
@@ -543,6 +665,7 @@
           '</div>' +
           '<div class="intrepide-responses" contenteditable="true" data-placeholder="Tapez les r\u00e9ponses ici...\n\n\u00c9cris-moi une autre histoire\nT\'es le seul \u00e0 me comprendre\nEmm\u00e8ne-moi quelque part\nNe me laissez pas surprendre\nInvente-moi un monde \u00e0 part\nApprends-moi une nouvelle danse\nEmm\u00e8ne-moi quelque part\nBoy, je te fais confiance" data-field="responses"></div>' +
           '<div class="intrepide-logo">' + '' + '</div>' +
+          '<div class="card-panel-icon">' + iconHTML() + '</div>' +
         '</div>' +
       '</div>';
 
@@ -567,6 +690,7 @@
           '<div class="challenge-title" contenteditable="true" data-placeholder="NOM DU CHALLENGE" data-field="subtitle"></div>' +
           '<div class="challenge-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici..." data-field="body"></div>' +
           '<div class="panel-watermark">' + iconHTML() + '</div>' +
+          '<div class="card-panel-icon">' + iconHTML() + '</div>' +
         '</div>' +
       '</div>';
 
@@ -582,6 +706,7 @@
           '<div class="challenge-answer-label" contenteditable="true" data-field="answerLabel">R\u00e9ponse</div>' +
           '<div class="challenge-answer" contenteditable="true" data-placeholder="Tapez la r\u00e9ponse ici..." data-field="challengeAnswer"></div>' +
           '<div class="panel-watermark">' + iconHTML() + '</div>' +
+          '<div class="card-panel-icon">' + iconHTML() + '</div>' +
         '</div>' +
       '</div>';
 
@@ -606,6 +731,7 @@
           '<div class="terminer-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici..." data-field="body' + sfx + '"></div>' +
           '<div class="terminer-footer" contenteditable="true" data-placeholder="Note de bas de page..." data-field="footer' + sfx + '"></div>' +
           '<div class="terminer-logo"></div>' +
+          '<div class="card-panel-icon">' + iconHTML() + '</div>' +
         '</div>' +
       '</div>' +
       '<div class="panel-watermark">' + iconHTML() + '</div>' +
@@ -637,6 +763,7 @@
           '<div class="bonusmalus-icon bonusmalus-icon-heart">' + heartSvg + '</div>' +
           '<div class="bonusmalus-label" contenteditable="true" data-field="bonusMalusLabelA" data-placeholder="TROP FORT"></div>' +
           '<div class="bonusmalus-body" contenteditable="true" data-placeholder="D\u00e9crivez le bonus ici..." data-field="body"></div>' +
+          '<div class="card-panel-icon">' + iconHTML() + '</div>' +
         '</div>' +
         '<div class="panel-watermark bonusmalus-watermark-light">' + heartSvg + '</div>' +
       '</div>';
@@ -647,6 +774,7 @@
           '<div class="bonusmalus-icon bonusmalus-icon-skull">' + skullSvg + '</div>' +
           '<div class="bonusmalus-label bonusmalus-label-dark" contenteditable="true" data-field="bonusMalusLabelB" data-placeholder="C\'EST NUL"></div>' +
           '<div class="bonusmalus-body bonusmalus-body-dark" contenteditable="true" data-placeholder="D\u00e9crivez le malus ici..." data-field="bodyB"></div>' +
+          '<div class="card-panel-icon card-panel-icon-dark">' + iconHTML() + '</div>' +
         '</div>' +
         '<div class="panel-watermark bonusmalus-watermark-dark">' + skullSvg + '</div>' +
       '</div>';
@@ -788,10 +916,18 @@
       var p2b = document.getElementById('card-preview');
       if (p2b) p2b.style.setProperty('--card-padding', padTop + 'px');
     }
-    if (d.innerBorderWidth != null) {
-      innerBorderWidth = d.innerBorderWidth;
+    if (d.bdrTop != null) {
+      bdrTop = d.bdrTop; bdrRight = d.bdrRight || 3; bdrBottom = d.bdrBottom || 3; bdrLeft = d.bdrLeft || 3;
       var p3 = document.getElementById('card-preview');
-      if (p3) p3.style.setProperty('--inner-border-width', innerBorderWidth + 'px');
+      if (p3) {
+        p3.style.setProperty('--bdr-top', bdrTop + 'px');
+        p3.style.setProperty('--bdr-right', bdrRight + 'px');
+        p3.style.setProperty('--bdr-bottom', bdrBottom + 'px');
+        p3.style.setProperty('--bdr-left', bdrLeft + 'px');
+        p3.style.setProperty('--inner-border-width', bdrTop + 'px ' + bdrRight + 'px ' + bdrBottom + 'px ' + bdrLeft + 'px');
+      }
+    } else if (d.innerBorderWidth != null) {
+      bdrTop = bdrRight = bdrBottom = bdrLeft = d.innerBorderWidth;
     }
 
     // Standard Q&A fields
@@ -860,7 +996,10 @@
         padRight: padRight,
         padBottom: padBottom,
         padLeft: padLeft,
-        innerBorderWidth: innerBorderWidth,
+        bdrTop: bdrTop,
+        bdrRight: bdrRight,
+        bdrBottom: bdrBottom,
+        bdrLeft: bdrLeft,
         // Standard
         subject: cardData.subject,
         questions: Object.assign({}, cardData.questions),
@@ -924,9 +1063,9 @@
     currentIconId = 'feuille';
     currentFontId = 'poppins';
     fontSizes = { subject: 22, question: 10, answer: 10, number: 28 };
-    cardGap = 10;
+    cardGap = 1;
     padTop = 14; padRight = 14; padBottom = 14; padLeft = 14;
-    innerBorderWidth = 3;
+    bdrTop = 3; bdrRight = 3; bdrBottom = 3; bdrLeft = 3;
     cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
     overlays = [];
     nextOverlayId = 1;
@@ -1032,11 +1171,20 @@
     }
   };
 
-  window.getInnerBorderWidth = function() { return innerBorderWidth; };
-  window.setInnerBorderWidth = function(val) {
-    innerBorderWidth = val;
+  window.getInnerBorderWidth = function() { return { top: bdrTop, right: bdrRight, bottom: bdrBottom, left: bdrLeft }; };
+  window.setInnerBorderWidth = function(side, val) {
+    if (side === 'top') bdrTop = val;
+    else if (side === 'right') bdrRight = val;
+    else if (side === 'bottom') bdrBottom = val;
+    else if (side === 'left') bdrLeft = val;
     var p = document.getElementById('card-preview');
-    if (p) p.style.setProperty('--inner-border-width', innerBorderWidth + 'px');
+    if (p) {
+      p.style.setProperty('--bdr-top', bdrTop + 'px');
+      p.style.setProperty('--bdr-right', bdrRight + 'px');
+      p.style.setProperty('--bdr-bottom', bdrBottom + 'px');
+      p.style.setProperty('--bdr-left', bdrLeft + 'px');
+      p.style.setProperty('--inner-border-width', bdrTop + 'px ' + bdrRight + 'px ' + bdrBottom + 'px ' + bdrLeft + 'px');
+    }
   };
 
   window.getFontSizes = function() {
@@ -1103,6 +1251,8 @@
     for (var k in t) {
       if (toggles.hasOwnProperty(k)) toggles[k] = t[k];
     }
+    var p = document.getElementById('card-preview');
+    if (p) applyToggles(p);
   };
 
   // ===== Custom images getters/setters =====

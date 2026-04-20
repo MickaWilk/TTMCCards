@@ -54,10 +54,11 @@
             <div class="toggle-grid" id="toggle-grid">
               <!-- Built dynamically by app.js -->
             </div>
+            <button class="btn btn-secondary" id="btn-toggle-all" style="width:100%;margin-top:6px;padding:6px 0;font-size:12px">Tout afficher / Tout masquer</button>
             <div class="size-control-row" style="margin-top:8px">
               <span class="size-control-label">Ecart</span>
-              <input type="range" class="size-control-range" id="gap-range" min="0" max="200" step="1" value="10">
-              <input type="number" class="size-control-num" id="gap-num" min="0" max="200" step="1" value="10">
+              <input type="range" class="size-control-range" id="gap-range" min="0" max="200" step="1" value="1">
+              <input type="number" class="size-control-num" id="gap-num" min="0" max="200" step="1" value="1">
             </div>
             <div class="size-control-row">
               <span class="size-control-label">Marge haut</span>
@@ -80,9 +81,24 @@
               <input type="number" class="size-control-num" id="pad-right-num" min="0" max="200" step="1" value="14">
             </div>
             <div class="size-control-row">
-              <span class="size-control-label">Bordure</span>
-              <input type="range" class="size-control-range" id="border-width-range" min="0" max="100" step="0.5" value="3">
-              <input type="number" class="size-control-num" id="border-width-num" min="0" max="100" step="0.5" value="3">
+              <span class="size-control-label">Bordure haut</span>
+              <input type="range" class="size-control-range" id="bdr-top-range" min="0" max="100" step="0.5" value="3">
+              <input type="number" class="size-control-num" id="bdr-top-num" min="0" max="100" step="0.5" value="3">
+            </div>
+            <div class="size-control-row">
+              <span class="size-control-label">Bordure bas</span>
+              <input type="range" class="size-control-range" id="bdr-bottom-range" min="0" max="100" step="0.5" value="3">
+              <input type="number" class="size-control-num" id="bdr-bottom-num" min="0" max="100" step="0.5" value="3">
+            </div>
+            <div class="size-control-row">
+              <span class="size-control-label">Bordure gauche</span>
+              <input type="range" class="size-control-range" id="bdr-left-range" min="0" max="100" step="0.5" value="3">
+              <input type="number" class="size-control-num" id="bdr-left-num" min="0" max="100" step="0.5" value="3">
+            </div>
+            <div class="size-control-row">
+              <span class="size-control-label">Bordure droite</span>
+              <input type="range" class="size-control-range" id="bdr-right-range" min="0" max="100" step="0.5" value="3">
+              <input type="number" class="size-control-num" id="bdr-right-num" min="0" max="100" step="0.5" value="3">
             </div>
           </div>
         </div>
@@ -186,10 +202,10 @@
             <div id="overlay-list" class="overlay-list">
               <div class="overlay-empty">Aucun calque</div>
             </div>
-            <label class="img-upload-btn" style="display:block;text-align:center;margin-top:6px">
-              Ajouter une image
-              <input type="file" id="overlay-add" accept="image/*" style="display:none">
-            </label>
+            <div class="overlay-drop" id="overlay-drop">
+              <input type="file" id="overlay-add" accept="image/*" multiple>
+              <p>Glisser une image ou cliquer</p>
+            </div>
           </div>
         </div>
 

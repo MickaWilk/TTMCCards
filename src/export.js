@@ -74,6 +74,10 @@
       if (!editables[e].innerText.trim()) editables[e].innerHTML = '&nbsp;';
     }
 
+    // Remove resize handles from export
+    var handles = clone.querySelectorAll('.overlay-handle');
+    for (var h = 0; h < handles.length; h++) handles[h].parentNode.removeChild(handles[h]);
+
     return clone;
   }
 

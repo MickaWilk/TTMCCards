@@ -475,6 +475,27 @@
     }
   }
 
+  // ===== 7a-bis. Toggle All/None =====
+  function setupToggleAll() {
+    var btn = document.getElementById('btn-toggle-all');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      var current = window.getToggles();
+      var keys = Object.keys(current);
+      var allOn = true;
+      for (var i = 0; i < keys.length; i++) {
+        if (!current[keys[i]]) { allOn = false; break; }
+      }
+      var newState = {};
+      for (var j = 0; j < keys.length; j++) {
+        newState[keys[j]] = !allOn;
+      }
+      window.setAllToggles(newState);
+      updateToggleGrid();
+      window.saveToLocalStorage();
+    });
+  }
+
   // ===== 7b. Gap Control =====
   function syncRangeNum(rangeId, numId, getter, setter) {
     var range = document.getElementById(rangeId);
@@ -541,13 +562,31 @@
     updateRangeNum('pad-right-range', 'pad-right-num', pad.right);
   }
 
-  // ===== 7d. Border Width Control =====
+  // ===== 7d. Border Width Control (4 directions) =====
   function setupBorderWidthControl() {
-    syncRangeNum('border-width-range', 'border-width-num', window.getInnerBorderWidth, function(v) { window.setInnerBorderWidth(v); });
+    var bdr = window.getInnerBorderWidth();
+    var sides = [
+      { side: 'top', range: 'bdr-top-range', num: 'bdr-top-num', val: bdr.top },
+      { side: 'bottom', range: 'bdr-bottom-range', num: 'bdr-bottom-num', val: bdr.bottom },
+      { side: 'left', range: 'bdr-left-range', num: 'bdr-left-num', val: bdr.left },
+      { side: 'right', range: 'bdr-right-range', num: 'bdr-right-num', val: bdr.right }
+    ];
+    for (var i = 0; i < sides.length; i++) {
+      (function(s) {
+        syncRangeNum(s.range, s.num,
+          function() { return window.getInnerBorderWidth()[s.side]; },
+          function(v) { window.setInnerBorderWidth(s.side, v); }
+        );
+      })(sides[i]);
+    }
   }
 
   function updateBorderWidthControl() {
-    updateRangeNum('border-width-range', 'border-width-num', window.getInnerBorderWidth());
+    var bdr = window.getInnerBorderWidth();
+    updateRangeNum('bdr-top-range', 'bdr-top-num', bdr.top);
+    updateRangeNum('bdr-bottom-range', 'bdr-bottom-num', bdr.bottom);
+    updateRangeNum('bdr-left-range', 'bdr-left-num', bdr.left);
+    updateRangeNum('bdr-right-range', 'bdr-right-num', bdr.right);
   }
 
   // ===== 8. Image Uploads =====
@@ -726,10 +765,37 @@
 
   function setupOverlays() {
     var addInput = document.getElementById('overlay-add');
+    var dropZone = document.getElementById('overlay-drop');
+
     if (addInput) {
       addInput.addEventListener('change', function(e) {
-        addOverlayFromFile(e.target.files[0]);
+        for (var i = 0; i < e.target.files.length; i++) {
+          addOverlayFromFile(e.target.files[i]);
+        }
         addInput.value = '';
+      });
+    }
+
+    if (dropZone) {
+      dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+        dropZone.classList.add('drop-active');
+      });
+      dropZone.addEventListener('dragleave', function(e) {
+        if (!dropZone.contains(e.relatedTarget)) {
+          dropZone.classList.remove('drop-active');
+        }
+      });
+      dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('drop-active');
+        var files = e.dataTransfer && e.dataTransfer.files;
+        if (!files || files.length === 0) return;
+        for (var i = 0; i < files.length; i++) {
+          addOverlayFromFile(files[i]);
+        }
+        window.showToast(files.length > 1 ? files.length + ' calques ajout\u00e9s' : 'Calque ajout\u00e9');
       });
     }
 
@@ -1302,6 +1368,7 @@
     setupGapControl();
     setupPaddingControl();
     setupBorderWidthControl();
+    setupToggleAll();
     setupBulkPaste();
     setupLogoUpload();
     setupImageUploads();
