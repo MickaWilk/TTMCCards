@@ -85,7 +85,10 @@
   };
 
   var cardGap = 10;
-  var cardPadding = 14;
+  var padTop = 14;
+  var padRight = 14;
+  var padBottom = 14;
+  var padLeft = 14;
   var innerBorderWidth = 3;
 
   var LS_KEY = 'ttmc-card-draft';
@@ -127,7 +130,11 @@
     if (font) window.applyFont(p, font.family);
     applyFontSizeProperties(p);
     p.style.setProperty('--card-gap', cardGap + 'px');
-    p.style.setProperty('--card-padding', cardPadding + 'px');
+    p.style.setProperty('--pad-top', padTop + 'px');
+    p.style.setProperty('--pad-right', padRight + 'px');
+    p.style.setProperty('--pad-bottom', padBottom + 'px');
+    p.style.setProperty('--pad-left', padLeft + 'px');
+    p.style.setProperty('--card-padding', padTop + 'px ' + padRight + 'px ' + padBottom + 'px ' + padLeft + 'px');
     p.style.setProperty('--inner-border-width', innerBorderWidth + 'px');
 
     // Remove old card type classes, add current
@@ -765,10 +772,21 @@
       var p = document.getElementById('card-preview');
       if (p) p.style.setProperty('--card-gap', cardGap + 'px');
     }
-    if (d.cardPadding != null) {
-      cardPadding = d.cardPadding;
+    if (d.padTop != null) {
+      padTop = d.padTop; padRight = d.padRight || 14; padBottom = d.padBottom || 14; padLeft = d.padLeft || 14;
       var p2 = document.getElementById('card-preview');
-      if (p2) p2.style.setProperty('--card-padding', cardPadding + 'px');
+      if (p2) {
+        p2.style.setProperty('--pad-top', padTop + 'px');
+        p2.style.setProperty('--pad-right', padRight + 'px');
+        p2.style.setProperty('--pad-bottom', padBottom + 'px');
+        p2.style.setProperty('--pad-left', padLeft + 'px');
+        p2.style.setProperty('--card-padding', padTop + 'px ' + padRight + 'px ' + padBottom + 'px ' + padLeft + 'px');
+      }
+    } else if (d.cardPadding != null) {
+      // Legacy: single padding value
+      padTop = padRight = padBottom = padLeft = d.cardPadding;
+      var p2b = document.getElementById('card-preview');
+      if (p2b) p2b.style.setProperty('--card-padding', padTop + 'px');
     }
     if (d.innerBorderWidth != null) {
       innerBorderWidth = d.innerBorderWidth;
@@ -838,7 +856,10 @@
         fontId: currentFontId,
         fontSizes: { subject: fontSizes.subject, question: fontSizes.question, answer: fontSizes.answer, number: fontSizes.number },
         cardGap: cardGap,
-        cardPadding: cardPadding,
+        padTop: padTop,
+        padRight: padRight,
+        padBottom: padBottom,
+        padLeft: padLeft,
         innerBorderWidth: innerBorderWidth,
         // Standard
         subject: cardData.subject,
@@ -904,7 +925,7 @@
     currentFontId = 'poppins';
     fontSizes = { subject: 22, question: 10, answer: 10, number: 28 };
     cardGap = 10;
-    cardPadding = 14;
+    padTop = 14; padRight = 14; padBottom = 14; padLeft = 14;
     innerBorderWidth = 3;
     cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
     overlays = [];
@@ -984,11 +1005,31 @@
     if (p) p.style.setProperty('--card-gap', cardGap + 'px');
   };
 
-  window.getCardPadding = function() { return cardPadding; };
-  window.setCardPadding = function(val) {
-    cardPadding = val;
+  window.getCardPadding = function() { return { top: padTop, right: padRight, bottom: padBottom, left: padLeft }; };
+  window.setCardPadding = function(side, val) {
+    if (side === 'top') padTop = val;
+    else if (side === 'right') padRight = val;
+    else if (side === 'bottom') padBottom = val;
+    else if (side === 'left') padLeft = val;
     var p = document.getElementById('card-preview');
-    if (p) p.style.setProperty('--card-padding', cardPadding + 'px');
+    if (p) {
+      p.style.setProperty('--pad-top', padTop + 'px');
+      p.style.setProperty('--pad-right', padRight + 'px');
+      p.style.setProperty('--pad-bottom', padBottom + 'px');
+      p.style.setProperty('--pad-left', padLeft + 'px');
+      p.style.setProperty('--card-padding', padTop + 'px ' + padRight + 'px ' + padBottom + 'px ' + padLeft + 'px');
+    }
+  };
+  window.setAllCardPadding = function(t, r, b, l) {
+    padTop = t; padRight = r; padBottom = b; padLeft = l;
+    var p = document.getElementById('card-preview');
+    if (p) {
+      p.style.setProperty('--pad-top', padTop + 'px');
+      p.style.setProperty('--pad-right', padRight + 'px');
+      p.style.setProperty('--pad-bottom', padBottom + 'px');
+      p.style.setProperty('--pad-left', padLeft + 'px');
+      p.style.setProperty('--card-padding', padTop + 'px ' + padRight + 'px ' + padBottom + 'px ' + padLeft + 'px');
+    }
   };
 
   window.getInnerBorderWidth = function() { return innerBorderWidth; };

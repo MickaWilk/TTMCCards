@@ -264,19 +264,29 @@
         range.value = sizes[ctrl.key] || ctrl.default;
         range.setAttribute('data-size-key', ctrl.key);
 
-        var val = document.createElement('span');
-        val.className = 'size-control-val';
-        val.textContent = range.value + 'px';
+        var num = document.createElement('input');
+        num.type = 'number';
+        num.className = 'size-control-num';
+        num.min = ctrl.min;
+        num.max = ctrl.max;
+        num.step = ctrl.step;
+        num.value = range.value;
+        num.setAttribute('data-size-key', ctrl.key);
 
         range.addEventListener('input', function() {
-          val.textContent = parseFloat(range.value) + 'px';
+          num.value = range.value;
           window.setFontSize(ctrl.key, parseFloat(range.value));
+          window.saveToLocalStorage();
+        });
+        num.addEventListener('input', function() {
+          range.value = num.value;
+          window.setFontSize(ctrl.key, parseFloat(num.value));
           window.saveToLocalStorage();
         });
 
         row.appendChild(label);
         row.appendChild(range);
-        row.appendChild(val);
+        row.appendChild(num);
         container.appendChild(row);
       })(controls[i]);
     }
@@ -284,13 +294,13 @@
 
   function updateFontSizeControls() {
     var sizes = window.getFontSizes();
-    var ranges = document.querySelectorAll('.size-control-range');
+    var ranges = document.querySelectorAll('.size-control-range[data-size-key]');
     for (var i = 0; i < ranges.length; i++) {
       var key = ranges[i].getAttribute('data-size-key');
       if (key && sizes[key] != null) {
         ranges[i].value = sizes[key];
-        var val = ranges[i].parentElement.querySelector('.size-control-val');
-        if (val) val.textContent = sizes[key] + 'px';
+        var num = ranges[i].parentElement.querySelector('.size-control-num[data-size-key="' + key + '"]');
+        if (num) num.value = sizes[key];
       }
     }
   }
@@ -466,78 +476,78 @@
   }
 
   // ===== 7b. Gap Control =====
-  function setupGapControl() {
-    var range = document.getElementById('gap-range');
-    var val = document.getElementById('gap-val');
+  function syncRangeNum(rangeId, numId, getter, setter) {
+    var range = document.getElementById(rangeId);
+    var num = document.getElementById(numId);
     if (!range) return;
 
-    range.value = window.getCardGap();
-    if (val) val.textContent = range.value + 'px';
+    var v = getter();
+    range.value = v;
+    if (num) num.value = v;
 
     range.addEventListener('input', function() {
-      if (val) val.textContent = range.value + 'px';
-      window.setCardGap(parseInt(range.value));
+      if (num) num.value = range.value;
+      setter(parseFloat(range.value));
       window.saveToLocalStorage();
     });
+    if (num) {
+      num.addEventListener('input', function() {
+        range.value = num.value;
+        setter(parseFloat(num.value));
+        window.saveToLocalStorage();
+      });
+    }
+  }
+
+  function updateRangeNum(rangeId, numId, val) {
+    var range = document.getElementById(rangeId);
+    var num = document.getElementById(numId);
+    if (range) range.value = val;
+    if (num) num.value = val;
+  }
+
+  function setupGapControl() {
+    syncRangeNum('gap-range', 'gap-num', window.getCardGap, function(v) { window.setCardGap(v); });
   }
 
   function updateGapControl() {
-    var range = document.getElementById('gap-range');
-    var val = document.getElementById('gap-val');
-    if (!range) return;
-    var g = window.getCardGap();
-    range.value = g;
-    if (val) val.textContent = g + 'px';
+    updateRangeNum('gap-range', 'gap-num', window.getCardGap());
   }
 
-  // ===== 7c. Padding Control =====
+  // ===== 7c. Padding Control (4 sides) =====
   function setupPaddingControl() {
-    var range = document.getElementById('padding-range');
-    var val = document.getElementById('padding-val');
-    if (!range) return;
-
-    range.value = window.getCardPadding();
-    if (val) val.textContent = range.value + 'px';
-
-    range.addEventListener('input', function() {
-      if (val) val.textContent = range.value + 'px';
-      window.setCardPadding(parseInt(range.value));
-      window.saveToLocalStorage();
-    });
+    var pad = window.getCardPadding();
+    var sides = [
+      { side: 'top', range: 'pad-top-range', num: 'pad-top-num', val: pad.top },
+      { side: 'bottom', range: 'pad-bottom-range', num: 'pad-bottom-num', val: pad.bottom },
+      { side: 'left', range: 'pad-left-range', num: 'pad-left-num', val: pad.left },
+      { side: 'right', range: 'pad-right-range', num: 'pad-right-num', val: pad.right }
+    ];
+    for (var i = 0; i < sides.length; i++) {
+      (function(s) {
+        syncRangeNum(s.range, s.num,
+          function() { return window.getCardPadding()[s.side]; },
+          function(v) { window.setCardPadding(s.side, v); }
+        );
+      })(sides[i]);
+    }
   }
 
   function updatePaddingControl() {
-    var range = document.getElementById('padding-range');
-    var val = document.getElementById('padding-val');
-    if (!range) return;
-    var p = window.getCardPadding();
-    range.value = p;
-    if (val) val.textContent = p + 'px';
+    var pad = window.getCardPadding();
+    updateRangeNum('pad-top-range', 'pad-top-num', pad.top);
+    updateRangeNum('pad-bottom-range', 'pad-bottom-num', pad.bottom);
+    updateRangeNum('pad-left-range', 'pad-left-num', pad.left);
+    updateRangeNum('pad-right-range', 'pad-right-num', pad.right);
   }
 
   // ===== 7d. Border Width Control =====
   function setupBorderWidthControl() {
-    var range = document.getElementById('border-width-range');
-    var val = document.getElementById('border-width-val');
-    if (!range) return;
-
-    range.value = window.getInnerBorderWidth();
-    if (val) val.textContent = range.value + 'px';
-
-    range.addEventListener('input', function() {
-      if (val) val.textContent = parseFloat(range.value) + 'px';
-      window.setInnerBorderWidth(parseFloat(range.value));
-      window.saveToLocalStorage();
-    });
+    syncRangeNum('border-width-range', 'border-width-num', window.getInnerBorderWidth, function(v) { window.setInnerBorderWidth(v); });
   }
 
   function updateBorderWidthControl() {
-    var range = document.getElementById('border-width-range');
-    var val = document.getElementById('border-width-val');
-    if (!range) return;
-    var b = window.getInnerBorderWidth();
-    range.value = b;
-    if (val) val.textContent = b + 'px';
+    updateRangeNum('border-width-range', 'border-width-num', window.getInnerBorderWidth());
   }
 
   // ===== 8. Image Uploads =====
@@ -942,8 +952,7 @@
   }
 
   // ===== 11. Sections — drag reorder =====
-  function setupSections() {
-    var container = document.querySelector('.sidebar-sections');
+  function setupSectionsDrag(container) {
     if (!container) return;
     var sections = container.querySelectorAll('.sidebar-section');
     var draggedSection = null;
@@ -953,14 +962,12 @@
         var header = section.querySelector('.section-header');
         if (!header) return;
 
-        // Insert drag handle
         var handle = document.createElement('span');
         handle.className = 'section-drag-handle';
         handle.textContent = '\u2630';
         handle.title = 'Glisser pour r\u00e9ordonner';
         header.insertBefore(handle, header.firstChild);
 
-        // Only allow drag from handle
         handle.addEventListener('mousedown', function() {
           section.setAttribute('draggable', 'true');
         });
@@ -1005,6 +1012,11 @@
         });
       })(sections[i]);
     }
+  }
+
+  function setupSections() {
+    setupSectionsDrag(document.getElementById('sections-left'));
+    setupSectionsDrag(document.getElementById('sections-right'));
   }
 
   // ===== 8. Sample Cards Modal =====
@@ -1219,37 +1231,60 @@
 
   // ===== Mobile Sidebar Toggle =====
   function setupMobileSidebar() {
-    var toggleBtn = document.getElementById('sidebar-toggle');
-    var sidebar   = document.getElementById('sidebar');
-    var backdrop  = document.getElementById('sidebar-backdrop');
-    if (!toggleBtn || !sidebar || !backdrop) return;
+    var toggleLeft  = document.getElementById('sidebar-toggle');
+    var toggleRight = document.getElementById('sidebar-toggle-right');
+    var sidebarL    = document.getElementById('sidebar');
+    var sidebarR    = document.getElementById('sidebar-right');
+    var backdrop    = document.getElementById('sidebar-backdrop');
+    if (!backdrop) return;
 
     var iconHamburger = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/></svg>';
     var iconClose     = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/></svg>';
+    var iconCustom    = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/></svg>';
 
-    function openSidebar() {
-      sidebar.classList.add('open');
-      backdrop.classList.add('visible');
-      toggleBtn.innerHTML = iconClose;
-      toggleBtn.setAttribute('aria-label', 'Fermer');
-    }
-    function closeSidebar() {
-      sidebar.classList.remove('open');
+    function closeAll() {
+      if (sidebarL) sidebarL.classList.remove('open');
+      if (sidebarR) sidebarR.classList.remove('open');
       backdrop.classList.remove('visible');
-      toggleBtn.innerHTML = iconHamburger;
-      toggleBtn.setAttribute('aria-label', 'Menu');
+      if (toggleLeft) { toggleLeft.innerHTML = iconHamburger; toggleLeft.setAttribute('aria-label', 'Design'); }
+      if (toggleRight) { toggleRight.innerHTML = iconCustom; toggleRight.setAttribute('aria-label', 'Personnalisation'); }
     }
 
-    toggleBtn.addEventListener('click', function() {
-      sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
-    });
-    backdrop.addEventListener('click', closeSidebar);
+    if (toggleLeft && sidebarL) {
+      toggleLeft.addEventListener('click', function() {
+        if (sidebarL.classList.contains('open')) {
+          closeAll();
+        } else {
+          if (sidebarR) sidebarR.classList.remove('open');
+          sidebarL.classList.add('open');
+          backdrop.classList.add('visible');
+          toggleLeft.innerHTML = iconClose;
+          if (toggleRight) toggleRight.innerHTML = iconCustom;
+        }
+      });
+    }
+
+    if (toggleRight && sidebarR) {
+      toggleRight.addEventListener('click', function() {
+        if (sidebarR.classList.contains('open')) {
+          closeAll();
+        } else {
+          if (sidebarL) sidebarL.classList.remove('open');
+          sidebarR.classList.add('open');
+          backdrop.classList.add('visible');
+          toggleRight.innerHTML = iconClose;
+          if (toggleLeft) toggleLeft.innerHTML = iconHamburger;
+        }
+      });
+    }
+
+    backdrop.addEventListener('click', closeAll);
 
     // Close sidebar when an action button is clicked (export/reset) on mobile
     var actionBtns = document.querySelectorAll('#btn-export, #btn-export-both, #btn-sample, #btn-reset');
     for (var i = 0; i < actionBtns.length; i++) {
       actionBtns[i].addEventListener('click', function() {
-        if (window.innerWidth <= 768) closeSidebar();
+        if (window.innerWidth <= 768) closeAll();
       });
     }
   }

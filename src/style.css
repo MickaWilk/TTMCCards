@@ -13,9 +13,11 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 /* ===== Sidebar ===== */
 .sidebar {
   width:var(--sidebar-width); background:var(--sidebar-bg); padding:24px 20px;
-  display:flex; flex-direction:column; border-right:1px solid rgba(255,255,255,.06);
+  display:flex; flex-direction:column;
   overflow-y:auto; flex-shrink:0;
 }
+.sidebar-left { border-right:1px solid rgba(255,255,255,.06); }
+.sidebar-right { border-left:1px solid rgba(255,255,255,.06); }
 .sidebar-title { font-size:24px; font-weight:800; letter-spacing:2px; line-height:1.1; }
 .sidebar-title span { font-weight:400; font-size:15px; color:rgba(255,255,255,.5); }
 .sidebar-sub { font-size:11px; color:rgba(255,255,255,.6); margin:2px 0 16px; }
@@ -160,6 +162,15 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   font-size:10px; color:rgba(255,255,255,.4); min-width:28px; text-align:right;
   font-variant-numeric:tabular-nums;
 }
+.size-control-num {
+  width:48px; padding:2px 4px; text-align:center;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.15);
+  border-radius:4px; color:#ddd; font-size:10px; font-family:'Poppins',sans-serif;
+  outline:none; -moz-appearance:textfield; flex-shrink:0;
+}
+.size-control-num::-webkit-inner-spin-button,
+.size-control-num::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
+.size-control-num:focus { border-color:rgba(102,126,234,.5); }
 
 /* ===== Bulk Paste Textareas ===== */
 .bulk-paste-group { display:flex; flex-direction:column; gap:8px; }
@@ -986,7 +997,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
    ============================================= */
 .sidebar-toggle-btn {
   display:none;
-  position:fixed; top:12px; left:12px; z-index:1500;
+  position:fixed; top:12px; z-index:1500;
   width:44px; height:44px; border-radius:10px;
   background:#1a1a2e; border:1px solid rgba(255,255,255,.15);
   color:#fff; cursor:pointer;
@@ -994,6 +1005,8 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   box-shadow:0 4px 16px rgba(0,0,0,.4);
   transition:background .2s;
 }
+.sidebar-toggle-left { left:12px; }
+.sidebar-toggle-right { right:12px; }
 .sidebar-toggle-btn:hover { background:#16213e; }
 
 .sidebar-backdrop {
@@ -1013,15 +1026,21 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 
   .app { flex-direction:column; height:auto; min-height:100svh; }
 
-  /* Sidebar becomes a fixed left drawer */
+  /* Both sidebars become fixed drawers on mobile */
   .sidebar {
-    position:fixed; top:0; left:0;
+    position:fixed; top:0;
     height:100%; width:min(300px, 88vw);
     z-index:1000;
-    transform:translateX(-100%);
     transition:transform .28s cubic-bezier(.4,0,.2,1);
     box-shadow:6px 0 32px rgba(0,0,0,.55);
     padding-top:60px;
+  }
+  .sidebar-left {
+    left:0; transform:translateX(-100%);
+  }
+  .sidebar-right {
+    right:0; left:auto; transform:translateX(100%);
+    box-shadow:-6px 0 32px rgba(0,0,0,.55);
   }
   .sidebar.open { transform:translateX(0); }
 

@@ -10,23 +10,28 @@
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
-  <!-- Mobile sidebar toggle -->
-  <button class="sidebar-toggle-btn" id="sidebar-toggle" aria-label="Menu">
+  <!-- Mobile sidebar toggles -->
+  <button class="sidebar-toggle-btn sidebar-toggle-left" id="sidebar-toggle" aria-label="Design">
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
       <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+    </svg>
+  </button>
+  <button class="sidebar-toggle-btn sidebar-toggle-right" id="sidebar-toggle-right" aria-label="Personnalisation">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/>
     </svg>
   </button>
   <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
 
   <div class="app">
-    <!-- ===== Sidebar ===== -->
-    <aside class="sidebar" id="sidebar">
+    <!-- ===== Sidebar Gauche — Design ===== -->
+    <aside class="sidebar sidebar-left" id="sidebar">
       <h1 class="sidebar-title">TTMC<br><span>Cards</span></h1>
       <p class="sidebar-sub">Generateur de cartes personnalisees</p>
 
-      <div class="sidebar-sections">
+      <div class="sidebar-sections" id="sections-left">
 
-        <!-- Type de carte — toujours ouvert -->
+        <!-- Type de carte -->
         <div class="sidebar-section">
           <div class="section-header">Type de carte</div>
           <div class="section-body">
@@ -34,7 +39,7 @@
           </div>
         </div>
 
-        <!-- Couleur — toujours ouvert -->
+        <!-- Couleur -->
         <div class="sidebar-section">
           <div class="section-header">Couleur</div>
           <div class="section-body">
@@ -42,7 +47,7 @@
           </div>
         </div>
 
-        <!-- Affichage (toggles) — toujours ouvert -->
+        <!-- Affichage (toggles) -->
         <div class="sidebar-section">
           <div class="section-header">Affichage</div>
           <div class="section-body">
@@ -52,20 +57,79 @@
             <div class="size-control-row" style="margin-top:8px">
               <span class="size-control-label">Ecart</span>
               <input type="range" class="size-control-range" id="gap-range" min="0" max="200" step="1" value="10">
-              <span class="size-control-val" id="gap-val">10px</span>
+              <input type="number" class="size-control-num" id="gap-num" min="0" max="200" step="1" value="10">
             </div>
             <div class="size-control-row">
-              <span class="size-control-label">Marge</span>
-              <input type="range" class="size-control-range" id="padding-range" min="0" max="100" step="1" value="14">
-              <span class="size-control-val" id="padding-val">14px</span>
+              <span class="size-control-label">Marge haut</span>
+              <input type="range" class="size-control-range" id="pad-top-range" min="0" max="200" step="1" value="14">
+              <input type="number" class="size-control-num" id="pad-top-num" min="0" max="200" step="1" value="14">
+            </div>
+            <div class="size-control-row">
+              <span class="size-control-label">Marge bas</span>
+              <input type="range" class="size-control-range" id="pad-bottom-range" min="0" max="200" step="1" value="14">
+              <input type="number" class="size-control-num" id="pad-bottom-num" min="0" max="200" step="1" value="14">
+            </div>
+            <div class="size-control-row">
+              <span class="size-control-label">Marge gauche</span>
+              <input type="range" class="size-control-range" id="pad-left-range" min="0" max="200" step="1" value="14">
+              <input type="number" class="size-control-num" id="pad-left-num" min="0" max="200" step="1" value="14">
+            </div>
+            <div class="size-control-row">
+              <span class="size-control-label">Marge droite</span>
+              <input type="range" class="size-control-range" id="pad-right-range" min="0" max="200" step="1" value="14">
+              <input type="number" class="size-control-num" id="pad-right-num" min="0" max="200" step="1" value="14">
             </div>
             <div class="size-control-row">
               <span class="size-control-label">Bordure</span>
               <input type="range" class="size-control-range" id="border-width-range" min="0" max="100" step="0.5" value="3">
-              <span class="size-control-val" id="border-width-val">3px</span>
+              <input type="number" class="size-control-num" id="border-width-num" min="0" max="100" step="0.5" value="3">
             </div>
           </div>
         </div>
+
+        <!-- Typographie -->
+        <div class="sidebar-section">
+          <div class="section-header">Typographie</div>
+          <div class="section-body">
+            <div class="controls-row">
+              <div id="font-select-wrap"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Taille du texte -->
+        <div class="sidebar-section">
+          <div class="section-header">Taille du texte</div>
+          <div class="section-body">
+            <div class="size-control" id="font-size-controls"></div>
+          </div>
+        </div>
+
+        <!-- Icone -->
+        <div class="sidebar-section">
+          <div class="section-header">Icone</div>
+          <div class="section-body">
+            <div id="icon-picker"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sidebar-footer">
+        <p>Texte editable directement sur la carte</p>
+      </div>
+    </aside>
+
+    <!-- ===== Main ===== -->
+    <main class="main">
+      <div id="card-wrapper">
+        <div id="card-preview" class="ttmc-card"></div>
+      </div>
+    </main>
+
+    <!-- ===== Sidebar Droite — Personnalisation & Export ===== -->
+    <aside class="sidebar sidebar-right" id="sidebar-right">
+      <div class="sidebar-sections" id="sections-right">
 
         <!-- Coller du texte -->
         <div class="sidebar-section">
@@ -129,32 +193,6 @@
           </div>
         </div>
 
-        <!-- Typographie -->
-        <div class="sidebar-section">
-          <div class="section-header">Typographie</div>
-          <div class="section-body">
-            <div class="controls-row">
-              <div id="font-select-wrap"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Taille du texte -->
-        <div class="sidebar-section">
-          <div class="section-header">Taille du texte</div>
-          <div class="section-body">
-            <div class="size-control" id="font-size-controls"></div>
-          </div>
-        </div>
-
-        <!-- Icone -->
-        <div class="sidebar-section">
-          <div class="section-header">Icone</div>
-          <div class="section-body">
-            <div id="icon-picker"></div>
-          </div>
-        </div>
-
         <!-- Logo personnalise -->
         <div class="sidebar-section">
           <div class="section-header">Logo personnalise</div>
@@ -186,6 +224,7 @@
             </div>
           </div>
         </div>
+
       </div>
 
       <!-- Boutons d'action -->
@@ -195,22 +234,7 @@
         <button id="btn-sample" class="btn btn-secondary">Charger un exemple</button>
         <button id="btn-reset" class="btn btn-secondary">Reinitialiser</button>
       </div>
-
-      <div class="sidebar-footer">
-        <p>Texte editable directement sur la carte</p>
-      </div>
     </aside>
-
-    <!-- Hamburger toggle (mobile) -->
-    <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Menu">&#9776;</button>
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-    <!-- ===== Main ===== -->
-    <main class="main">
-      <div id="card-wrapper">
-        <div id="card-preview" class="ttmc-card"></div>
-      </div>
-    </main>
   </div>
 
   <!-- Toast -->

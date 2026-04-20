@@ -40,7 +40,8 @@
   var CSS_PROPS = [
     '--header-bg','--header-text','--border','--num-color','--card-bg',
     '--icon-bg-alpha','--subject-size','--question-size','--answer-size',
-    '--num-size','--answer-num-size','--card-gap','--card-padding','--inner-border-width'
+    '--num-size','--answer-num-size','--card-gap','--card-padding',
+    '--pad-top','--pad-right','--pad-bottom','--pad-left','--inner-border-width'
   ];
 
   // ===== Clone la carte pour l'export =====
@@ -62,6 +63,10 @@
 
     // Force zero padding on export
     clone.style.setProperty('--card-padding', '0px');
+    clone.style.setProperty('--pad-top', '0px');
+    clone.style.setProperty('--pad-right', '0px');
+    clone.style.setProperty('--pad-bottom', '0px');
+    clone.style.setProperty('--pad-left', '0px');
 
     var editables = clone.querySelectorAll('[contenteditable]');
     for (var e = 0; e < editables.length; e++) {
