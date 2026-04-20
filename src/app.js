@@ -1113,10 +1113,31 @@
         handle.title = 'Glisser pour r\u00e9ordonner';
         header.insertBefore(handle, header.firstChild);
 
+        // Collapse toggle on header click (skip if drag handle was clicked)
+        var isDragging = false;
         handle.addEventListener('mousedown', function() {
+          isDragging = true;
           section.setAttribute('draggable', 'true');
         });
+        header.addEventListener('click', function() {
+          if (isDragging) { isDragging = false; return; }
+          var body = section.querySelector('.section-body');
+          if (!body) return;
+          if (section.classList.contains('collapsed')) {
+            // Expand: set max-height to scrollHeight for smooth animation
+            section.classList.remove('collapsed');
+            body.style.maxHeight = body.scrollHeight + 'px';
+            setTimeout(function() { body.style.maxHeight = ''; }, 260);
+          } else {
+            // Collapse: set explicit max-height first, then collapse
+            body.style.maxHeight = body.scrollHeight + 'px';
+            // Force reflow
+            body.offsetHeight;
+            section.classList.add('collapsed');
+          }
+        });
         section.addEventListener('dragend', function() {
+          isDragging = false;
           section.removeAttribute('draggable');
           section.classList.remove('dragging');
           draggedSection = null;
