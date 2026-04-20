@@ -130,103 +130,100 @@
     });
   }
 
-  async function runBatch() {
-    batchCancelled = false;
-    var total = batchCards.length;
-    if (total === 0) return;
+async function runBatch() {
+batchCancelled = false;
+var total = batchCards.length;
+if (total === 0) return;
+var btnGenerate = document.getElementById('btn-batch-generate');
+var btnCancel = document.getElementById('btn-batch-cancel');
+var progressWrap = document.getElementById('batch-progress-wrap');
+var progressFill = document.getElementById('batch-progress-fill');
+var progressText = document.getElementById('batch-progress-text');
 
-    var btnGenerate = document.getElementById('btn-batch-generate');
-    var btnCancel = document.getElementById('btn-batch-cancel');
-    var progressWrap = document.getElementById('batch-progress-wrap');
-    var progressFill = document.getElementById('batch-progress-fill');
-    var progressText = document.getElementById('batch-progress-text');
+if (btnGenerate) btnGenerate.disabled = true;
+if (btnCancel) btnCancel.style.display = '';
+if (progressWrap) progressWrap.style.display = '';
+if (progressFill) progressFill.style.width = '0%';
 
-    if (btnGenerate) btnGenerate.disabled = true;
-    if (btnCancel) btnCancel.style.display = '';
-    if (progressWrap) progressWrap.style.display = '';
-    if (progressFill) progressFill.style.width = '0%';
+var mode = getMode();
+var dims = getExportDimensions();
 
-    var mode = getMode();
-    var dims = getExportDimensions();
+for (var i = 0; i < total; i++) {
+  if (batchCancelled) break;
 
-    for (var i = 0; i < total; i++) {
-      if (batchCancelled) break;
+  var card = batchCards[i];
+  var label = card.sujet || card.title || card.subtitle || 'carte';
 
-      var card = batchCards[i];
-      var label = card.sujet || card.title || card.subtitle || 'carte';
+  if (progressText) progressText.textContent = 'Carte ' + (i + 1) + '/' + total + ' \u2014 ' + label;
+  if (progressFill) progressFill.style.width = ((i / total) * 100) + '%';
 
-      if (progressText) progressText.textContent = 'Carte ' + (i + 1) + '/' + total + ' \u2014 ' + label;
-      if (progressFill) progressFill.style.width = ((i / total) * 100) + '%';
-
-      // Charger la carte, appliquer les réglages print, attendre le rendu DOM
-      window.loadSampleCard(card);
-      window.setCardGap(1);
-      window.setToggle('separator', false);
-      window.setInnerBorderWidth('top', 3);
-      window.setInnerBorderWidth('right', 3);
-      window.setInnerBorderWidth('bottom', 3);
-      window.setInnerBorderWidth('left', 3);
-      await sleep(600); 
-      await new Promise(resolve => {
-  const check = () => {
-    const el = document.querySelector('.panel-subject [contenteditable]');
-    if (el && el.innerText.trim()) resolve();
-    else setTimeout(check, 50);
-  };
-  check();
-});
-var p = document.getElementById('card-preview');
-if (p && card.sujet) {
-    var subjEl = p.querySelector('.panel-subject [contenteditable]');
-    if (subjEl) {
+  // Charger la carte, appliquer les réglages print
+  window.loadSampleCard(card);
+  window.setCardGap(1);
+  window.setToggle('separator', false);
+  window.setInnerBorderWidth('top', 3);
+  window.setInnerBorderWidth('right', 3);
+  window.setInnerBorderWidth('bottom', 3);
+  window.setInnerBorderWidth('left', 3);
+  
+  // Attendre que le DOM soit rendu + polices chargées
+  await sleep(600);
+  
+  // Forcer l'écriture du sujet dans le DOM (au cas où)
+  if (card.sujet && currentCardType === 'standard') {
+    var p = document.getElementById('card-preview');
+    if (p) {
+      var subjEl = p.querySelector('.panel-subject [contenteditable]');
+      if (subjEl && !subjEl.innerText.trim()) {
         subjEl.innerText = card.sujet;
-        await sleep(100)
-    }
-}
-
-      if (batchCancelled) break;
-
-      var slug = window.slugify(label);
-      var cardType = card.cardType || 'standard';
-      var themeId = card.themeId || '';
-      var prefix = pad2(i + 1);
-
-      if (mode === 'full') {
-        var dataURL = await captureAsync('full', dims.w, dims.h);
-        if (dataURL) {
-          var filename = 'ttmc-' + prefix + '-' + cardType + '-' + themeId + '-' + slug + '.png';
-          downloadDataURL(dataURL, filename);
-        }
-        await sleep(200);
-      } else {
-        // split : recto puis verso
-        var rectoURL = await captureAsync('recto', dims.w, dims.h);
-        if (rectoURL) {
-          var rectoName = 'ttmc-' + prefix + '-' + cardType + '-recto-' + slug + '.png';
-          downloadDataURL(rectoURL, rectoName);
-        }
-        await sleep(300);
-
-        if (batchCancelled) break;
-
-        var versoURL = await captureAsync('verso', dims.w, dims.h);
-        if (versoURL) {
-          var versoName = 'ttmc-' + prefix + '-' + cardType + '-verso-' + slug + '.png';
-          downloadDataURL(versoURL, versoName);
-        }
-        await sleep(200);
+        await sleep(100); // Laisser le temps au rendu
       }
     }
-
-    var exported = batchCancelled ? i : total;
-    if (progressFill) progressFill.style.width = '100%';
-    if (progressText) progressText.textContent = batchCancelled
-      ? 'Annul\u00e9 \u2014 ' + exported + ' carte' + (exported > 1 ? 's' : '') + ' export\u00e9e' + (exported > 1 ? 's' : '')
-      : 'Termin\u00e9 ! ' + total + ' carte' + (total > 1 ? 's' : '') + ' export\u00e9e' + (total > 1 ? 's' : '');
-
-    if (btnGenerate) btnGenerate.disabled = false;
-    if (btnCancel) btnCancel.style.display = 'none';
   }
+  
+  if (batchCancelled) break;
+
+  var slug = window.slugify(label);
+  var cardType = card.cardType || 'standard';
+  var themeId = card.themeId || '';
+  var prefix = pad2(i + 1);
+
+  if (mode === 'full') {
+    var dataURL = await captureAsync('full', dims.w, dims.h);
+    if (dataURL) {
+      var filename = 'ttmc-' + prefix + '-' + cardType + '-' + themeId + '-' + slug + '.png';
+      downloadDataURL(dataURL, filename);
+    }
+    await sleep(200);
+  } else {
+    // split : recto puis verso
+    var rectoURL = await captureAsync('recto', dims.w, dims.h);
+    if (rectoURL) {
+      var rectoName = 'ttmc-' + prefix + '-' + cardType + '-recto-' + slug + '.png';
+      downloadDataURL(rectoURL, rectoName);
+    }
+    await sleep(300);
+
+    if (batchCancelled) break;
+
+    var versoURL = await captureAsync('verso', dims.w, dims.h);
+    if (versoURL) {
+      var versoName = 'ttmc-' + prefix + '-' + cardType + '-verso-' + slug + '.png';
+      downloadDataURL(versoURL, versoName);
+    }
+    await sleep(200);
+  }
+}
+
+var exported = batchCancelled ? i : total;
+if (progressFill) progressFill.style.width = '100%';
+if (progressText) progressText.textContent = batchCancelled
+  ? 'Annul\u00e9 \u2014 ' + exported + ' carte' + (exported > 1 ? 's' : '') + ' export\u00e9e' + (exported > 1 ? 's' : '')
+  : 'Termin\u00e9 ! ' + total + ' carte' + (total > 1 ? 's' : '') + ' export\u00e9e' + (total > 1 ? 's' : '');
+
+if (btnGenerate) btnGenerate.disabled = false;
+if (btnCancel) btnCancel.style.display = 'none';
+}
 
   // ===== Setup UI =====
   window.setupBatch = function() {

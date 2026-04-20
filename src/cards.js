@@ -1107,110 +1107,108 @@ if (!skipSaveToMemory) saveToMemory();
   };
 
   // ===== Load sample =====
-  window.loadSampleCard = function(card) {
-    if (!card) return;
-    currentCardType = card.cardType || 'standard';
-    currentThemeId = card.themeId || 'green';
-    var theme = window.getThemeById(currentThemeId);
-    currentIconId = theme.defaultIcon || 'feuille';
-    currentFontId = 'poppins';
-    window.customLogoDataURL = null;
+window.loadSampleCard = function(card) {
+if (!card) return;
+currentCardType = card.cardType || 'standard';
+currentThemeId = card.themeId || 'green';
+var theme = window.getThemeById(currentThemeId);
+currentIconId = theme.defaultIcon || 'feuille';
+currentFontId = 'poppins';
+window.customLogoDataURL = null;
+cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
 
-    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
-
-    // Standard Q&A
+// Standard Q&A
 if (card.sujet) cardData.subject = card.sujet;
 else if (card.subject) cardData.subject = card.subject;
-    if (card.questions) {
-      for (var k in card.questions) cardData.questions[k] = card.questions[k];
-    }
-    if (card.answers) {
-      for (var k2 in card.answers) cardData.answers[k2] = card.answers[k2];
-    }
+if (card.questions) {
+for (var k in card.questions) cardData.questions[k] = card.questions[k];
+}
+if (card.answers) {
+for (var k2 in card.answers) cardData.answers[k2] = card.answers[k2];
+}
+// Challenge fields — Face A
+if (card.title) cardData.title = card.title;
+if (card.body) cardData.body = card.body;
+if (card.footer) card.footer = card.footer;
+if (card.subtitle) cardData.subtitle = card.subtitle;
+if (card.challengeAnswer) cardData.challengeAnswer = card.challengeAnswer;
+// Challenge fields — Face B
+if (card.titleB) cardData.titleB = card.titleB;
+if (card.bodyB) cardData.bodyB = card.bodyB;
+if (card.footerB) cardData.footerB = card.footerB;
+if (card.subtitleB) cardData.subtitleB = card.subtitleB;
+if (card.challengeAnswerB) cardData.challengeAnswerB = card.challengeAnswerB;
+// Debuter headers
+if (card.debuterHeader) cardData.debuterHeader = card.debuterHeader;
+if (card.debuterLabel) cardData.debuterLabel = card.debuterLabel;
+if (card.debuterHeaderB) cardData.debuterHeaderB = card.debuterHeaderB;
+if (card.debuterLabelB) cardData.debuterLabelB = card.debuterLabelB;
+// Gagner headers
+if (card.gagnerHeader) cardData.gagnerHeader = card.gagnerHeader;
+if (card.gagnerHeaderB) cardData.gagnerHeaderB = card.gagnerHeaderB;
+if (card.answerLabel) cardData.answerLabel = card.answerLabel;
+if (card.answerLabelB) cardData.answerLabelB = card.answerLabelB;
+// Intrepide headers
+if (card.intrepideHeaderL) cardData.intrepideHeaderL = card.intrepideHeaderL;
+if (card.intrepideHeaderR) cardData.intrepideHeaderR = card.intrepideHeaderR;
+if (card.intrepideSub) cardData.intrepideSub = card.intrepideSub;
+// Intrepide
+if (card.responses) cardData.responses = card.responses;
 
-    // Challenge fields — Face A
-    if (card.title) cardData.title = card.title;
-    if (card.body) cardData.body = card.body;
-    if (card.footer) cardData.footer = card.footer;
-    if (card.subtitle) cardData.subtitle = card.subtitle;
-    if (card.challengeAnswer) cardData.challengeAnswer = card.challengeAnswer;
-    // Challenge fields — Face B
-    if (card.titleB) cardData.titleB = card.titleB;
-    if (card.bodyB) cardData.bodyB = card.bodyB;
-    if (card.footerB) cardData.footerB = card.footerB;
-    if (card.subtitleB) cardData.subtitleB = card.subtitleB;
-    if (card.challengeAnswerB) cardData.challengeAnswerB = card.challengeAnswerB;
-    // Debuter headers
-    if (card.debuterHeader) cardData.debuterHeader = card.debuterHeader;
-    if (card.debuterLabel) cardData.debuterLabel = card.debuterLabel;
-    if (card.debuterHeaderB) cardData.debuterHeaderB = card.debuterHeaderB;
-    if (card.debuterLabelB) cardData.debuterLabelB = card.debuterLabelB;
-    // Gagner headers
-    if (card.gagnerHeader) cardData.gagnerHeader = card.gagnerHeader;
-    if (card.gagnerHeaderB) cardData.gagnerHeaderB = card.gagnerHeaderB;
-    if (card.answerLabel) cardData.answerLabel = card.answerLabel;
-    if (card.answerLabelB) cardData.answerLabelB = card.answerLabelB;
-    // Intrepide headers
-    if (card.intrepideHeaderL) cardData.intrepideHeaderL = card.intrepideHeaderL;
-    if (card.intrepideHeaderR) cardData.intrepideHeaderR = card.intrepideHeaderR;
-    if (card.intrepideSub) cardData.intrepideSub = card.intrepideSub;
-    // Intrepide
-    if (card.responses) cardData.responses = card.responses;
+// Snapshot avant renderCard : saveToMemory() s'exécute en premier dans renderCard
+// et écrase cardData en lisant le DOM courant (vide si même type de carte).
+var snapshot = {
+subject: cardData.subject,
+questions: Object.assign({}, cardData.questions),
+answers: Object.assign({}, cardData.answers),
+title: cardData.title, body: cardData.body, footer: cardData.footer,
+subtitle: cardData.subtitle, challengeAnswer: cardData.challengeAnswer,
+titleB: cardData.titleB, bodyB: cardData.bodyB, footerB: cardData.footerB,
+subtitleB: cardData.subtitleB, challengeAnswerB: cardData.challengeAnswerB,
+debuterHeader: cardData.debuterHeader, debuterLabel: cardData.debuterLabel,
+debuterHeaderB: cardData.debuterHeaderB, debuterLabelB: cardData.debuterLabelB,
+gagnerHeader: cardData.gagnerHeader, gagnerHeaderB: cardData.gagnerHeaderB,
+answerLabel: cardData.answerLabel, answerLabelB: cardData.answerLabelB,
+intrepideHeaderL: cardData.intrepideHeaderL, intrepideHeaderR: cardData.intrepideHeaderR,
+intrepideSub: cardData.intrepideSub, responses: cardData.responses,
+bonusMalusLabelA: cardData.bonusMalusLabelA, bonusMalusLabelB: cardData.bonusMalusLabelB
+};
 
-    // Snapshot avant renderCard : saveToMemory() s'exécute en premier dans renderCard
-    // et écrase cardData en lisant le DOM courant (vide si même type de carte).
-    var snapshot = {
-      subject: cardData.subject,
-      questions: Object.assign({}, cardData.questions),
-      answers: Object.assign({}, cardData.answers),
-      title: cardData.title, body: cardData.body, footer: cardData.footer,
-      subtitle: cardData.subtitle, challengeAnswer: cardData.challengeAnswer,
-      titleB: cardData.titleB, bodyB: cardData.bodyB, footerB: cardData.footerB,
-      subtitleB: cardData.subtitleB, challengeAnswerB: cardData.challengeAnswerB,
-      debuterHeader: cardData.debuterHeader, debuterLabel: cardData.debuterLabel,
-      debuterHeaderB: cardData.debuterHeaderB, debuterLabelB: cardData.debuterLabelB,
-      gagnerHeader: cardData.gagnerHeader, gagnerHeaderB: cardData.gagnerHeaderB,
-      answerLabel: cardData.answerLabel, answerLabelB: cardData.answerLabelB,
-      intrepideHeaderL: cardData.intrepideHeaderL, intrepideHeaderR: cardData.intrepideHeaderR,
-      intrepideSub: cardData.intrepideSub, responses: cardData.responses,
-      bonusMalusLabelA: cardData.bonusMalusLabelA, bonusMalusLabelB: cardData.bonusMalusLabelB
-    };
+window.renderCard(currentThemeId, currentIconId, currentFontId);
 
-    window.renderCard(currentThemeId, currentIconId, currentFontId);
+// Re-apply snapshot dans cardData (saveToMemory l'avait écrasé avec le DOM vide)
+Object.assign(cardData, snapshot);
 
-    // Re-apply snapshot dans cardData (saveToMemory l'avait écrasé avec le DOM vide)
-    Object.assign(cardData, snapshot);
+// Écriture directe dans le DOM — plus fiable que restoreFromMemory (pas de conditions truthy)
+var p = document.getElementById('card-preview');
+if (p) {
+if (currentCardType === 'standard') {
+var subjEl = p.querySelector('.panel-subject [contenteditable]');
+if (subjEl) subjEl.innerText = snapshot.subject || '';
 
-    // Écriture directe dans le DOM — plus fiable que restoreFromMemory (pas de conditions truthy)
-    var p = document.getElementById('card-preview');
-    if (p) {
-      if (currentCardType === 'standard') {
-        var subjEl = p.querySelector('.panel-subject [contenteditable]');
-        if (subjEl) subjEl.innerText = snapshot.subject || '';
+var qEls = p.querySelectorAll('.pq-txt');
+for (var qi = 0; qi < qEls.length; qi++) {
+var qKey = qEls[qi].dataset.i;
+qEls[qi].innerText = (snapshot.questions && snapshot.questions[qKey]) ? snapshot.questions[qKey] : '';
+}
 
-        var qEls = p.querySelectorAll('.pq-txt');
-        for (var qi = 0; qi < qEls.length; qi++) {
-          var qKey = qEls[qi].dataset.i;
-          qEls[qi].innerText = (snapshot.questions && snapshot.questions[qKey]) ? snapshot.questions[qKey] : '';
-        }
+var aEls = p.querySelectorAll('.pa-txt');
+for (var ai = 0; ai < aEls.length; ai++) {
+var aKey = aEls[ai].dataset.i;
+aEls[ai].innerText = (snapshot.answers && snapshot.answers[aKey]) ? snapshot.answers[aKey] : '';
+}
+} else {
+var fieldEls = p.querySelectorAll('[data-field]');
+for (var fi = 0; fi < fieldEls.length; fi++) {
+var fKey = fieldEls[fi].dataset.field;
+if (snapshot[fKey] !== undefined) fieldEls[fi].innerText = snapshot[fKey];
+}
+}
+}
 
-        var aEls = p.querySelectorAll('.pa-txt');
-        for (var ai = 0; ai < aEls.length; ai++) {
-          var aKey = aEls[ai].dataset.i;
-          aEls[ai].innerText = (snapshot.answers && snapshot.answers[aKey]) ? snapshot.answers[aKey] : '';
-        }
-      } else {
-        var fieldEls = p.querySelectorAll('[data-field]');
-        for (var fi = 0; fi < fieldEls.length; fi++) {
-          var fKey = fieldEls[fi].dataset.field;
-          if (snapshot[fKey]) fieldEls[fi].innerText = snapshot[fKey];
-        }
-      }
-    }
-
-    window.saveToLocalStorage();
-    return { cardType: currentCardType, themeId: currentThemeId, iconId: currentIconId, fontId: currentFontId };
-  };
+window.saveToLocalStorage();
+return { cardType: currentCardType, themeId: currentThemeId, iconId: currentIconId, fontId: currentFontId };
+};
 
   // ===== Getters/setters =====
   window.getCurrentCardType = function() { return currentCardType; };
