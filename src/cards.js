@@ -1172,9 +1172,35 @@
 
     window.renderCard(currentThemeId, currentIconId, currentFontId);
 
-    // Re-apply le snapshot et redessine (renderCard a pu écraser cardData via saveToMemory)
+    // Re-apply snapshot dans cardData (saveToMemory l'avait écrasé avec le DOM vide)
     Object.assign(cardData, snapshot);
-    restoreFromMemory();
+
+    // Écriture directe dans le DOM — plus fiable que restoreFromMemory (pas de conditions truthy)
+    var p = document.getElementById('card-preview');
+    if (p) {
+      if (currentCardType === 'standard') {
+        var subjEl = p.querySelector('.panel-subject [contenteditable]');
+        if (subjEl) subjEl.innerText = snapshot.subject || '';
+
+        var qEls = p.querySelectorAll('.pq-txt');
+        for (var qi = 0; qi < qEls.length; qi++) {
+          var qKey = qEls[qi].dataset.i;
+          qEls[qi].innerText = (snapshot.questions && snapshot.questions[qKey]) ? snapshot.questions[qKey] : '';
+        }
+
+        var aEls = p.querySelectorAll('.pa-txt');
+        for (var ai = 0; ai < aEls.length; ai++) {
+          var aKey = aEls[ai].dataset.i;
+          aEls[ai].innerText = (snapshot.answers && snapshot.answers[aKey]) ? snapshot.answers[aKey] : '';
+        }
+      } else {
+        var fieldEls = p.querySelectorAll('[data-field]');
+        for (var fi = 0; fi < fieldEls.length; fi++) {
+          var fKey = fieldEls[fi].dataset.field;
+          if (snapshot[fKey] != null) fieldEls[fi].innerText = snapshot[fKey];
+        }
+      }
+    }
 
     window.saveToLocalStorage();
     return { cardType: currentCardType, themeId: currentThemeId, iconId: currentIconId, fontId: currentFontId };
