@@ -166,7 +166,14 @@
       window.setInnerBorderWidth('right', 3);
       window.setInnerBorderWidth('bottom', 3);
       window.setInnerBorderWidth('left', 3);
-      await sleep(350);
+      await new Promise(resolve => {
+  const check = () => {
+    const el = document.querySelector('.panel-subject [contenteditable]');
+    if (el && el.innerText.trim()) resolve();
+    else setTimeout(check, 50);
+  };
+  check();
+});
 
       if (batchCancelled) break;
 

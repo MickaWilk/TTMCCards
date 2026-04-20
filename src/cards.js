@@ -1114,7 +1114,8 @@
     cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
 
     // Standard Q&A
-    if (card.sujet) cardData.subject = card.sujet;
+if (card.sujet) cardData.subject = card.sujet;
+else if (card.subject) cardData.subject = card.subject;
     if (card.questions) {
       for (var k in card.questions) cardData.questions[k] = card.questions[k];
     }
