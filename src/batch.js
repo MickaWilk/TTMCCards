@@ -155,8 +155,14 @@
       if (progressText) progressText.textContent = 'Carte ' + (i + 1) + '/' + total + ' \u2014 ' + label;
       if (progressFill) progressFill.style.width = ((i / total) * 100) + '%';
 
-      // Charger la carte et attendre le rendu DOM
+      // Charger la carte, appliquer les réglages print, attendre le rendu DOM
       window.loadSampleCard(card);
+      window.setCardGap(1);
+      window.setToggle('separator', false);
+      window.setInnerBorderWidth('top', 3);
+      window.setInnerBorderWidth('right', 3);
+      window.setInnerBorderWidth('bottom', 3);
+      window.setInnerBorderWidth('left', 3);
       await sleep(350);
 
       if (batchCancelled) break;
