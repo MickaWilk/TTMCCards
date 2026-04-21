@@ -5,7 +5,7 @@
 
   var batchCards = [];
   var batchCancelled = false;
-  var globalThemeOverride = ''; // '' = auto (use JSON themeId)
+  var globalThemeOverride = 'varimatrax'; // 'varimatrax' = auto-map chaque couleur
   var cardThemeOverrides = {};  // { index: themeId }
 
   // ===== Couleurs des badges par type =====
@@ -52,32 +52,35 @@
     return null;
   }
 
-  // ===== Mapping des themeId → Varimatrax par défaut =====
-  var THEME_ALIASES = {
-    'green':     'vx_green',
-    'blue':      'vx_blue',
-    'yellow':    'vx_yellow',
-    'rouge_vif': 'vx_red',
-    'red':       'vx_red',
-    'orange':    'vx_orange',
-    'purple':    'vx_purple',
-    'black':     'vx_black',
-    'rouge':     'vx_red',
-    'vert':      'vx_green',
-    'bleu':      'vx_blue',
-    'jaune':     'vx_yellow',
-    'noir':      'vx_black',
-    'violet':    'vx_purple',
-    'marron':    'vx_black',
-    'or':        'vx_yellow'
+  // ===== Mapping classique → Varimatrax =====
+  var TO_VARIMATRAX = {
+    'green': 'vx_green', 'blue': 'vx_blue', 'yellow': 'vx_yellow',
+    'rouge_vif': 'vx_red', 'red': 'vx_red', 'orange': 'vx_orange',
+    'purple': 'vx_purple', 'black': 'vx_black',
+    'rouge': 'vx_red', 'vert': 'vx_green', 'bleu': 'vx_blue',
+    'jaune': 'vx_yellow', 'noir': 'vx_black', 'violet': 'vx_purple',
+    'marron': 'vx_black', 'or': 'vx_yellow',
+    'darkred': 'vx_red', 'brown': 'vx_black', 'gold': 'vx_yellow',
+    'pink': 'vx_red', 'teal': 'vx_blue', 'indigo': 'vx_purple',
+    'lime': 'vx_green', 'cyan': 'vx_blue', 'coral': 'vx_orange'
   };
 
+  // Alias simples (noms FR → ID)
+  var THEME_ALIASES = {
+    'rouge': 'rouge_vif', 'vert': 'green', 'bleu': 'blue',
+    'jaune': 'yellow', 'noir': 'black', 'violet': 'purple',
+    'marron': 'brown', 'or': 'gold', 'red': 'rouge_vif'
+  };
+
+  function toVarimatrax(themeId) {
+    return TO_VARIMATRAX[themeId] || TO_VARIMATRAX[THEME_ALIASES[themeId]] || 'vx_green';
+  }
+
   function normalizeCard(card) {
-    // Si cardType absent mais sujet présent → standard
     if (!card.cardType && card.sujet) {
       card.cardType = 'standard';
     }
-    // Mapper les alias de themeId courants
+    // Normaliser les alias FR → ID standard
     if (card.themeId && THEME_ALIASES[card.themeId]) {
       card.themeId = THEME_ALIASES[card.themeId];
     }
@@ -87,14 +90,16 @@
   // ===== Thème effectif pour une carte =====
   function getEffectiveThemeId(card, index) {
     if (cardThemeOverrides[index]) return cardThemeOverrides[index];
+    if (globalThemeOverride === 'varimatrax') return toVarimatrax(card.themeId);
     if (globalThemeOverride) return globalThemeOverride;
     return card.themeId || 'green';
   }
 
   // ===== Construction des options <select> pour thèmes =====
   function buildThemeOptionsHTML(selectedId) {
-    var html = '<option value="">Auto</option>';
-    // Varimatrax en premier
+    var html = '<option value="">Auto (JSON)</option>';
+    html += '<option value="varimatrax"' + (selectedId === 'varimatrax' ? ' selected' : '') + '>Varimatrax (auto)</option>';
+    // Varimatrax individuels
     html += '<optgroup label="Varimatrax">';
     for (var i = 0; i < window.THEMES.length; i++) {
       if (window.THEMES[i].varimatrax) {
@@ -357,7 +362,7 @@ if (btnCancel) btnCancel.style.display = 'none';
     // -- Sélecteur de thème global --
     var globalSel = document.getElementById('batch-theme-override');
     if (globalSel) {
-      globalSel.innerHTML = buildThemeOptionsHTML('');
+      globalSel.innerHTML = buildThemeOptionsHTML(globalThemeOverride);
       globalSel.addEventListener('change', function() {
         globalThemeOverride = globalSel.value || '';
         updateAllBadges();
