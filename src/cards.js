@@ -768,11 +768,8 @@ if (!skipSaveToMemory) saveToMemory();
     p.innerHTML = renderTerminerPanel('A') + separatorHTML() + renderTerminerPanel('B');
   }
 
-  // =========================================================================
-  // Separator helper — inserts 1px black line between panels
-  // =========================================================================
   function separatorHTML() {
-    return '<div class="card-separator"></div>';
+    return '';
   }
 
   // =========================================================================

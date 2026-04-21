@@ -250,7 +250,6 @@ for (var i = 0; i < total; i++) {
   // Charger la carte, appliquer les réglages print
   window.loadSampleCard(cardToLoad);
   window.setCardGap(1);
-  window.setToggle('separator', false);
   window.setInnerBorderWidth('top', 3);
   window.setInnerBorderWidth('right', 3);
   window.setInnerBorderWidth('bottom', 3);

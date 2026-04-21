@@ -828,11 +828,6 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .hide-recto > .card-panel:first-child { visibility:hidden !important; }
 .hide-verso > .card-panel:last-child { visibility:hidden !important; }
 
-/* ===== Separateur noir ===== */
-.card-separator {
-  width:1px; background:#000; flex-shrink:0; align-self:stretch;
-}
-.hide-separator .card-separator { display:none; }
 
 /* ===== Lignes entre questions/reponses ===== */
 .hide-rowlines .pq-row,
