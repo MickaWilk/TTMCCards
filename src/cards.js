@@ -606,7 +606,15 @@ if (!skipSaveToMemory) saveToMemory();
       '</div>' +
     '</div>';
 
-    p.innerHTML = leftPanel + separatorHTML() + rightPanel;
+    var vxBanner = '<div class="vx-banner">' +
+      '<div class="vx-banner-content">' +
+        '<div class="vx-banner-header">Tu te mets combien en...</div>' +
+        '<span class="vx-banner-subject" contenteditable="true" data-placeholder="SUJET ?"></span>' +
+      '</div>' +
+      '<div class="vx-banner-icon">' + iconHTML() + '</div>' +
+    '</div>';
+
+    p.innerHTML = vxBanner + leftPanel + separatorHTML() + rightPanel;
   }
 
   // =========================================================================
@@ -829,7 +837,9 @@ if (!skipSaveToMemory) saveToMemory();
 
     if (currentCardType === 'standard') {
       var subj = p.querySelector('.panel-subject [contenteditable]');
-      if (subj) cardData.subject = subj.innerText || '';
+      var vxSubj = p.querySelector('.vx-banner-subject');
+      if (vxSubj && vxSubj.innerText.trim()) cardData.subject = vxSubj.innerText || '';
+      else if (subj) cardData.subject = subj.innerText || '';
 
       var qs = p.querySelectorAll('.pq-txt');
       for (var i = 0; i < qs.length; i++) {
@@ -859,7 +869,9 @@ if (!skipSaveToMemory) saveToMemory();
 
     if (currentCardType === 'standard') {
       var subj = p.querySelector('.panel-subject [contenteditable]');
+      var vxSubj = p.querySelector('.vx-banner-subject');
       if (subj && cardData.subject) subj.innerText = cardData.subject;
+      if (vxSubj && cardData.subject) vxSubj.innerText = cardData.subject;
 
       var qs = p.querySelectorAll('.pq-txt');
       for (var i = 0; i < qs.length; i++) {
@@ -1186,6 +1198,8 @@ if (p) {
 if (currentCardType === 'standard') {
 var subjEl = p.querySelector('.panel-subject [contenteditable]');
 if (subjEl) subjEl.innerText = snapshot.subject || '';
+var vxSubjEl = p.querySelector('.vx-banner-subject');
+if (vxSubjEl) vxSubjEl.innerText = snapshot.subject || '';
 
 var qEls = p.querySelectorAll('.pq-txt');
 for (var qi = 0; qi < qEls.length; qi++) {

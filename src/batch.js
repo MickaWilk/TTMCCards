@@ -264,6 +264,8 @@ for (var i = 0; i < total; i++) {
   if (p && window.getCurrentCardType() === 'standard') {
     var subjEl = p.querySelector('.panel-subject [contenteditable]');
     if (subjEl) subjEl.innerText = card.sujet || card.subject || '';
+    var vxSubjEl = p.querySelector('.vx-banner-subject');
+    if (vxSubjEl) vxSubjEl.innerText = card.sujet || card.subject || '';
 
     var qEls = p.querySelectorAll('.pq-txt');
     for (var qi = 0; qi < qEls.length; qi++) {

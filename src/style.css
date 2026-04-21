@@ -305,11 +305,44 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
     radial-gradient(circle at 45% 80%, rgba(255,255,255,0.08) 0%, transparent 35%),
     radial-gradient(circle at 85% 15%, rgba(255,255,255,0.09) 0%, transparent 38%),
     radial-gradient(circle at 30% 60%, rgba(255,255,255,0.07) 0%, transparent 30%);
-  --card-padding: 24px;
-  --card-gap: 18px;
+}
+.vx-texture.card-type-standard {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:auto 1fr;
+  column-gap:18px; row-gap:8px;
+  padding:22px 24px 24px;
 }
 .vx-texture .panel-inner { border-radius:18px; border-width:0 !important; }
 .vx-texture .panel-subject { display:none; }
+
+/* ===== Varimatrax banner ===== */
+.vx-banner { display:none; }
+.vx-texture .vx-banner {
+  display:flex; align-items:center; gap:10px;
+  grid-column:1 / -1;
+  color:var(--header-text, #fff);
+  padding:0 4px;
+}
+.vx-banner-content { flex:1; min-width:0; }
+.vx-banner-header {
+  font-size:11px; font-weight:700; font-style:italic;
+  opacity:.85; line-height:1.2;
+}
+.vx-banner-subject {
+  display:block; width:100%; outline:none;
+  font-size:20px; font-weight:900; text-transform:uppercase;
+  letter-spacing:.5px; line-height:1.15;
+}
+.vx-banner-subject:empty::before {
+  content:attr(data-placeholder); opacity:.4;
+  font-style:italic; text-transform:none; font-weight:600; font-size:14px;
+}
+.vx-banner-icon {
+  width:40px; height:40px; flex-shrink:0;
+  color:var(--header-text, #fff); opacity:.7;
+}
+.vx-banner-icon svg { width:100%; height:100%; }
 .panel-header-text { font-size:14px; font-weight:700; font-style:italic; opacity:.9; }
 .panel-header-logo {
   margin-left:auto; margin-right:50px;
