@@ -5,6 +5,8 @@
 
   var batchCards = [];
   var batchCancelled = false;
+  var globalThemeOverride = ''; // '' = auto (use JSON themeId)
+  var cardThemeOverrides = {};  // { index: themeId }
 
   // ===== Couleurs des badges par type =====
   var BADGE_COLORS = {
@@ -50,12 +52,62 @@
     return null;
   }
 
+  // ===== Mapping des themeId courants =====
+  var THEME_ALIASES = {
+    'red': 'rouge_vif',
+    'rouge': 'rouge_vif',
+    'vert': 'green',
+    'bleu': 'blue',
+    'jaune': 'yellow',
+    'noir': 'black',
+    'violet': 'purple',
+    'marron': 'brown',
+    'or': 'gold'
+  };
+
   function normalizeCard(card) {
     // Si cardType absent mais sujet présent → standard
     if (!card.cardType && card.sujet) {
       card.cardType = 'standard';
     }
+    // Mapper les alias de themeId courants
+    if (card.themeId && THEME_ALIASES[card.themeId]) {
+      card.themeId = THEME_ALIASES[card.themeId];
+    }
     return card;
+  }
+
+  // ===== Thème effectif pour une carte =====
+  function getEffectiveThemeId(card, index) {
+    if (cardThemeOverrides[index]) return cardThemeOverrides[index];
+    if (globalThemeOverride) return globalThemeOverride;
+    return card.themeId || 'green';
+  }
+
+  // ===== Construction des options <select> pour thèmes =====
+  function buildThemeOptionsHTML(selectedId) {
+    var html = '<option value="">Auto</option>';
+    // Varimatrax en premier
+    html += '<optgroup label="Varimatrax">';
+    for (var i = 0; i < window.THEMES.length; i++) {
+      if (window.THEMES[i].varimatrax) {
+        html += '<option value="' + window.THEMES[i].id + '"' +
+                (window.THEMES[i].id === selectedId ? ' selected' : '') +
+                '>' + window.THEMES[i].label.replace('Varimatrax — ', '') + '</option>';
+      }
+    }
+    html += '</optgroup>';
+    // Thèmes standard
+    html += '<optgroup label="Classiques">';
+    for (var j = 0; j < window.THEMES.length; j++) {
+      if (!window.THEMES[j].varimatrax) {
+        html += '<option value="' + window.THEMES[j].id + '"' +
+                (window.THEMES[j].id === selectedId ? ' selected' : '') +
+                '>' + window.THEMES[j].label + '</option>';
+      }
+    }
+    html += '</optgroup>';
+    return html;
   }
 
   // ===== Download helper =====
@@ -77,32 +129,66 @@
     if (!listEl) return;
 
     listEl.innerHTML = '';
+    cardThemeOverrides = {};
 
     if (countEl) countEl.textContent = batchCards.length + ' carte' + (batchCards.length > 1 ? 's' : '') + ' charg\u00e9e' + (batchCards.length > 1 ? 's' : '');
+
+    // Mettre à jour le sélecteur global
+    var globalSel = document.getElementById('batch-theme-override');
+    if (globalSel) globalSel.innerHTML = buildThemeOptionsHTML(globalThemeOverride);
 
     for (var i = 0; i < batchCards.length; i++) {
       (function(card, idx) {
         var item = document.createElement('div');
         item.className = 'batch-card-item';
 
+        var effectiveTheme = getEffectiveThemeId(card, idx);
+        var theme = window.getThemeById(effectiveTheme);
+
         var badge = document.createElement('span');
         badge.className = 'batch-card-badge';
-        badge.style.background = getBadgeColor(card);
+        badge.style.background = theme.headerBg;
 
         var label = document.createElement('span');
         label.className = 'batch-card-label';
         label.textContent = (idx + 1) + '. ' + (card.sujet || card.title || card.subtitle || 'Carte sans titre');
 
+        var sel = document.createElement('select');
+        sel.className = 'batch-card-theme-select';
+        sel.innerHTML = buildThemeOptionsHTML('');
+        sel.addEventListener('change', function() {
+          cardThemeOverrides[idx] = sel.value || '';
+          var newTheme = window.getThemeById(getEffectiveThemeId(card, idx));
+          badge.style.background = newTheme.headerBg;
+        });
+
         item.appendChild(badge);
         item.appendChild(label);
+        item.appendChild(sel);
         listEl.appendChild(item);
       })(batchCards[i], i);
     }
 
+    // Afficher la section thème + status
+    var themeRow = document.getElementById('batch-theme-row');
+    if (themeRow) themeRow.style.display = '';
     var status = document.getElementById('batch-status');
     if (status) {
       status.style.display = 'block';
       setTimeout(function() { status.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 50);
+    }
+  }
+
+  // ===== Mettre à jour les badges quand le thème global change =====
+  function updateAllBadges() {
+    var items = document.querySelectorAll('.batch-card-item');
+    for (var i = 0; i < items.length; i++) {
+      if (i < batchCards.length) {
+        var effectiveTheme = getEffectiveThemeId(batchCards[i], i);
+        var theme = window.getThemeById(effectiveTheme);
+        var badge = items[i].querySelector('.batch-card-badge');
+        if (badge) badge.style.background = theme.headerBg;
+      }
     }
   }
 
@@ -157,8 +243,12 @@ for (var i = 0; i < total; i++) {
   if (progressText) progressText.textContent = 'Carte ' + (i + 1) + '/' + total + ' \u2014 ' + label;
   if (progressFill) progressFill.style.width = ((i / total) * 100) + '%';
 
+  // Appliquer l'override de thème si défini
+  var effectiveTheme = getEffectiveThemeId(card, i);
+  var cardToLoad = Object.assign({}, card, { themeId: effectiveTheme });
+
   // Charger la carte, appliquer les réglages print
-  window.loadSampleCard(card);
+  window.loadSampleCard(cardToLoad);
   window.setCardGap(1);
   window.setToggle('separator', false);
   window.setInnerBorderWidth('top', 3);
@@ -168,25 +258,46 @@ for (var i = 0; i < total; i++) {
   
   // Attendre que le DOM soit rendu + polices chargées
   await sleep(600);
-  
-  // Forcer l'écriture du sujet dans le DOM (au cas où)
-  // ✅ Utiliser window.getCurrentCardType() au lieu de currentCardType
-  if (card.sujet && window.getCurrentCardType() === 'standard') {
-    var p = document.getElementById('card-preview');
-    if (p) {
-      var subjEl = p.querySelector('.panel-subject [contenteditable]');
-      if (subjEl && !subjEl.innerText.trim()) {
-        subjEl.innerText = card.sujet;
-        await sleep(100); // Laisser le temps au rendu
+
+  // Forcer l'écriture de TOUT le contenu dans le DOM (sujet + questions + réponses)
+  // loadSampleCard peut avoir des race conditions — on réécrit tout inconditionnellement
+  var p = document.getElementById('card-preview');
+  if (p && window.getCurrentCardType() === 'standard') {
+    var subjEl = p.querySelector('.panel-subject [contenteditable]');
+    if (subjEl) subjEl.innerText = card.sujet || card.subject || '';
+
+    var qEls = p.querySelectorAll('.pq-txt');
+    for (var qi = 0; qi < qEls.length; qi++) {
+      var qKey = qEls[qi].dataset.i;
+      if (card.questions && card.questions[qKey]) {
+        qEls[qi].innerText = card.questions[qKey];
+      }
+    }
+
+    var aEls = p.querySelectorAll('.pa-txt');
+    for (var ai = 0; ai < aEls.length; ai++) {
+      var aKey = aEls[ai].dataset.i;
+      if (card.answers && card.answers[aKey]) {
+        aEls[ai].innerText = card.answers[aKey];
+      }
+    }
+  } else if (p) {
+    // Types non-standard : forcer les champs data-field
+    var fieldEls = p.querySelectorAll('[data-field]');
+    for (var fi = 0; fi < fieldEls.length; fi++) {
+      var fKey = fieldEls[fi].dataset.field;
+      if (card[fKey] !== undefined && card[fKey] !== '') {
+        fieldEls[fi].innerText = card[fKey];
       }
     }
   }
-  
+  await sleep(100);
+
   if (batchCancelled) break;
 
   var slug = window.slugify(label);
   var cardType = card.cardType || 'standard';
-  var themeId = card.themeId || '';
+  var themeId = effectiveTheme || card.themeId || '';
   var prefix = pad2(i + 1);
 
   if (mode === 'full') {
@@ -234,6 +345,16 @@ if (btnCancel) btnCancel.style.display = 'none';
     var btnLoad = document.getElementById('btn-batch-load');
     var btnGenerate = document.getElementById('btn-batch-generate');
     var btnCancel = document.getElementById('btn-batch-cancel');
+
+    // -- Sélecteur de thème global --
+    var globalSel = document.getElementById('batch-theme-override');
+    if (globalSel) {
+      globalSel.innerHTML = buildThemeOptionsHTML('');
+      globalSel.addEventListener('change', function() {
+        globalThemeOverride = globalSel.value || '';
+        updateAllBadges();
+      });
+    }
 
     // -- Drop zone fichier --
     if (dropZone && fileInput) {

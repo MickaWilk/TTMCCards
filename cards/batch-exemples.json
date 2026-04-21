@@ -1,0 +1,207 @@
+{
+  "cards": [
+    {
+      "cardType": "standard",
+      "themeId": "vx_blue",
+      "sujet": "Les capitales du monde",
+      "questions": {
+        "1": "Quelle est la capitale de la France ?",
+        "2": "Quelle est la capitale du Japon ?",
+        "3": "Quelle est la capitale du Bresil ?",
+        "4": "Quelle est la capitale de l'Australie ?",
+        "5": "Quelle est la capitale du Canada ?",
+        "6": "Quelle est la capitale de la Turquie ?",
+        "7": "Quelle est la capitale du Myanmar ?",
+        "8": "Quelle est la capitale du Sri Lanka ?",
+        "9": "Quelle est la capitale de la Bolivie ?",
+        "10": "Quelle est la capitale du Nigeria ?"
+      },
+      "answers": {
+        "1": "Paris",
+        "2": "Tokyo",
+        "3": "Brasilia (pas Rio ni Sao Paulo)",
+        "4": "Canberra (pas Sydney)",
+        "5": "Ottawa (pas Toronto ni Montreal)",
+        "6": "Ankara (pas Istanbul)",
+        "7": "Naypyidaw (pas Rangoun)",
+        "8": "Sri Jayawardenapura-Kotte",
+        "9": "Sucre (capitale constitutionnelle)",
+        "10": "Abuja (pas Lagos)"
+      }
+    },
+    {
+      "cardType": "standard",
+      "themeId": "vx_green",
+      "sujet": "La cuisine francaise",
+      "questions": {
+        "1": "Quel fromage est surnomme le roi des fromages ?",
+        "2": "De quelle region vient la choucroute ?",
+        "3": "Combien de temps faut-il pour cuire un oeuf a la coque ?",
+        "4": "Quel est l'ingredient principal du cassoulet ?",
+        "5": "Dans quelle ville a ete invente le croissant ?",
+        "6": "Combien d'etoiles maximum un restaurant peut-il avoir au guide Michelin ?",
+        "7": "Quel chef francais a obtenu le plus d'etoiles Michelin au total ?",
+        "8": "De quel animal provient le foie gras ?",
+        "9": "Quelle est la difference entre une galette et une crepe ?",
+        "10": "Quel plat francais est cuit dans une croute de sel ?"
+      },
+      "answers": {
+        "1": "Le Roquefort",
+        "2": "L'Alsace",
+        "3": "3 minutes",
+        "4": "Le haricot blanc (lingot)",
+        "5": "Vienne (Autriche), popularise a Paris",
+        "6": "3 etoiles",
+        "7": "Alain Ducasse (21 etoiles cumul)",
+        "8": "Le canard (ou l'oie)",
+        "9": "La galette est au sarrasin (salee), la crepe au froment (sucree)",
+        "10": "Le bar (loup) en croute de sel"
+      }
+    },
+    {
+      "cardType": "standard",
+      "themeId": "vx_red",
+      "sujet": "Les films cultes des annees 90",
+      "questions": {
+        "1": "Quel film commence par une plume qui vole dans le vent ?",
+        "2": "Qui joue le role de Jack dans Titanic ?",
+        "3": "Dans quel film entend-on 'La vie c'est comme une boite de chocolats' ?",
+        "4": "Quel est le vrai nom de Neo dans Matrix ?",
+        "5": "Combien de films Jurassic Park sont sortis dans les annees 90 ?",
+        "6": "Qui realise Pulp Fiction ?",
+        "7": "Dans quel film Bruce Willis doit sauver un avion piege a Dulles ?",
+        "8": "Quel Disney de 1994 est le plus gros succes du studio a l'epoque ?",
+        "9": "Dans Fight Club, quelle est la premiere regle du Fight Club ?",
+        "10": "Quel film de 1999 revele que le personnage principal est un fantome ?"
+      },
+      "answers": {
+        "1": "Forrest Gump (1994)",
+        "2": "Leonardo DiCaprio",
+        "3": "Forrest Gump",
+        "4": "Thomas Anderson",
+        "5": "2 (1993 et Le Monde Perdu en 1997)",
+        "6": "Quentin Tarantino (1994)",
+        "7": "Die Hard 2 (58 minutes pour vivre, 1990)",
+        "8": "Le Roi Lion",
+        "9": "On ne parle pas du Fight Club",
+        "10": "Sixieme Sens (avec Bruce Willis)"
+      }
+    },
+    {
+      "cardType": "standard",
+      "themeId": "vx_yellow",
+      "sujet": "Les celebrites francaises",
+      "questions": {
+        "1": "Quel humoriste est connu pour son sketch du pere Noel ?",
+        "2": "Qui presente Koh-Lanta depuis sa creation ?",
+        "3": "Quelle chanteuse francaise a vendu le plus de disques dans le monde ?",
+        "4": "Quel acteur francais a joue dans Taxi, Les Visiteurs ET Asterix ?",
+        "5": "Qui est le footballeur francais le plus cape de l'histoire ?",
+        "6": "Quelle humoriste a cree le personnage de Madame Sarfati ?",
+        "7": "Quel chanteur est surnomme le Phoenix ?",
+        "8": "Qui a realise Le Fabuleux Destin d'Amelie Poulain ?",
+        "9": "Quelle actrice francaise a recu un Oscar en 2008 ?",
+        "10": "Quel comedien a cree le spectacle Tout sur Jamel ?"
+      },
+      "answers": {
+        "1": "Gad Elmaleh (La Vie Normale)",
+        "2": "Denis Brogniart",
+        "3": "Mylene Farmer (plus de 30 millions)",
+        "4": "Christian Clavier",
+        "5": "Hugo Lloris (145 selections)",
+        "6": "Florence Foresti",
+        "7": "Jean-Jacques Goldman",
+        "8": "Jean-Pierre Jeunet (2001)",
+        "9": "Marion Cotillard (La Mome)",
+        "10": "Jamel Debbouze"
+      }
+    },
+    {
+      "cardType": "standard",
+      "themeId": "vx_purple",
+      "sujet": "Les records et chiffres fous",
+      "questions": {
+        "1": "Combien d'os compte le corps humain adulte ?",
+        "2": "Quelle est la temperature la plus haute jamais enregistree sur Terre ?",
+        "3": "Combien de langues officielles l'ONU reconnait-elle ?",
+        "4": "Quel est l'animal terrestre le plus rapide ?",
+        "5": "Combien de litres de sang circulent dans le corps humain ?",
+        "6": "Quel est le plus long fleuve du monde ?",
+        "7": "Combien de dents a un adulte (dentition complete) ?",
+        "8": "Quelle est la vitesse de la lumiere en km/s ?",
+        "9": "Quel est le pays le plus peuple du monde en 2024 ?",
+        "10": "Combien de fois le coeur bat-il en moyenne par jour ?"
+      },
+      "answers": {
+        "1": "206 os",
+        "2": "56.7°C (Vallee de la Mort, 1913)",
+        "3": "6 (anglais, francais, espagnol, arabe, chinois, russe)",
+        "4": "Le guepard (120 km/h)",
+        "5": "Environ 5 litres",
+        "6": "Le Nil (6 695 km) ou l'Amazone selon les mesures",
+        "7": "32 dents",
+        "8": "299 792 km/s (environ 300 000)",
+        "9": "L'Inde (devant la Chine depuis 2023)",
+        "10": "Environ 100 000 fois"
+      }
+    },
+    {
+      "cardType": "standard",
+      "themeId": "vx_orange",
+      "sujet": "Les inventions qui ont change le monde",
+      "questions": {
+        "1": "En quelle annee a ete invente le telephone ?",
+        "2": "Qui a invente l'ampoule electrique ?",
+        "3": "Dans quel pays l'imprimerie a-t-elle ete inventee ?",
+        "4": "Quelle invention de 1928 a revolutionne la medecine ?",
+        "5": "Qui est credite de l'invention d'Internet ?",
+        "6": "En quelle annee le premier iPhone est-il sorti ?",
+        "7": "Quelle invention de Louis Pasteur a sauve des millions de vies ?",
+        "8": "Qui a invente la dynamite ?",
+        "9": "En quelle annee les freres Lumiere ont-ils projete leur premier film ?",
+        "10": "Quelle invention de 1903 a permis a l'homme de voler ?"
+      },
+      "answers": {
+        "1": "1876 (Alexander Graham Bell)",
+        "2": "Thomas Edison (1879)",
+        "3": "La Chine (bien avant Gutenberg, vers le IXe siecle)",
+        "4": "La penicilline (Alexander Fleming)",
+        "5": "Tim Berners-Lee (World Wide Web, 1989)",
+        "6": "2007",
+        "7": "Le vaccin (contre la rage, 1885)",
+        "8": "Alfred Nobel (1867)",
+        "9": "1895 (a Lyon)",
+        "10": "L'avion des freres Wright"
+      }
+    },
+    {
+      "cardType": "standard",
+      "themeId": "vx_black",
+      "sujet": "La mythologie grecque",
+      "questions": {
+        "1": "Qui est le roi des dieux grecs ?",
+        "2": "Quel heros a tue la Meduse ?",
+        "3": "Combien de travaux Hercule a-t-il du accomplir ?",
+        "4": "Qui est le dieu de la mer ?",
+        "5": "Quel cheval aile est ne du sang de Meduse ?",
+        "6": "Qui est condamne a pousser un rocher pour l'eternite ?",
+        "7": "Quelle deesse est sortie toute armee de la tete de Zeus ?",
+        "8": "Quel heros a resolu l'enigme du Sphinx ?",
+        "9": "Comment s'appelle le passeur des Enfers ?",
+        "10": "Qui a vole le feu aux dieux pour le donner aux hommes ?"
+      },
+      "answers": {
+        "1": "Zeus",
+        "2": "Persee",
+        "3": "12 travaux",
+        "4": "Poseidon",
+        "5": "Pegase",
+        "6": "Sisyphe",
+        "7": "Athena",
+        "8": "Oedipe",
+        "9": "Charon",
+        "10": "Promethee"
+      }
+    }
+  ]
+}

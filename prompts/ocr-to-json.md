@@ -23,7 +23,7 @@ Structure : header "Tu te mets combien en..." + sujet en gras + 10 questions num
 - **Verte** ("N'hesite pas a Debuter") → cardType:"standard", themeId:"green"
 - **Bleue** ("Divers / Improbable") → cardType:"standard", themeId:"blue"
 - **Jaune** ("Personnages / Celebrites") → cardType:"standard", themeId:"yellow"
-- **Rouge** ("Pop Culture") → cardType:"standard", themeId:"red"
+- **Rouge** ("Pop Culture") → cardType:"standard", themeId:"rouge_vif"
 
 Format JSON pour standard :
 ```json

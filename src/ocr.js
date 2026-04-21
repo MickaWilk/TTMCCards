@@ -220,7 +220,7 @@
     '- Verte → cardType:"standard", themeId:"green"\n' +
     '- Bleue (Divers/Improbable) → cardType:"standard", themeId:"blue"\n' +
     '- Jaune (Personnages/Celebrites) → cardType:"standard", themeId:"yellow"\n' +
-    '- Rouge (Pop Culture) → cardType:"standard", themeId:"red"\n' +
+    '- Rouge (Pop Culture) → cardType:"standard", themeId:"rouge_vif"\n' +
     'JSON: { cardType, themeId, sujet, questions:{"1".."10"}, answers:{"1".."10"} }\n\n' +
     '### 2. DEBUTER (verte/kraft)\n' +
     'Header "HESITE PAS A DEBUTER", titre + texte libre, recto + verso independants. PAS de Q&A numerotees.\n' +

@@ -71,7 +71,7 @@
 
     var editables = clone.querySelectorAll('[contenteditable]');
     for (var e = 0; e < editables.length; e++) {
-      editables[e].removeAttribute('contenteditable');
+      editables[e].setAttribute('contenteditable', 'false');
       if (!editables[e].innerText.trim()) editables[e].innerHTML = '&nbsp;';
     }
 

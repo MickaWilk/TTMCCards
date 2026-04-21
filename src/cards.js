@@ -167,8 +167,9 @@ if (!skipSaveToMemory) saveToMemory();
     p.style.setProperty('--bdr-left', bdrLeft + 'px');
     p.style.setProperty('--inner-border-width', bdrTop + 'px ' + bdrRight + 'px ' + bdrBottom + 'px ' + bdrLeft + 'px');
 
-    // Remove old card type classes, add current
+    // Remove old card type classes, add current (preserve vx-texture if Varimatrax)
     p.className = 'ttmc-card card-type-' + currentCardType;
+    if (theme.varimatrax) p.classList.add('vx-texture');
 
     // Dispatch to the right renderer
     switch (currentCardType) {
@@ -1174,9 +1175,9 @@ intrepideSub: cardData.intrepideSub, responses: cardData.responses,
 bonusMalusLabelA: cardData.bonusMalusLabelA, bonusMalusLabelB: cardData.bonusMalusLabelB
 };
 
-window.renderCard(currentThemeId, currentIconId, currentFontId);
+window.renderCard(currentThemeId, currentIconId, currentFontId, true);
 
-// Re-apply snapshot dans cardData (saveToMemory l'avait écrasé avec le DOM vide)
+// Re-apply snapshot dans cardData (sécurité — skipSave=true évite déjà la corruption)
 Object.assign(cardData, snapshot);
 
 // Écriture directe dans le DOM — plus fiable que restoreFromMemory (pas de conditions truthy)
