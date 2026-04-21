@@ -791,6 +791,7 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 
 .hide-icons .panel-header-icon,
 .hide-icons .card-panel-icon { visibility:hidden; }
+.hide-iconbg .panel-header-icon { background:transparent !important; }
 .hide-watermark .panel-watermark,
 .hide-watermark .debuter-logo,
 .hide-watermark .gagner-logo,

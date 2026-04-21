@@ -120,6 +120,22 @@
     container.innerHTML = '';
     container.className = 'icon-picker-grid';
 
+    // Bouton "Aucune icône"
+    var noneBtn = document.createElement('button');
+    noneBtn.className = 'icon-picker-btn icon-picker-none' + ('none' === window.getCurrentIconId() ? ' active' : '');
+    noneBtn.title = 'Aucune';
+    noneBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="4"><line x1="16" y1="16" x2="64" y2="64"/><line x1="64" y1="16" x2="16" y2="64"/></svg>';
+    noneBtn.setAttribute('data-icon-id', 'none');
+    noneBtn.addEventListener('click', function() {
+      window.customLogoDataURL = null;
+      window.setCurrentIconId('none');
+      clearLogoPreview();
+      updateIconPickerActive();
+      window.renderCard(window.getCurrentThemeId(), 'none', window.getCurrentFontId());
+      window.saveToLocalStorage();
+    });
+    container.appendChild(noneBtn);
+
     for (var i = 0; i < ICON_ORDER.length; i++) {
       (function(iconId) {
         var icon = BUILTIN_ICONS[iconId];
@@ -504,13 +520,13 @@
       { key: 'background', label: 'Fond' },
       { key: 'recto',      label: 'Recto (G)' },
       { key: 'verso',      label: 'Verso (D)' },
-      { key: 'separator',  label: 'S\u00e9parateur' },
       { key: 'numbers',    label: 'Num\u00e9ros' },
       { key: 'questions',  label: 'Questions' },
       { key: 'answers',    label: 'R\u00e9ponses' },
       { key: 'subject',    label: 'Sujet' },
       { key: 'header',     label: 'En-t\u00eate' },
       { key: 'icons',      label: 'Ic\u00f4nes' },
+      { key: 'iconbg',    label: 'Fond ic\u00f4ne' },
       { key: 'rowlines',   label: 'Lignes' },
       { key: 'watermark',  label: 'Watermark' }
     ];
@@ -1096,7 +1112,44 @@
     }
   }
 
-  // ===== 11. Sections — drag reorder =====
+  // ===== 11. Sections — drag reorder with persistence =====
+  var SECTION_ORDER_KEY = 'ttmc-section-order';
+
+  function saveSectionOrder() {
+    try {
+      var order = {};
+      ['sections-left', 'sections-right'].forEach(function(containerId) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        var ids = [];
+        var sections = container.querySelectorAll('.sidebar-section');
+        for (var i = 0; i < sections.length; i++) {
+          var id = sections[i].getAttribute('data-section-id');
+          if (id) ids.push(id);
+        }
+        order[containerId] = ids;
+      });
+      localStorage.setItem(SECTION_ORDER_KEY, JSON.stringify(order));
+    } catch(e) {}
+  }
+
+  function restoreSectionOrder() {
+    try {
+      var raw = localStorage.getItem(SECTION_ORDER_KEY);
+      if (!raw) return;
+      var order = JSON.parse(raw);
+      ['sections-left', 'sections-right'].forEach(function(containerId) {
+        var container = document.getElementById(containerId);
+        if (!container || !order[containerId]) return;
+        var ids = order[containerId];
+        for (var i = 0; i < ids.length; i++) {
+          var section = container.querySelector('.sidebar-section[data-section-id="' + ids[i] + '"]');
+          if (section) container.appendChild(section);
+        }
+      });
+    } catch(e) {}
+  }
+
   function setupSectionsDrag(container) {
     if (!container) return;
     var sections = container.querySelectorAll('.sidebar-section');
@@ -1175,12 +1228,14 @@
             container.insertBefore(draggedSection, section.nextSibling);
           }
           section.classList.remove('drag-over');
+          saveSectionOrder();
         });
       })(sections[i]);
     }
   }
 
   function setupSections() {
+    restoreSectionOrder();
     setupSectionsDrag(document.getElementById('sections-left'));
     setupSectionsDrag(document.getElementById('sections-right'));
   }

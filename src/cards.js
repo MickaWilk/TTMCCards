@@ -65,6 +65,7 @@ var skipSaveToMemory = false;
     subject: true,
     header: true,
     icons: true,
+    iconbg: true,
     watermark: true,
     background: true,
     template: true,
@@ -111,6 +112,7 @@ var skipSaveToMemory = false;
 
   // ===== Helpers =====
   function iconHTML() {
+    if (currentIconId === 'none') return '';
     if (window.customLogoDataURL) {
       return '<img src="' + window.customLogoDataURL + '">';
     }
@@ -198,6 +200,7 @@ if (!skipSaveToMemory) saveToMemory();
     p.classList.toggle('hide-subject', !toggles.subject);
     p.classList.toggle('hide-header', !toggles.header);
     p.classList.toggle('hide-icons', !toggles.icons);
+    p.classList.toggle('hide-iconbg', !toggles.iconbg);
     p.classList.toggle('hide-watermark', !toggles.watermark);
     p.classList.toggle('hide-background', !toggles.background);
     p.classList.toggle('hide-template', !toggles.template);
