@@ -52,17 +52,24 @@
     return null;
   }
 
-  // ===== Mapping des themeId courants =====
+  // ===== Mapping des themeId → Varimatrax par défaut =====
   var THEME_ALIASES = {
-    'red': 'rouge_vif',
-    'rouge': 'rouge_vif',
-    'vert': 'green',
-    'bleu': 'blue',
-    'jaune': 'yellow',
-    'noir': 'black',
-    'violet': 'purple',
-    'marron': 'brown',
-    'or': 'gold'
+    'green':     'vx_green',
+    'blue':      'vx_blue',
+    'yellow':    'vx_yellow',
+    'rouge_vif': 'vx_red',
+    'red':       'vx_red',
+    'orange':    'vx_orange',
+    'purple':    'vx_purple',
+    'black':     'vx_black',
+    'rouge':     'vx_red',
+    'vert':      'vx_green',
+    'bleu':      'vx_blue',
+    'jaune':     'vx_yellow',
+    'noir':      'vx_black',
+    'violet':    'vx_purple',
+    'marron':    'vx_black',
+    'or':        'vx_yellow'
   };
 
   function normalizeCard(card) {
