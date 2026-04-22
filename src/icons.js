@@ -88,7 +88,7 @@ window.BUILTIN_ICONS = {
   },
   tete_de_mort: {
     name: 'Tête de mort',
-    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><ellipse cx="40" cy="32" rx="26" ry="28"/><rect x="22" y="54" width="36" height="18" rx="3"/><rect x="28" y="60" width="7" height="12" rx="1" fill="white" opacity=".9"/><rect x="37" y="60" width="6" height="12" rx="1" fill="white" opacity=".9"/><rect x="45" y="60" width="7" height="12" rx="1" fill="white" opacity=".9"/><circle cx="30" cy="30" r="8" fill="white" opacity=".9"/><circle cx="50" cy="30" r="8" fill="white" opacity=".9"/><circle cx="30" cy="30" r="5"/><circle cx="50" cy="30" r="5"/><ellipse cx="40" cy="46" rx="5" ry="3" fill="white" opacity=".3"/></svg>'
+    svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" fill="currentColor"><path d="M40 4C22 4 10 18 10 34c0 10 5 18 12 22v8c0 2 2 4 4 4h4v6c0 1 1 2 2 2h4c1 0 2-1 2-2v-6h4v6c0 1 1 2 2 2h4c1 0 2-1 2-2v-6h4c2 0 4-2 4-4v-8c7-4 12-12 12-22C70 18 58 4 40 4z"/><ellipse cx="29" cy="32" rx="8" ry="9" fill="white"/><ellipse cx="51" cy="32" rx="8" ry="9" fill="white"/><circle cx="29" cy="33" r="5"/><circle cx="51" cy="33" r="5"/><path d="M34 48c0 0 3 4 6 4s6-4 6-4" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="36" cy="44" r="1.5" fill="white"/><circle cx="44" cy="44" r="1.5" fill="white"/></svg>'
   },
   drapeau_arrivee: {
     name: 'Drapeau arrivée',
