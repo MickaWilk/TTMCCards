@@ -1,4 +1,5 @@
 exports/
+to_iconize/
 *.png
 node_modules/
 .DS_Store
