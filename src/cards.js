@@ -773,10 +773,8 @@ if (!skipSaveToMemory) saveToMemory();
           '<div class="terminer-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici..." data-field="body' + sfx + '"></div>' +
           '<div class="terminer-footer" contenteditable="true" data-placeholder="Note de bas de page..." data-field="footer' + sfx + '"></div>' +
           '<div class="terminer-logo"></div>' +
-          '<div class="card-panel-icon">' + iconHTML() + '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="panel-watermark">' + iconHTML() + '</div>' +
     '</div>';
   }
 
