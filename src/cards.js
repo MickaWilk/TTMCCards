@@ -788,16 +788,15 @@ if (!skipSaveToMemory) saveToMemory();
   // Bi-face avec couleurs opposées — hardcodé, ne suit pas le thème global
   // =========================================================================
   function renderBonusMalus(p) {
-    var heartSvg = (window.BUILTIN_ICONS && window.BUILTIN_ICONS.coeur) ? window.BUILTIN_ICONS.coeur.svg : iconHTML();
-    var skullSvg = (window.BUILTIN_ICONS && window.BUILTIN_ICONS.tete_de_mort) ? window.BUILTIN_ICONS.tete_de_mort.svg : iconHTML();
+    var heartSvg = (window.BUILTIN_ICONS && window.BUILTIN_ICONS.coeur) ? window.BUILTIN_ICONS.coeur.svg : '';
+    var skullSvg = (window.BUILTIN_ICONS && window.BUILTIN_ICONS.tete_de_mort) ? window.BUILTIN_ICONS.tete_de_mort.svg : '';
 
     var leftPanel =
       '<div class="card-panel bonusmalus-panel bonusmalus-recto">' +
         '<div class="bonusmalus-inner">' +
-          '<div class="bonusmalus-icon bonusmalus-icon-heart">' + heartSvg + '</div>' +
           '<div class="bonusmalus-label" contenteditable="true" data-field="bonusMalusLabelA" data-placeholder="TROP FORT"></div>' +
           '<div class="bonusmalus-body" contenteditable="true" data-placeholder="D\u00e9crivez le bonus ici..." data-field="body"></div>' +
-          '<div class="card-panel-icon">' + iconHTML() + '</div>' +
+          '<div class="card-panel-icon">' + heartSvg + '</div>' +
         '</div>' +
         '<div class="panel-watermark bonusmalus-watermark-light">' + heartSvg + '</div>' +
       '</div>';
@@ -805,10 +804,9 @@ if (!skipSaveToMemory) saveToMemory();
     var rightPanel =
       '<div class="card-panel bonusmalus-panel bonusmalus-verso">' +
         '<div class="bonusmalus-inner">' +
-          '<div class="bonusmalus-icon bonusmalus-icon-skull">' + skullSvg + '</div>' +
           '<div class="bonusmalus-label bonusmalus-label-dark" contenteditable="true" data-field="bonusMalusLabelB" data-placeholder="C\'EST NUL"></div>' +
           '<div class="bonusmalus-body bonusmalus-body-dark" contenteditable="true" data-placeholder="D\u00e9crivez le malus ici..." data-field="bodyB"></div>' +
-          '<div class="card-panel-icon card-panel-icon-dark">' + iconHTML() + '</div>' +
+          '<div class="card-panel-icon card-panel-icon-dark">' + skullSvg + '</div>' +
         '</div>' +
         '<div class="panel-watermark bonusmalus-watermark-dark">' + skullSvg + '</div>' +
       '</div>';

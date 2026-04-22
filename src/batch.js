@@ -56,10 +56,10 @@
   var TO_VARIMATRAX = {
     'green': 'vx_green', 'blue': 'vx_blue', 'yellow': 'vx_yellow',
     'rouge_vif': 'vx_red', 'red': 'vx_red', 'orange': 'vx_orange',
-    'purple': 'vx_purple', 'black': 'vx_black',
+    'purple': 'vx_purple', 'black': 'vx_black', 'white': 'vx_white',
     'rouge': 'vx_red', 'vert': 'vx_green', 'bleu': 'vx_blue',
     'jaune': 'vx_yellow', 'noir': 'vx_black', 'violet': 'vx_purple',
-    'marron': 'vx_black', 'or': 'vx_yellow',
+    'blanc': 'vx_white', 'marron': 'vx_black', 'or': 'vx_yellow',
     'darkred': 'vx_red', 'brown': 'vx_black', 'gold': 'vx_yellow',
     'pink': 'vx_red', 'teal': 'vx_blue', 'indigo': 'vx_purple',
     'lime': 'vx_green', 'cyan': 'vx_blue', 'coral': 'vx_orange'

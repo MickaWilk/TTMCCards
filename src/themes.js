@@ -42,13 +42,14 @@ window.THEMES = [
   { id:'coral',   label:'Corail — Musique',               headerBg:'#FF6F61', headerText:'#ffffff', border:'#E55A4F', numColor:'#D84A3A', cardBg:'#ffffff', iconBgAlpha:'0.12', defaultIcon:'musique',   cardType:'standard' },
 
   // --- Thèmes Varimatrax ---
-  { id:'vx_blue',    label:'Varimatrax — Bleu',    headerBg:'#2979B1', headerText:'#ffffff', border:'#1E5F8C', numColor:'#1E5F8C', cardBg:'#2979B1', iconBgAlpha:'0.00', defaultIcon:'poisson',         cardType:'standard', varimatrax:true },
-  { id:'vx_green',   label:'Varimatrax — Vert',    headerBg:'#3B9B3A', headerText:'#ffffff', border:'#2D7A2C', numColor:'#2D7A2C', cardBg:'#3B9B3A', iconBgAlpha:'0.00', defaultIcon:'play',            cardType:'standard', varimatrax:true },
-  { id:'vx_purple',  label:'Varimatrax — Violet',  headerBg:'#6B2D8E', headerText:'#ffffff', border:'#522070', numColor:'#522070', cardBg:'#6B2D8E', iconBgAlpha:'0.00', defaultIcon:'drapeau_arrivee', cardType:'standard', varimatrax:true },
-  { id:'vx_orange',  label:'Varimatrax — Orange',  headerBg:'#F18A00', headerText:'#ffffff', border:'#C97200', numColor:'#C97200', cardBg:'#F18A00', iconBgAlpha:'0.00', defaultIcon:'eclair',          cardType:'standard', varimatrax:true },
-  { id:'vx_red',     label:'Varimatrax — Rouge',   headerBg:'#C00000', headerText:'#ffffff', border:'#980000', numColor:'#980000', cardBg:'#C00000', iconBgAlpha:'0.00', defaultIcon:'globe',           cardType:'standard', varimatrax:true },
-  { id:'vx_black',   label:'Varimatrax — Noir',    headerBg:'#212121', headerText:'#FFD740', border:'#000000', numColor:'#000000', cardBg:'#212121', iconBgAlpha:'0.00', defaultIcon:'eclair',          cardType:'standard', varimatrax:true },
-  { id:'vx_yellow',  label:'Varimatrax — Jaune',   headerBg:'#F5D442', headerText:'#1a5276', border:'#C9AD2E', numColor:'#1a5276', cardBg:'#F5D442', iconBgAlpha:'0.00', defaultIcon:'silhouette',      cardType:'standard', varimatrax:true }
+  { id:'vx_green',   label:'Varimatrax — Débuter',      headerBg:'#3B9B3A', headerText:'#ffffff', border:'#2D7A2C', numColor:'#2D7A2C', cardBg:'#3B9B3A', iconBgAlpha:'0.00', defaultIcon:'play',        cardType:'standard', varimatrax:true },
+  { id:'vx_purple',  label:'Varimatrax — Gagner',       headerBg:'#6B2D8E', headerText:'#ffffff', border:'#522070', numColor:'#522070', cardBg:'#6B2D8E', iconBgAlpha:'0.00', defaultIcon:'couronne',    cardType:'standard', varimatrax:true },
+  { id:'vx_yellow',  label:'Varimatrax — Personnages',  headerBg:'#F5D442', headerText:'#1a5276', border:'#C9AD2E', numColor:'#1a5276', cardBg:'#F5D442', iconBgAlpha:'0.00', defaultIcon:'silhouette',  cardType:'standard', varimatrax:true },
+  { id:'vx_blue',    label:'Varimatrax — Divers',       headerBg:'#2979B1', headerText:'#ffffff', border:'#1E5F8C', numColor:'#1E5F8C', cardBg:'#2979B1', iconBgAlpha:'0.00', defaultIcon:'poisson',     cardType:'standard', varimatrax:true },
+  { id:'vx_red',     label:'Varimatrax — Pop Culture',  headerBg:'#C00000', headerText:'#ffffff', border:'#980000', numColor:'#980000', cardBg:'#C00000', iconBgAlpha:'0.00', defaultIcon:'globe',       cardType:'standard', varimatrax:true },
+  { id:'vx_orange',  label:'Varimatrax — Challenge',    headerBg:'#F18A00', headerText:'#ffffff', border:'#C97200', numColor:'#C97200', cardBg:'#F18A00', iconBgAlpha:'0.00', defaultIcon:'eclair',      cardType:'standard', varimatrax:true },
+  { id:'vx_black',   label:'Varimatrax — Malus',        headerBg:'#212121', headerText:'#FFD740', border:'#000000', numColor:'#000000', cardBg:'#212121', iconBgAlpha:'0.00', defaultIcon:'tete_de_mort', cardType:'standard', varimatrax:true },
+  { id:'vx_white',   label:'Varimatrax — Bonus',        headerBg:'#f0f0f0', headerText:'#C0392B', border:'#dddddd', numColor:'#C0392B', cardBg:'#f5f5f5', iconBgAlpha:'0.00', defaultIcon:'coeur',       cardType:'standard', varimatrax:true }
 ];
 
 window.getThemeById = function(id) {
