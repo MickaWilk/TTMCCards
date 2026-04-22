@@ -41,6 +41,11 @@ var skipSaveToMemory = false;
     debuterLabel: '',
     debuterHeaderB: '',
     debuterLabelB: '',
+    // Terminer headers
+    terminerHeader: '',
+    terminerLabel: '',
+    terminerHeaderB: '',
+    terminerLabelB: '',
     // Gagner headers
     gagnerHeader: '',
     gagnerHeaderB: '',
@@ -761,8 +766,8 @@ if (!skipSaveToMemory) saveToMemory();
       '<div class="terminer-inner">' +
         '<div class="terminer-border">' +
           '<div class="terminer-header">' +
-            '<div class="terminer-header-text" contenteditable="true" data-field="debuterHeader' + sfx + '">H\u00c9SITE PAS \u00c0</div>' +
-            '<div class="terminer-header-title" contenteditable="true" data-field="debuterLabel' + sfx + '">TERMINER</div>' +
+            '<div class="terminer-header-text" contenteditable="true" data-field="terminerHeader' + sfx + '">H\u00c9SITE PAS \u00c0</div>' +
+            '<div class="terminer-header-title" contenteditable="true" data-field="terminerLabel' + sfx + '">TERMINER</div>' +
           '</div>' +
           '<div class="terminer-title" contenteditable="true" data-placeholder="Titre du challenge (' + ph + ')..." data-field="title' + sfx + '"></div>' +
           '<div class="terminer-body" contenteditable="true" data-placeholder="D\u00e9crivez le challenge ici..." data-field="body' + sfx + '"></div>' +
@@ -1065,6 +1070,11 @@ if (!skipSaveToMemory) saveToMemory();
         debuterLabel: cardData.debuterLabel,
         debuterHeaderB: cardData.debuterHeaderB,
         debuterLabelB: cardData.debuterLabelB,
+        // Terminer headers
+        terminerHeader: cardData.terminerHeader,
+        terminerLabel: cardData.terminerLabel,
+        terminerHeaderB: cardData.terminerHeaderB,
+        terminerLabelB: cardData.terminerLabelB,
         // Gagner headers
         gagnerHeader: cardData.gagnerHeader,
         gagnerHeaderB: cardData.gagnerHeaderB,
@@ -1111,7 +1121,7 @@ if (!skipSaveToMemory) saveToMemory();
     padTop = 14; padRight = 14; padBottom = 14; padLeft = 14;
     bdrTop = 3; bdrRight = 3; bdrBottom = 3; bdrLeft = 3;
     customColors = { headerBg:null, headerText:null, border:null, panelBg:null, numColor:null, cardBg:null };
-    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
+    cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', terminerHeader: '', terminerLabel: '', terminerHeaderB: '', terminerLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
     overlays = [];
     nextOverlayId = 1;
     window.renderCard('green', 'feuille', 'poppins');
@@ -1126,7 +1136,7 @@ var theme = window.getThemeById(currentThemeId);
 currentIconId = theme.defaultIcon || 'feuille';
 currentFontId = 'poppins';
 window.customLogoDataURL = null;
-cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
+cardData = { subject: '', questions: {}, answers: {}, title: '', body: '', footer: '', subtitle: '', challengeAnswer: '', titleB: '', bodyB: '', footerB: '', subtitleB: '', challengeAnswerB: '', debuterHeader: '', debuterLabel: '', debuterHeaderB: '', debuterLabelB: '', terminerHeader: '', terminerLabel: '', terminerHeaderB: '', terminerLabelB: '', gagnerHeader: '', gagnerHeaderB: '', answerLabel: '', answerLabelB: '', intrepideHeaderL: '', intrepideHeaderR: '', intrepideSub: '', responses: '', bonusMalusLabelA: '', bonusMalusLabelB: '' };
 
 // Standard Q&A
 if (card.sujet) cardData.subject = card.sujet;
@@ -1154,6 +1164,11 @@ if (card.debuterHeader) cardData.debuterHeader = card.debuterHeader;
 if (card.debuterLabel) cardData.debuterLabel = card.debuterLabel;
 if (card.debuterHeaderB) cardData.debuterHeaderB = card.debuterHeaderB;
 if (card.debuterLabelB) cardData.debuterLabelB = card.debuterLabelB;
+// Terminer headers
+if (card.terminerHeader) cardData.terminerHeader = card.terminerHeader;
+if (card.terminerLabel) cardData.terminerLabel = card.terminerLabel;
+if (card.terminerHeaderB) cardData.terminerHeaderB = card.terminerHeaderB;
+if (card.terminerLabelB) cardData.terminerLabelB = card.terminerLabelB;
 // Gagner headers
 if (card.gagnerHeader) cardData.gagnerHeader = card.gagnerHeader;
 if (card.gagnerHeaderB) cardData.gagnerHeaderB = card.gagnerHeaderB;
@@ -1177,7 +1192,7 @@ subtitle: cardData.subtitle, challengeAnswer: cardData.challengeAnswer,
 titleB: cardData.titleB, bodyB: cardData.bodyB, footerB: cardData.footerB,
 subtitleB: cardData.subtitleB, challengeAnswerB: cardData.challengeAnswerB,
 debuterHeader: cardData.debuterHeader, debuterLabel: cardData.debuterLabel,
-debuterHeaderB: cardData.debuterHeaderB, debuterLabelB: cardData.debuterLabelB,
+debuterHeaderB: cardData.debuterHeaderB, debuterLabelB: cardData.debuterLabelB, terminerHeader: cardData.terminerHeader, terminerLabel: cardData.terminerLabel, terminerHeaderB: cardData.terminerHeaderB, terminerLabelB: cardData.terminerLabelB,
 gagnerHeader: cardData.gagnerHeader, gagnerHeaderB: cardData.gagnerHeaderB,
 answerLabel: cardData.answerLabel, answerLabelB: cardData.answerLabelB,
 intrepideHeaderL: cardData.intrepideHeaderL, intrepideHeaderR: cardData.intrepideHeaderR,
@@ -1356,6 +1371,10 @@ return { cardType: currentCardType, themeId: currentThemeId, iconId: currentIcon
       debuterLabel: cardData.debuterLabel,
       debuterHeaderB: cardData.debuterHeaderB,
       debuterLabelB: cardData.debuterLabelB,
+      terminerHeader: cardData.terminerHeader,
+      terminerLabel: cardData.terminerLabel,
+      terminerHeaderB: cardData.terminerHeaderB,
+      terminerLabelB: cardData.terminerLabelB,
       gagnerHeader: cardData.gagnerHeader,
       gagnerHeaderB: cardData.gagnerHeaderB,
       answerLabel: cardData.answerLabel,
