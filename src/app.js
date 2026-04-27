@@ -85,32 +85,55 @@
     var container = document.getElementById('color-picker');
     if (!container) return;
     container.innerHTML = '';
-    container.className = 'color-picker-grid';
+    container.className = 'color-picker-sections';
 
-    for (var i = 0; i < THEMES.length; i++) {
-      (function(theme, index) {
-        var swatch = document.createElement('button');
-        swatch.className = 'color-swatch' + (index === 0 ? ' active' : '');
-        swatch.style.background = theme.headerBg;
-        swatch.title = theme.label;
-        swatch.setAttribute('data-theme-id', theme.id);
-        swatch.addEventListener('click', function() {
-          var all = container.querySelectorAll('.color-swatch');
-          for (var j = 0; j < all.length; j++) all[j].classList.remove('active');
-          swatch.classList.add('active');
+    var normalThemes = THEMES.filter(function(t) { return !t.varimatrax; });
+    var vxThemes = THEMES.filter(function(t) { return t.varimatrax; });
 
-          var newIcon = theme.defaultIcon;
-          window.setCurrentThemeId(theme.id);
-          window.setCurrentIconId(newIcon);
-          window.resetCustomColors();
-          window.renderCard(theme.id, newIcon, window.getCurrentFontId());
-          updateIconPickerActive();
-          updateCustomColors();
-          window.saveToLocalStorage();
-        });
-        container.appendChild(swatch);
-      })(THEMES[i], i);
+    function buildGroup(themes, label) {
+      var section = document.createElement('div');
+      section.className = 'color-picker-group';
+
+      var lbl = document.createElement('div');
+      lbl.className = 'color-picker-group-label';
+      lbl.textContent = label;
+      section.appendChild(lbl);
+
+      var grid = document.createElement('div');
+      grid.className = 'color-picker-grid';
+
+      for (var i = 0; i < themes.length; i++) {
+        (function(theme) {
+          var swatch = document.createElement('button');
+          var isActive = theme.id === window.getCurrentThemeId();
+          swatch.className = 'color-swatch' + (isActive ? ' active' : '');
+          swatch.style.background = theme.headerBg;
+          swatch.title = theme.label;
+          swatch.setAttribute('data-theme-id', theme.id);
+          swatch.addEventListener('click', function() {
+            var all = container.querySelectorAll('.color-swatch');
+            for (var j = 0; j < all.length; j++) all[j].classList.remove('active');
+            swatch.classList.add('active');
+
+            var newIcon = theme.defaultIcon;
+            window.setCurrentThemeId(theme.id);
+            window.setCurrentIconId(newIcon);
+            window.resetCustomColors();
+            window.renderCard(theme.id, newIcon, window.getCurrentFontId());
+            updateIconPickerActive();
+            updateCustomColors();
+            window.saveToLocalStorage();
+          });
+          grid.appendChild(swatch);
+        })(themes[i]);
+      }
+
+      section.appendChild(grid);
+      container.appendChild(section);
     }
+
+    buildGroup(normalThemes, 'Normaux');
+    buildGroup(vxThemes, 'Varimatrax');
   }
 
   // ===== 2. Icon Picker =====
