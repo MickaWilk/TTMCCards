@@ -587,6 +587,7 @@ if (!skipSaveToMemory) saveToMemory();
         '</div>' +
         '<div class="panel-subject"><span contenteditable="true" data-placeholder="SUJET ?"></span></div>' +
         '<div class="panel-questions">' + qRows + '</div>' +
+        '<div class="vx-panel-icon">' + iconHTML() + '</div>' +
         '<div class="panel-watermark">' + iconHTML() + '</div>' +
       '</div>' +
     '</div>';
@@ -607,6 +608,7 @@ if (!skipSaveToMemory) saveToMemory();
           '<div class="panel-header-icon">' + iconHTML() + '</div>' +
         '</div>' +
         '<div class="panel-answers">' + aRows + '</div>' +
+        '<div class="vx-panel-icon">' + iconHTML() + '</div>' +
         '<div class="panel-watermark">' + iconHTML() + '</div>' +
       '</div>' +
     '</div>';

@@ -441,6 +441,21 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   content:attr(data-placeholder); color:rgba(0,0,0,.12); font-style:italic;
 }
 
+/* ===== Icone par panneau (Varimatrax uniquement) ===== */
+.vx-panel-icon {
+  display:none;
+}
+.vx-texture .vx-panel-icon {
+  display:flex; align-items:center; justify-content:center;
+  position:absolute; top:8px; right:8px;
+  width:36px; height:36px;
+  color:var(--header-bg);
+  opacity:.5;
+  pointer-events:none;
+}
+.vx-texture .vx-panel-icon svg { width:100%; height:100%; }
+.vx-texture .vx-panel-icon img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
 /* ===== Watermark icone ===== */
 .panel-watermark {
   position:absolute; bottom:20px; right:20px; width:80px; height:80px;
