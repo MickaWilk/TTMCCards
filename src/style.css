@@ -481,13 +481,15 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .vx-panel-icon {
   display:none;
 }
+.vx-texture .card-panel { position:relative; }
 .vx-texture .vx-panel-icon {
   display:flex; align-items:center; justify-content:center;
-  position:absolute; top:8px; right:8px;
-  width:36px; height:36px;
-  color:var(--header-bg);
-  opacity:.5;
+  position:absolute; top:10px; right:10px;
+  width:38px; height:38px;
+  color:var(--header-text, #fff);
+  opacity:.75;
   pointer-events:none;
+  z-index:5;
 }
 .vx-texture .vx-panel-icon svg { width:100%; height:100%; }
 .vx-texture .vx-panel-icon img { width:100%; height:100%; object-fit:cover; border-radius:50%; }

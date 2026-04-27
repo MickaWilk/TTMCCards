@@ -581,6 +581,7 @@ if (!skipSaveToMemory) saveToMemory();
     }
 
     var leftPanel = '<div class="card-panel">' +
+      '<div class="vx-panel-icon">' + iconHTML() + '</div>' +
       '<div class="panel-inner panel-bordered">' +
         '<div class="panel-header">' +
           '<span class="panel-header-text">Tu te mets combien en...</span>' +
@@ -588,7 +589,6 @@ if (!skipSaveToMemory) saveToMemory();
         '</div>' +
         '<div class="panel-subject"><span contenteditable="true" data-placeholder="SUJET ?"></span></div>' +
         '<div class="panel-questions">' + qRows + '</div>' +
-        '<div class="vx-panel-icon">' + iconHTML() + '</div>' +
         '<div class="panel-watermark">' + iconHTML() + '</div>' +
       '</div>' +
     '</div>';
@@ -602,6 +602,7 @@ if (!skipSaveToMemory) saveToMemory();
     }
 
     var rightPanel = '<div class="card-panel">' +
+      '<div class="vx-panel-icon">' + iconHTML() + '</div>' +
       '<div class="panel-inner panel-bordered">' +
         '<div class="panel-header">' +
           '<span class="panel-header-text">R\u00e9ponses</span>' +
@@ -609,7 +610,6 @@ if (!skipSaveToMemory) saveToMemory();
           '<div class="panel-header-icon">' + iconHTML() + '</div>' +
         '</div>' +
         '<div class="panel-answers">' + aRows + '</div>' +
-        '<div class="vx-panel-icon">' + iconHTML() + '</div>' +
         '<div class="panel-watermark">' + iconHTML() + '</div>' +
       '</div>' +
     '</div>';
