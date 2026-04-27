@@ -192,6 +192,7 @@ if (!skipSaveToMemory) saveToMemory();
     restoreFromMemory();
     applyToggles(p);
     applyCustomImages(p);
+    if (window.applyVxBackground) window.applyVxBackground(p, currentThemeId);
     renderOverlays(p);
     setupAutoSave(p);
     skipSaveToMemory = false;

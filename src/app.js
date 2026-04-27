@@ -3,6 +3,42 @@
 (function() {
   'use strict';
 
+  // ===== VX background selection (persisted per theme) =====
+  var vxBgSelections = {};
+  try { vxBgSelections = JSON.parse(localStorage.getItem('ttmc-vx-bgs') || '{}'); } catch(e) {}
+
+  function saveVxBgSelections() {
+    try { localStorage.setItem('ttmc-vx-bgs', JSON.stringify(vxBgSelections)); } catch(e) {}
+  }
+
+  window.applyVxBackground = function(cardEl, themeId) {
+    var theme = window.getThemeById(themeId);
+    if (!theme || !theme.varimatrax) return;
+
+    // Don't override custom uploaded images
+    var cur = cardEl.style.backgroundImage || '';
+    if (cur.indexOf('url(') === 0) return;
+
+    var bgId = vxBgSelections[themeId] || 'uni';
+    var bgs = window.VX_BACKGROUNDS ? (window.VX_BACKGROUNDS[themeId] || []) : [];
+    var bg = null;
+    for (var i = 0; i < bgs.length; i++) { if (bgs[i].id === bgId) { bg = bgs[i]; break; } }
+    if (!bg && bgs.length) bg = bgs[0];
+    if (!bg) return;
+
+    cardEl.style.backgroundColor = bg.color;
+    cardEl.style.backgroundImage = bg.image === 'none' ? '' : bg.image;
+    cardEl.style.backgroundSize  = bg.size  || 'auto';
+    cardEl.style.backgroundPosition = bg.pos || '0 0';
+  };
+
+  function showHideVxBgSection() {
+    var sec = document.getElementById('vx-bg-section');
+    if (!sec) return;
+    var theme = window.getThemeById(window.getCurrentThemeId());
+    sec.style.display = (theme && theme.varimatrax) ? '' : 'none';
+  }
+
   // ===== 0. Card Type Picker =====
   function buildCardTypePicker() {
     var container = document.getElementById('card-type-picker');
@@ -119,6 +155,8 @@
             window.setCurrentThemeId(theme.id);
             window.setCurrentIconId(newIcon);
             window.resetCustomColors();
+            showHideVxBgSection();
+            buildVxBgPicker();
             window.renderCard(theme.id, newIcon, window.getCurrentFontId());
             updateIconPickerActive();
             updateCustomColors();
@@ -134,6 +172,51 @@
 
     buildGroup(normalThemes, 'Normaux');
     buildGroup(vxThemes, 'Varimatrax');
+  }
+
+  // ===== 1b. VX Background Picker =====
+  function buildVxBgPicker() {
+    var container = document.getElementById('vx-bg-picker');
+    if (!container) return;
+    container.innerHTML = '';
+
+    var themeId = window.getCurrentThemeId();
+    var bgs = window.VX_BACKGROUNDS ? (window.VX_BACKGROUNDS[themeId] || []) : [];
+    var currentBgId = vxBgSelections[themeId] || 'uni';
+
+    for (var i = 0; i < bgs.length; i++) {
+      (function(bg) {
+        var btn = document.createElement('button');
+        btn.className = 'vx-bg-swatch' + (bg.id === currentBgId ? ' active' : '');
+        btn.title = bg.label;
+        btn.style.backgroundColor = bg.color;
+        if (bg.image && bg.image !== 'none') {
+          btn.style.backgroundImage = bg.image;
+          if (bg.size) btn.style.backgroundSize = bg.size;
+          if (bg.pos)  btn.style.backgroundPosition = bg.pos;
+        }
+        btn.setAttribute('data-vx-bg-id', bg.id);
+
+        var lbl = document.createElement('span');
+        lbl.className = 'vx-bg-swatch-label';
+        lbl.textContent = bg.label;
+        btn.appendChild(lbl);
+
+        btn.addEventListener('click', function() {
+          var all = container.querySelectorAll('.vx-bg-swatch');
+          for (var j = 0; j < all.length; j++) all[j].classList.remove('active');
+          btn.classList.add('active');
+
+          vxBgSelections[themeId] = bg.id;
+          saveVxBgSelections();
+
+          var p = document.getElementById('card-preview');
+          if (p) window.applyVxBackground(p, themeId);
+        });
+
+        container.appendChild(btn);
+      })(bgs[i]);
+    }
   }
 
   // ===== 2. Icon Picker =====
@@ -1432,6 +1515,8 @@
 
         updateCardTypePickerActive();
         updateColorPickerActive();
+        showHideVxBgSection();
+        buildVxBgPicker();
         updateIconPickerActive();
         updateBulkPasteLabels();
         updateExportBothVisibility();
@@ -1540,6 +1625,8 @@
   document.addEventListener('DOMContentLoaded', function() {
     buildCardTypePicker();
     buildColorPicker();
+    buildVxBgPicker();
+    showHideVxBgSection();
     buildToggleGrid();
     buildIconPicker();
     buildFontSelector();

@@ -137,6 +137,42 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
   box-shadow:0 0 0 2px rgba(102,126,234,.5);
 }
 
+/* ===== VX Background Picker ===== */
+.vx-bg-grid {
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:5px;
+}
+.vx-bg-swatch {
+  width:100%;
+  aspect-ratio:1.3;
+  border-radius:5px;
+  border:2px solid transparent;
+  cursor:pointer;
+  transition:border-color .2s, transform .15s;
+  position:relative;
+  overflow:hidden;
+  outline:none;
+  background-size:cover;
+  background-position:center;
+}
+.vx-bg-swatch:hover { transform:scale(1.08); }
+.vx-bg-swatch.active {
+  border-color:#fff;
+  box-shadow:0 0 0 2px rgba(102,126,234,.5);
+}
+.vx-bg-swatch-label {
+  position:absolute;
+  bottom:0; left:0; right:0;
+  font-size:6.5px;
+  text-align:center;
+  padding:1px 2px 2px;
+  background:rgba(0,0,0,.45);
+  color:#fff;
+  line-height:1.4;
+  letter-spacing:.3px;
+}
+
 /* ===== Icon Picker Grid ===== */
 .icon-picker-grid {
   display:grid;
