@@ -282,11 +282,11 @@ if (!skipSaveToMemory) saveToMemory();
       wrap.appendChild(img);
 
       if (!o.locked) {
-        var corners = ['nw','ne','sw','se'];
-        for (var c = 0; c < corners.length; c++) {
+        var handles = ['nw','n','ne','e','se','s','sw','w'];
+        for (var c = 0; c < handles.length; c++) {
           var h = document.createElement('div');
-          h.className = 'overlay-handle overlay-handle-' + corners[c];
-          h.setAttribute('data-corner', corners[c]);
+          h.className = 'overlay-handle overlay-handle-' + handles[c];
+          h.setAttribute('data-corner', handles[c]);
           wrap.appendChild(h);
         }
       }
@@ -315,8 +315,8 @@ if (!skipSaveToMemory) saveToMemory();
     var p = document.getElementById('card-preview');
     if (!p) return;
 
-    // --- Mouse events ---
-    p.addEventListener('mousedown', function(e) {
+    // --- Mouse events (document-level pour gérer le hors-champs) ---
+    document.addEventListener('mousedown', function(e) {
       var target = e.target;
 
       // Resize handle?
@@ -386,7 +386,7 @@ if (!skipSaveToMemory) saveToMemory();
     });
 
     // --- Touch events ---
-    p.addEventListener('touchstart', function(e) {
+    document.addEventListener('touchstart', function(e) {
       var target = e.target;
       var touch = e.touches[0];
 
@@ -452,23 +452,24 @@ if (!skipSaveToMemory) saveToMemory();
     });
   }
 
-  // Apply resize delta based on corner
+  // Apply resize delta based on handle
   function applyResize(ov, st, dx, dy) {
     var c = st.corner;
     var minW = 10, minH = 10;
+    // Corners
     if (c === 'se') {
       ov.w = Math.max(minW, Math.round(st.origW + dx));
       ov.h = Math.max(minH, Math.round(st.origH + dy));
     } else if (c === 'sw') {
-      var newW = Math.max(minW, Math.round(st.origW - dx));
-      ov.x = Math.round(st.origX + (st.origW - newW));
-      ov.w = newW;
+      var swW = Math.max(minW, Math.round(st.origW - dx));
+      ov.x = Math.round(st.origX + (st.origW - swW));
+      ov.w = swW;
       ov.h = Math.max(minH, Math.round(st.origH + dy));
     } else if (c === 'ne') {
       ov.w = Math.max(minW, Math.round(st.origW + dx));
-      var newH = Math.max(minH, Math.round(st.origH - dy));
-      ov.y = Math.round(st.origY + (st.origH - newH));
-      ov.h = newH;
+      var neH = Math.max(minH, Math.round(st.origH - dy));
+      ov.y = Math.round(st.origY + (st.origH - neH));
+      ov.h = neH;
     } else if (c === 'nw') {
       var nwW = Math.max(minW, Math.round(st.origW - dx));
       var nwH = Math.max(minH, Math.round(st.origH - dy));
@@ -476,6 +477,19 @@ if (!skipSaveToMemory) saveToMemory();
       ov.y = Math.round(st.origY + (st.origH - nwH));
       ov.w = nwW;
       ov.h = nwH;
+    // Edges
+    } else if (c === 'n') {
+      var nH = Math.max(minH, Math.round(st.origH - dy));
+      ov.y = Math.round(st.origY + (st.origH - nH));
+      ov.h = nH;
+    } else if (c === 's') {
+      ov.h = Math.max(minH, Math.round(st.origH + dy));
+    } else if (c === 'e') {
+      ov.w = Math.max(minW, Math.round(st.origW + dx));
+    } else if (c === 'w') {
+      var wW = Math.max(minW, Math.round(st.origW - dx));
+      ov.x = Math.round(st.origX + (st.origW - wW));
+      ov.w = wW;
     }
   }
 

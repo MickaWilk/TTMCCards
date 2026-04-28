@@ -1004,6 +1004,10 @@ body { font-family:'Poppins',sans-serif; background:#0f0f1a; color:#fff; height:
 .overlay-handle-ne { top:-6px; right:-6px; cursor:ne-resize; }
 .overlay-handle-sw { bottom:-6px; left:-6px; cursor:sw-resize; }
 .overlay-handle-se { bottom:-6px; right:-6px; cursor:se-resize; }
+.overlay-handle-n { top:-6px; left:50%; transform:translateX(-50%); width:24px; height:12px; border-radius:3px; cursor:n-resize; }
+.overlay-handle-s { bottom:-6px; left:50%; transform:translateX(-50%); width:24px; height:12px; border-radius:3px; cursor:s-resize; }
+.overlay-handle-e { right:-6px; top:50%; transform:translateY(-50%); width:12px; height:24px; border-radius:3px; cursor:e-resize; }
+.overlay-handle-w { left:-6px; top:50%; transform:translateY(-50%); width:12px; height:24px; border-radius:3px; cursor:w-resize; }
 
 /* Sidebar overlay list */
 .overlay-list { display:flex; flex-direction:column; gap:4px; }
