@@ -4,3 +4,8 @@ to_iconize/
 node_modules/
 .DS_Store
 Thumbs.db
+
+# Override global gitignore — repo perso, on track le paramétrage Claude
+!.claude/
+.claude/settings.local.json
+!CLAUDE.md
