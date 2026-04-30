@@ -57,3 +57,7 @@ Les noeuds terminaux (DevOps, Code Review, Tech Writer) finalisent leur branche.
 Pour ajouter du contexte spécifique à un agent sans modifier le seed :
 1. Documenter dans `CLAUDE.md` (préféré — tous les agents le lisent)
 2. Ou dupliquer l'agent et ajouter le contexte directement
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

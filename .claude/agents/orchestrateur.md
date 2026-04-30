@@ -62,3 +62,7 @@ Agent({
 2. **Économe** — le moins d'agents possible.
 3. **Pas de cascade vide** — skip les agents sans travail réel.
 4. **Brief complet** — l'agent doit pouvoir travailler seul.
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

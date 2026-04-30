@@ -73,3 +73,7 @@ Agent({
 2. Nommer fichiers, fonctions, endpoints exacts.
 3. Justifier chaque choix.
 4. **Ne lancer que les agents qui ont du travail réel.**
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

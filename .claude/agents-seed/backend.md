@@ -38,3 +38,7 @@ Agent({
 1. Logique métier séparée des routes/controllers.
 2. Pas de secrets en dur — toujours via config/env/vault.
 3. Respecter le gestionnaire de dépendances du projet.
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

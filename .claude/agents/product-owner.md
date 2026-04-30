@@ -55,3 +55,7 @@ Agent({
 2. Critères d'acceptation vérifiables.
 3. Toujours définir le hors-périmètre.
 4. Poser des questions si l'idée est trop vague.
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

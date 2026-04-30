@@ -59,3 +59,7 @@ Agent({
 1. Lecture seule — rapport uniquement.
 2. Pas de faux positifs.
 3. Critical et High d'abord.
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

@@ -54,3 +54,7 @@ Agent({
 2. Chaque bug avec étapes de repro.
 3. Chemins critiques d'abord.
 4. Vérifier dans le code avant de reporter.
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

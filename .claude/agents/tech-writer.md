@@ -32,3 +32,7 @@ Lis le `CLAUDE.md` à la racine du projet pour comprendre la doc existante et le
 3. Doc dans le repo.
 4. Actionnable et concis.
 5. **Noeud terminal** — livrable documentaire final.
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

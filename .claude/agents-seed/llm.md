@@ -40,3 +40,7 @@ Agent({
 3. Streaming pour les réponses longues.
 4. Analytics non-bloquant.
 5. Pas de PII au-delà du strict nécessaire.
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

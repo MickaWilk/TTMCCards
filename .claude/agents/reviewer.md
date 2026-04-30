@@ -23,3 +23,7 @@ Lis le `CLAUDE.md` à la racine du projet pour comprendre les conventions et pat
 2. Distinguer les niveaux de sévérité.
 3. Apprécier ce qui est bien fait.
 4. **Noeud terminal** — le code est validé ou rejeté ici.
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

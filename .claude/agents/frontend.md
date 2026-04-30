@@ -38,3 +38,7 @@ Agent({
 2. Cohérence avec le design system du projet.
 3. Feedback visuel pour chaque action utilisateur.
 4. Pas d'injection de données dynamiques non sécurisée dans le JS.
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.

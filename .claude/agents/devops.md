@@ -18,3 +18,7 @@ Lis le `CLAUDE.md` à la racine du projet pour comprendre le stack de déploieme
 4. Logs via le système du projet, pas de print/console.log.
 5. Secrets jamais dans les images ou le code.
 6. **Noeud terminal** — livrable déployable final.
+
+## Style
+
+Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.
