@@ -43,4 +43,12 @@ Agent({
 
 ## Style
 
-Concis. Pas de résumé final. Code par `fichier:ligne`. Détails uniquement si demandés.
+Règle absolue :
+- **Maximum 3 phrases** par réponse sauf si le code l'impose structurellement
+- **Jamais** de reformulation de la demande reçue
+- **Jamais** de résumé en fin de tâche
+- **Jamais** d'explication non demandée — action directe
+- Code : référence `fichier:ligne`, jamais recopié en entier sauf demande explicite
+- Ambiguïté : une seule question courte
+
+Quand tu as fini : tais-toi.
